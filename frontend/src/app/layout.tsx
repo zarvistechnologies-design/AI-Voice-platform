@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Roboto } from "next/font/google";
 import Script from "next/script";
 import type { CSSProperties } from "react";
@@ -20,6 +20,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   preload: false,
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 const platformMetadata: Metadata = {
   metadataBase: new URL("https://www.vozon.ai"),
@@ -84,7 +89,7 @@ function platformStructuredData() {
   return JSON.stringify({
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": "https://www.vozon.ai/#organization", name: "Vozon", url: "https://www.vozon.ai/", logo: "https://www.vozon.ai/images/logo_2.svg", email: "hello@vozon.ai" },
+      { "@type": "Organization", "@id": "https://www.vozon.ai/#organization", name: "Vozon", url: "https://www.vozon.ai/", logo: "https://www.vozon.ai/images/vozon-logo.svg", email: "hello@vozon.ai" },
       { "@type": "WebSite", "@id": "https://www.vozon.ai/#website", url: "https://www.vozon.ai/", name: "Vozon", description: "AI voice agents for inbound and outbound phone call automation.", publisher: { "@id": "https://www.vozon.ai/#organization" }, inLanguage: "en" },
     ],
   }).replace(/</g, "\\u003c");
@@ -160,7 +165,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     "--brand-surface": brand.colors.surface,
   } as CSSProperties;
   const iconTarget = brand.iconUrl || brand.logoDarkUrl || brand.logoUrl;
-  const isVozonIcon = iconTarget.includes("logo_2.svg") || iconTarget.includes("vozon-mark");
+  const isVozonIcon = iconTarget.includes("logo_2.svg") || iconTarget.includes("vozon-logo.svg") || iconTarget.includes("vozon-mark");
   const effectiveIconTarget = isVozonIcon ? "" : iconTarget;
 
   return (

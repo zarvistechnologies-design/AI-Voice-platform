@@ -57,7 +57,7 @@ const providers: { id: TelephonyProvider; description: string; docs: string }[] 
 const buttonClass =
   "inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50";
 const controlClass =
-  "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-black focus:ring-2 focus:ring-black/5 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white dark:focus:ring-white/10";
+  "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-blue-600 focus:ring-2 focus:ring-blue-500/10 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-blue-400 dark:focus:ring-blue-400/10";
 
 export function PhoneNumberModals({
   agents,
@@ -265,13 +265,13 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
           <section className="grid gap-3">
             <div><span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Step 1</span><h3 className="text-base font-semibold text-slate-900 dark:text-white mt-0.5 mb-0">Choose provider</h3></div>
-            <div className="grid grid-cols-2 gap-1 rounded-xl border border-zinc-800 bg-zinc-950 p-1 sm:grid-cols-5">
+            <div className="grid grid-cols-2 gap-1 rounded-xl border border-blue-200 bg-blue-50 p-1 dark:border-blue-950 dark:bg-blue-950/30 sm:grid-cols-5">
               {providers.map((item) => (
                 <button
                   className={`min-h-10 rounded-lg px-2 text-center text-xs transition outline-none focus:outline-none focus:ring-0 ${
                     provider === item.id
-                      ? "border border-white bg-white font-semibold text-black shadow-sm"
-                      : "border border-transparent text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-white"
+                      ? "border border-blue-600 bg-blue-600 font-semibold text-white shadow-sm dark:border-blue-500 dark:bg-blue-500"
+                      : "border border-transparent text-zinc-600 hover:bg-blue-100 hover:text-blue-800 dark:text-zinc-400 dark:hover:bg-blue-950/60 dark:hover:text-blue-200"
                   }`}
                   disabled={busy}
                   key={item.id}
@@ -285,10 +285,10 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
             </div>
           </section>
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-2.5">
+          <div className="rounded-lg border border-blue-200 bg-blue-50/70 px-3.5 py-2.5 dark:border-blue-950 dark:bg-blue-950/20">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-xs text-zinc-300">{providers.find((item) => item.id === provider)?.description}</span>
-              {providers.find((item) => item.id === provider)?.docs ? (<a className="text-xs font-semibold text-white underline underline-offset-2 hover:opacity-80" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>) : null}
+              <span className="text-xs text-slate-600 dark:text-zinc-300">{providers.find((item) => item.id === provider)?.description}</span>
+              {providers.find((item) => item.id === provider)?.docs ? (<a className="text-xs font-semibold text-blue-700 underline underline-offset-2 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-200" href={providers.find((item) => item.id === provider)?.docs} rel="noreferrer" target="_blank">Provider docs</a>) : null}
             </div>
           </div>
 
@@ -513,7 +513,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
 
         <footer className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50/50 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/50">
           <button className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700" disabled={busy} onClick={onClose} type="button">Cancel</button>
-          <button className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 shadow-sm" aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
+          <button className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 text-xs font-semibold text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 disabled:opacity-50 shadow-sm" aria-describedby="phone-import-validation" disabled={busy || !valid} type="submit">
             <Icon icon="import" /> {busy ? "Importing..." : "Import number"}
           </button>
         </footer>
@@ -595,7 +595,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
             Area code or digits <span className="font-normal text-slate-400 dark:text-zinc-500">(optional)</span>
             <input className={controlClass} inputMode="tel" placeholder="For example 80 or 650" value={query} onChange={(event) => setQuery(event.target.value)} />
           </label>
-          <button className="inline-flex h-11 items-center justify-center gap-1.5 self-end rounded-lg bg-black px-4 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm" disabled={searching || busy} type="submit">
+          <button className="inline-flex h-11 items-center justify-center gap-1.5 self-end rounded-lg bg-blue-600 px-4 text-xs font-semibold text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 shadow-sm" disabled={searching || busy} type="submit">
             <Icon icon="search" /> {searching ? "Searching..." : "Search"}
           </button>
         </form>
@@ -619,8 +619,8 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
                   <button
                     className={`grid w-full gap-3 rounded-xl border p-3 text-left transition sm:grid-cols-[minmax(0,1fr)_145px_145px_auto] sm:items-center ${
                       active
-                        ? "border-black bg-slate-100 dark:border-white dark:bg-zinc-800 ring-2 ring-black/10 dark:ring-white/10"
-                        : "border-slate-200 bg-white hover:border-slate-400 dark:border-zinc-800 dark:bg-zinc-900/90 dark:hover:border-zinc-600"
+                        ? "border-blue-600 bg-blue-50 ring-2 ring-blue-500/15 dark:border-blue-500 dark:bg-blue-950/30 dark:ring-blue-500/20"
+                        : "border-slate-200 bg-white hover:border-blue-400 dark:border-zinc-800 dark:bg-zinc-900/90 dark:hover:border-blue-500"
                     }`}
                     disabled={!voiceAvailable || busy}
                     key={number.id || number.e164}
@@ -653,7 +653,7 @@ function BuyNumberModal({ busy, requestError, onClose, onPurchase, onSearchInven
           </label>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
+            <button className={`${buttonClass} bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 shadow-sm`} disabled={busy || !selected} onClick={() => { if (selected) onPurchase(selected, label); }} type="button">
               <Icon icon="plus" /> {busy ? "Purchasing..." : "Purchase number"}
             </button>
           </div>
@@ -696,7 +696,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
               <button
                 className={`mb-1 flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
                   selected
-                    ? "border-black bg-slate-100 dark:border-white dark:bg-zinc-800"
+                  ? "border-blue-600 bg-blue-50 dark:border-blue-500 dark:bg-blue-950/30"
                     : "border-transparent hover:bg-slate-50 dark:hover:bg-zinc-800/50"
                 }`}
                 disabled={busy}
@@ -705,13 +705,13 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
                 type="button"
                 aria-pressed={selected}
               >
-                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-black text-white dark:bg-white dark:text-black" : "bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300"}`}><Icon icon="user" /></span>
+                <span className={`grid size-10 shrink-0 place-items-center rounded-lg ${selected ? "bg-blue-600 text-white dark:bg-blue-500" : "bg-slate-100 text-slate-700 dark:bg-zinc-800 dark:text-zinc-300"}`}><Icon icon="user" /></span>
                 <span className="min-w-0 flex-1">
                   <strong className="block truncate text-sm font-semibold text-slate-900 dark:text-white">{agent.name}</strong>
                   <span className="block truncate text-xs text-slate-500 dark:text-zinc-400">{agent.team || "Voice agent"}</span>
                 </span>
                 <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${agent.status === "Live" ? "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`}>{agent.status}</span>
-                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-slate-300 dark:border-zinc-700"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
+                <span className={`grid size-5 place-items-center rounded-full border ${selected ? "border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500" : "border-slate-300 dark:border-zinc-700"}`}>{selected ? <Icon icon="check" className="size-3" /> : null}</span>
               </button>
             );
           })}
@@ -728,7 +728,7 @@ function AgentModal({ agents, busy, number, requestError, onAssign, onClose }: {
           </div>
           <div className="flex gap-2">
             <button className={`${buttonClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700`} disabled={busy} onClick={onClose} type="button">Cancel</button>
-            <button className={`${buttonClass} bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
+            <button className={`${buttonClass} bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 shadow-sm`} disabled={busy || !selectedId} onClick={() => onAssign(selectedId)} type="button">
               <Icon icon="link" /> {busy ? "Saving..." : "Set agent"}
             </button>
           </div>
@@ -754,7 +754,7 @@ function ModalFrame({ busy = false, children, onClose, subtitle, title, width = 
             <h2 className="text-lg font-bold text-slate-900 dark:text-white m-0">{title}</h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 mb-0">{subtitle}</p>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-black hover:text-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:border-blue-500 dark:hover:bg-blue-950/30 dark:hover:text-blue-300 disabled:cursor-wait disabled:opacity-50" disabled={busy} onClick={onClose} type="button" aria-label={busy ? "Please wait for the current request to finish" : "Close"}>
             <Icon icon="close" />
           </button>
         </header>

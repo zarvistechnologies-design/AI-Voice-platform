@@ -627,7 +627,7 @@
 .design-four-integration-icons .calendar { left: 6%; top: 145px; }
 .design-four-integration-icons .crm { left: 17%; top: 260px; }
 .design-four-integration-icons .sarvam { left: 30%; top: 260px; }
-.design-four-integration-icons .facebook { left: 7%; top: 390px; color: #1818ed; font: 700 70px Arial; }
+.design-four-integration-icons .facebook { left: 7%; top: 390px; color: #1818ed; font: 700 70px var(--font-site-sans), Roboto, sans-serif; }
 .design-four-integration-icons .twilio { left: 28%; top: 402px; color: #d42631; line-height: .6; }
 .design-four-integration-icons .gmail { left: 17%; top: 527px; }
 .design-four-integration-icons .salesforce { right: 6%; top: 145px; color: #098ecb; font-size: 17px; }
@@ -643,7 +643,7 @@
 .design-four-integration-icons .twilio svg > circle:first-child { fill: #f22f46; }
 .design-four-integration-icons .twilio svg > circle:not(:first-child) { fill: #fff; }
 .design-four-integration-icons .salesforce svg path { fill: #0aa5df; }
-.design-four-integration-icons .salesforce svg text { fill: #fff; font: 700 13px Arial, sans-serif; }
+.design-four-integration-icons .salesforce svg text { fill: #fff; font: 700 13px var(--font-site-sans), Roboto, sans-serif; }
 
 .design-four-integration-arrow {
   position: absolute;
@@ -832,7 +832,7 @@
   min-width: .9em;
   place-items: center;
   color: inherit;
-  font-family: Arial, sans-serif;
+  font-family: inherit;
   font-size: .78em;
   font-style: normal;
   font-weight: 800;
@@ -2774,7 +2774,7 @@
 .home-design-four .design-four-footer-wordmark { position: relative; z-index: 2; display: flex; width: 100%; min-height: clamp(190px, 23vw, 330px); align-items: center; margin: 0 auto; padding: 0 clamp(12px, 2vw, 36px) 20px; }
 .home-design-four .design-four-footer-wordmark::before { position: absolute; z-index: -1; right: 7%; bottom: 15%; left: 7%; height: 160px; border-radius: 50%; background: #ffffff59; content: ""; filter: blur(75px); }
 .home-design-four .design-four-footer-wordmark > a { display: block; width: clamp(190px, 25vw, 350px); flex: none; filter: drop-shadow(0 0 25px #ffffff6b); }
-.home-design-four .design-four-footer-wordmark img { display: block; width: 100%; height: auto; }
+.home-design-four .design-four-footer-wordmark img { display: block; width: 100%; height: auto; filter: brightness(0) invert(1); }
 .home-design-four .design-four-footer-wave { display: block; width: 100%; min-width: 0; height: clamp(170px, 20vw, 280px); flex: 1; margin-left: clamp(0px, 1vw, 14px); filter: drop-shadow(0 0 7px #ffffff44); }
 
 @media (max-width: 960px) {

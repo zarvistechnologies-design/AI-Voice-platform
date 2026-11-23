@@ -545,7 +545,7 @@ export function AdvancedAnalyticsCharts({
             {!hasCalls ? (
               <EmptyChart />
             ) : (
-              <div className="h-[220px]">
+              <div className="h-[190px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -557,8 +557,6 @@ export function AdvancedAnalyticsCharts({
                       innerRadius={52}
                       outerRadius={78}
                       paddingAngle={3}
-                      label={({ name, value }) => `${name}: ${value}`}
-                      labelLine={{ stroke: "#a1a1aa" }}
                     >
                       {outcomes.map((row, index) => (
                         <Cell key={row.name} fill={statusColors[index % statusColors.length]} />
@@ -569,6 +567,25 @@ export function AdvancedAnalyticsCharts({
                 </ResponsiveContainer>
               </div>
             )}
+            {hasCalls ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[#eaeaea] py-3 sm:grid-cols-2">
+                {outcomes.map((row, index) => (
+                  <div className="flex min-w-0 items-center justify-between gap-2 text-[11px]" key={row.name}>
+                    <span className="flex min-w-0 items-center gap-2 text-[#52525b]">
+                      <i
+                        aria-hidden="true"
+                        className="size-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: statusColors[index % statusColors.length] }}
+                      />
+                      <span className="truncate">{row.name}</span>
+                    </span>
+                    <strong className="shrink-0 font-semibold tabular-nums text-[#171717]">
+                      {Math.round(row.value).toLocaleString("en-IN")}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+            ) : null}
             <div className="mt-3 border-t border-[#eaeaea] pt-3 text-center">
               <strong className="block text-xl font-bold tracking-tight text-[#171717]">
                 {loading ? "—" : Math.round(data.summary.totalCalls).toLocaleString("en-IN")}

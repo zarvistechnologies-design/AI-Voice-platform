@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, type CSSProperties } from "react";
 import Image from "next/image";
@@ -620,7 +620,7 @@ export function HomePlatformSections() {
                     <Image
                       alt=""
                       height={350}
-                      src="/images/logo_2.svg"
+                      src="/images/vozon-logo.svg"
                       style={{ height: "auto", width: 108 }}
                       width={1160}
                     />
@@ -1084,7 +1084,7 @@ export function HomePlatformSections() {
                   alt=""
                   className="vozon-app-hub-logo"
                   height={350}
-                  src="/images/logo_2.svg"
+                  src="/images/vozon-logo.svg"
                   width={1160}
                 />
               </span>
@@ -1788,7 +1788,7 @@ export function HomePlatformSections() {
 
         .vozon-app-calendly {
           color: #15b8dc !important;
-          font-family: Georgia, serif;
+          font-family: inherit;
           font-size: 2.45rem !important;
           font-weight: 900 !important;
           line-height: 1;
@@ -1798,7 +1798,7 @@ export function HomePlatformSections() {
           background: linear-gradient(135deg, #ea4335 0 44%, #fbbc04 44% 56%, #4285f4 56% 72%, #34a853 72%);
           background-clip: text;
           color: transparent !important;
-          font-family: Arial, sans-serif;
+          font-family: inherit;
           font-size: 2.1rem !important;
           font-weight: 900 !important;
           line-height: 1;
@@ -1889,6 +1889,7 @@ export function HomePlatformSections() {
           max-width: none;
           height: 66px;
           object-fit: none;
+          filter: brightness(0) invert(1);
         }
 
         @keyframes vozonAppFloat {
@@ -5286,7 +5287,7 @@ export function HomePlatformSections() {
         .vozon-outcomes-grid h3 { margin: 7px 0 0; color: rgba(255,255,255,.94); font-size: 1.05rem; font-weight: 850; letter-spacing: -.02em; }
         .vozon-outcomes-grid p { margin: 12px 0 0; color: rgba(255,255,255,.52); font-size: .78rem; line-height: 1.65; }
         .vozon-outcomes-quote { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 16px; margin: 12px 0 0; padding: 18px 22px; border: 1px solid rgba(255,255,255,.09); border-radius: 16px; background: rgba(255,255,255,.025); }
-        .vozon-outcomes-quote > span { color: #45ddce; font: 900 3.2rem/1 Georgia,serif; opacity: .65; }
+        .vozon-outcomes-quote > span { color: #45ddce; font: 900 3.2rem/1 var(--font-site-sans),Roboto,sans-serif; opacity: .65; }
         .vozon-outcomes-quote p { max-width: 900px; margin: 2px 0 0; color: rgba(255,255,255,.68); font-size: .9rem; line-height: 1.7; }
         .vozon-outcomes-quote footer { grid-column: 2; display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,.35); font-size: .65rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
         .vozon-outcomes-quote footer i { width: 22px; height: 1px; background: #45ddce; }

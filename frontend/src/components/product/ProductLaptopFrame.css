@@ -374,6 +374,10 @@
   color: #ffffff;
 }
 
+.rflow-node.is-ai-hub .rflow-app-icon img {
+  filter: brightness(0) invert(1);
+}
+
 .rflow-node.is-ai-hub .rflow-app-copy strong {
   color: #ffffff;
   font-size: 13px;
@@ -435,6 +439,43 @@
   color: #dbeafe;
   font-size: 9.5px;
   font-weight: 700;
+}
+
+/* Keep the central workflow node legible over the dotted diagram canvas. */
+.rflow-stage .rflow-node.is-ai-hub {
+  opacity: 1 !important;
+  filter: none !important;
+  background-color: #12377f !important;
+  background-image: linear-gradient(145deg, #1d4ed8 0%, #12377f 100%) !important;
+  color: #ffffff !important;
+  isolation: isolate;
+}
+
+.rflow-stage .rflow-node.is-ai-hub .rflow-node-head {
+  background: rgb(8 25 60 / 48%) !important;
+  border-bottom-color: rgb(255 255 255 / 20%) !important;
+  color: #eff6ff !important;
+}
+
+.rflow-stage .rflow-node.is-ai-hub .rflow-node-body,
+.rflow-stage .rflow-node.is-ai-hub .rflow-app-copy,
+.rflow-stage .rflow-node.is-ai-hub .rflow-ai-tags {
+  color: #ffffff !important;
+}
+
+.rflow-stage .rflow-node.is-ai-hub .rflow-app-copy strong {
+  color: #ffffff !important;
+}
+
+.rflow-stage .rflow-node.is-ai-hub .rflow-app-copy small,
+.rflow-stage .rflow-node.is-ai-hub .rflow-ai-speech,
+.rflow-stage .rflow-node.is-ai-hub .rflow-ai-tag {
+  color: #eaf2ff !important;
+}
+
+.rflow-stage .rflow-node.is-ai-hub .rflow-ai-speech {
+  border-color: rgb(255 255 255 / 20%) !important;
+  background: rgb(8 25 60 / 34%) !important;
 }
 
 .rflow-ai-tag b {

@@ -27,7 +27,7 @@ const requestSummaries: Record<string, string> = {
   customer_feedback: "Save ratings and comments, and record requests for staff follow-up.",
 };
 
-const fieldClass = "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white focus:ring-4 focus:ring-black/5";
+const fieldClass = "min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-blue-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10";
 
 const languageOptions = [
   ["English", "English (India)"], ["English US", "English (US)"], ["English UK", "English (UK)"],
@@ -238,7 +238,7 @@ function QuestionField({
         <div className="flex flex-wrap gap-2">
           {weekdays.map((day) => {
             const selected = selectedDays.includes(day.value);
-            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-slate-200 bg-white text-slate-700 hover:border-slate-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => onChange((selected ? selectedDays.filter((item) => item !== day.value) : [...selectedDays, day.value]).join(","))}>{day.value}</button>;
+            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500" : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-blue-400"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => onChange((selected ? selectedDays.filter((item) => item !== day.value) : [...selectedDays, day.value]).join(","))}>{day.value}</button>;
           })}
         </div>
         {hint}
@@ -461,36 +461,36 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
   const blankPath = step === "details" && !selected;
   const progressLabels = blankPath ? ["Setup", "Agent details"] : ["Setup", "Template", "Your details", "Activate"];
   const stepNumber = step === "start" ? 1 : step === "choose" ? 2 : step === "details" ? (selected ? 3 : 2) : 4;
-  const primaryButton = "rounded-lg bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 disabled:opacity-50 transition";
+  const primaryButton = "rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 disabled:opacity-50 transition";
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/60 p-3 backdrop-blur-[6px] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="guided-agent-title">
-      <div className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
-        <header className="flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-7 dark:border-zinc-800">
+    <div className="guided-agent-dialog fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/60 p-3 backdrop-blur-[6px] sm:p-6" role="dialog" aria-modal="true" aria-labelledby="guided-agent-title">
+      <div className="guided-agent-dialog-panel flex max-h-[calc(100dvh-1.5rem)] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+        <header className="guided-agent-dialog-header flex items-start justify-between gap-4 border-b border-slate-200 px-5 py-4 sm:px-7 dark:border-zinc-800">
           <div>
             <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500 dark:text-zinc-400">Your business receptionist</p>
             <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white" id="guided-agent-title">{step === "start" ? "How would you like to begin?" : step === "choose" ? "Choose a ready template" : step === "details" ? selected ? "Tell us about your business" : "Create a blank agent" : "Your receptionist is prepared"}</h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">{step === "start" ? "Choose the setup that fits you. You can change everything later." : "Add your details. Vozon prepares the conversation and request capture for you."}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2" aria-label={`Step ${stepNumber} of ${progressLabels.length}`}>
-              {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-black text-white dark:bg-white dark:text-black" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`} key={label}>{index + 1}. {label}</span>)}
+              {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`} key={label}>{index + 1}. {label}</span>)}
             </div>
           </div>
-          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 text-xl text-slate-500 transition hover:bg-slate-100 hover:text-black dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white" type="button" aria-label="Close receptionist setup" disabled={busy} onClick={onClose}>&times;</button>
+          <button className="grid size-9 shrink-0 place-items-center rounded-lg border border-slate-200 text-xl text-slate-500 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-blue-500 dark:hover:bg-blue-950/40 dark:hover:text-blue-300" type="button" aria-label="Close receptionist setup" disabled={busy} onClick={onClose}>&times;</button>
         </header>
         <div className="overflow-y-auto px-5 py-5 sm:px-7">
           {error ? <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">{error}</div> : null}
           {step === "start" ? <div className="grid gap-4 sm:grid-cols-2">
-            <button className="group min-h-52 rounded-2xl border-2 border-black bg-zinc-50 p-6 text-left transition hover:shadow-lg dark:border-white dark:bg-zinc-900" type="button" onClick={() => { setError(""); setStep("choose"); }}>
-              <span className="inline-flex rounded-full bg-black px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white dark:bg-white dark:text-black">Recommended</span>
+            <button className="group min-h-52 rounded-2xl border-2 border-blue-600 bg-blue-50/60 p-6 text-left transition hover:bg-blue-50 hover:shadow-lg dark:border-blue-500 dark:bg-blue-950/20 dark:hover:bg-blue-950/40" type="button" onClick={() => { setError(""); setStep("choose"); }}>
+              <span className="inline-flex rounded-full bg-blue-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white dark:bg-blue-500">Recommended</span>
               <strong className="mt-5 block text-xl text-slate-900 dark:text-white">Use a ready template</strong>
               <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Choose your business type. Vozon prepares the receptionist, questions, and request tools automatically.</span>
-              <span className="mt-5 block text-sm font-bold text-black dark:text-white">Choose a template &rarr;</span>
+              <span className="mt-5 block text-sm font-bold text-blue-700 dark:text-blue-300">Choose a template &rarr;</span>
             </button>
-            <button className="group min-h-52 rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-black hover:bg-zinc-50 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-400" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
+            <button className="group min-h-52 rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-blue-400 hover:bg-blue-50/40 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
               <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 dark:bg-zinc-800 dark:text-zinc-400">Advanced</span>
               <strong className="mt-5 block text-xl text-slate-900 dark:text-white">Start from scratch</strong>
               <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Create a blank agent and configure its conversation, voice, tools, and integrations yourself.</span>
-              <span className="mt-5 block text-sm font-bold text-black dark:text-white">Create a blank agent &rarr;</span>
+              <span className="mt-5 block text-sm font-bold text-blue-700 dark:text-blue-300">Create a blank agent &rarr;</span>
             </button>
           </div> : null}
           {step === "choose" ? <div>
@@ -508,7 +508,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {templates.map((template) => (
                 <button
-                  className="min-h-36 rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-black hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-800/60 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
+                  className="min-h-36 rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-blue-400 hover:bg-blue-50/40 dark:border-zinc-800 dark:bg-zinc-800/60 dark:hover:border-blue-500 dark:hover:bg-blue-950/20"
                   key={template.id}
                   type="button"
                   onClick={() => selectTemplate(template)}
@@ -518,7 +518,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                 </button>
               ))}
             </div>
-            <button className="mt-5 text-sm font-semibold text-slate-700 hover:text-black dark:text-zinc-400 dark:hover:text-white" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
+            <button className="mt-5 text-sm font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200" type="button" onClick={() => { setError(""); setStep("start"); }}>&larr; Back to setup options</button>
           </div> : null}
           {step === "details" && !selected ? <form className="grid gap-4" onSubmit={(event) => void createBlank(event)}>
             <label className="grid gap-2 text-sm text-slate-900 dark:text-white font-medium">Agent name<input className={fieldClass} required maxLength={80} value={name} onChange={(event) => setName(event.target.value)} /></label>
@@ -538,7 +538,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-800/50">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-black text-white dark:bg-white dark:text-black">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white dark:bg-blue-500">
                       <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>

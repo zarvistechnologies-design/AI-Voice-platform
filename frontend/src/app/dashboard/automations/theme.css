@@ -889,6 +889,23 @@
   fill: #dc2626;
 }
 
+/* Branch labels use a canvas-matched outline so text stays clear without white blocks in dark mode. */
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge text {
+  fill: #93c5fd;
+  stroke: #09090b;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge-good text {
+  fill: #6ee7b7;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .automation-edge-bad text {
+  fill: #fda4af;
+}
+
 /* Vertical Bottom-Right Zoom & Fit Stack */
 .automation-zoom-vertical {
   position: absolute;

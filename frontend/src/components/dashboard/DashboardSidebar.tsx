@@ -381,7 +381,7 @@ export function DashboardSidebar({
     : brand.productName;
 
   const rawLogo = brand.source === "white_label" ? (brand.logoDarkUrl || brand.logoUrl) : (isPartnerOrCustomer ? "" : brand.logoUrl);
-  const effectiveLogoUrl = isPartnerOrCustomer && rawLogo.includes("logo_2.svg") ? "" : rawLogo;
+  const effectiveLogoUrl = isPartnerOrCustomer && (rawLogo.includes("logo_2.svg") || rawLogo.includes("vozon-logo.svg")) ? "" : rawLogo;
 
   const [bugModalOpen, setBugModalOpen] = useState(false);
   const [bugTitle, setBugTitle] = useState("");

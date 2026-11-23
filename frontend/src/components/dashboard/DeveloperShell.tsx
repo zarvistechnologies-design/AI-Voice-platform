@@ -54,7 +54,7 @@ type DeveloperView = "overview" | "keys" | "webhooks" | "activity";
 type InspectorView = "request" | "response" | "webhook";
 
 const panelClass =
-  "overflow-hidden rounded-2xl border border-[#dde7e3] bg-white shadow-[0_10px_30px_rgba(28,64,55,0.055)]";
+  "developer-panel overflow-hidden rounded-2xl border border-[#dde7e3] bg-white shadow-[0_10px_30px_rgba(28,64,55,0.055)]";
 const controlClass =
   "h-11 rounded-xl border border-[#eaeaea] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9aa8a4] focus:border-black focus:ring-3 focus:ring-black/10";
 const primaryButtonClass =
@@ -299,7 +299,7 @@ function DeveloperOverview({
 
   return (
     <div className="grid gap-5">
-      <section className="grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
+      <section className="developer-panel grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="relative overflow-hidden p-6 sm:p-7 lg:p-8">
           <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#171717]/[0.07] blur-3xl" />
           <div className="relative">
@@ -325,11 +325,11 @@ function DeveloperOverview({
                 ["Live webhooks", enabledWebhooks, `${totalWebhooks} configured`],
                 ["Events delivered", deliveredCount, `${deliveries.length} attempts`],
               ].map(([label, value, detail]) => (
-                <div className="rounded-2xl border border-[#e2ebe8] bg-[#f8faf9] p-4" key={label}>
+                <div className="developer-stat rounded-2xl border border-[#e2ebe8] bg-[#f8faf9] p-4" key={label}>
                   <span className="text-xs font-semibold text-[#71817d]">{label}</span>
                   <div className="mt-2 flex items-end gap-2">
                     <strong className="text-2xl font-semibold tracking-tight text-[#18302a]">{value}</strong>
-                    <span className="mb-0.5 text-[11px] text-[#91a09c]">{detail}</span>
+                    <span className="developer-metric-detail mb-0.5 text-[11px] text-[#91a09c]">{detail}</span>
                   </div>
                 </div>
               ))}
@@ -337,7 +337,7 @@ function DeveloperOverview({
           </div>
         </div>
 
-        <div className="border-t border-[#e1e9e6] bg-[#fbfcfc] p-6 sm:p-7 xl:border-l xl:border-t-0">
+        <div className="developer-step-panel border-t border-[#e1e9e6] bg-[#fbfcfc] p-6 sm:p-7 xl:border-l xl:border-t-0">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.13em] text-[#77908a]">Getting started</p>
@@ -667,7 +667,7 @@ export function DeveloperShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-[#f6f9f8] text-[#14231f] ${showUserSidebar
+      className={`dashboard-home-theme developer-workspace grid min-h-screen bg-[#f6f9f8] text-[#14231f] ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
         }`}
@@ -720,7 +720,7 @@ export function DeveloperShell() {
 
         <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-5 lg:px-7 lg:py-7">
           <nav
-            className="flex gap-1 overflow-x-auto border-b border-[#d9e4e0] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Developer workspace sections"
           >
             {(
@@ -732,9 +732,9 @@ export function DeveloperShell() {
               ] as const
             ).map(([value, label, detail]) => (
               <button
-                className={`relative flex h-12 shrink-0 items-center gap-2.5 px-3 text-sm font-semibold transition ${activeView === value
-                    ? "text-[#171717] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#171717]"
-                    : "text-[#687b76] hover:text-[#20342e]"
+                className={`relative flex h-10 shrink-0 items-center gap-2.5 rounded-lg px-3 text-sm font-semibold transition ${activeView === value
+                    ? "bg-[#2563eb] text-white shadow-sm hover:bg-[#1d4ed8]"
+                    : "text-[#687b76] hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
                   }`}
                 key={value}
                 type="button"
@@ -742,7 +742,7 @@ export function DeveloperShell() {
               >
                 <span>{label}</span>
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${activeView === value
-                    ? "bg-[#fafafa] text-[#171717]"
+                    ? "bg-white/15 text-white"
                     : "bg-[#eaf0ee] text-[#71817d]"
                   }`}>
                   {detail}

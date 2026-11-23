@@ -227,7 +227,7 @@ function SectionHeading({
   status?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
+    <div className="flex flex-wrap items-start justify-between gap-4 px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]">
           <ProfileIcon name={icon} />
@@ -456,7 +456,7 @@ export function ProfileShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${showUserSidebar
+      className={`dashboard-home-theme profile-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
         }`}

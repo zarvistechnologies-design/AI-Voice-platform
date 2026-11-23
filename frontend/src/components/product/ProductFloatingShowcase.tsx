@@ -141,7 +141,7 @@ export function AnimatedStoryFlowShowcase({
             <div className="rflow-node-body">
               <div className="rflow-app-row">
                 <span className="rflow-app-icon">
-                  <Image src="/images/integrations/vozon.svg" alt="" width={20} height={20} />
+                  <Image src="/images/vozon-mark.svg" alt="" width={20} height={20} />
                 </span>
                 <div className="rflow-app-copy">
                   <strong>{step2.title}</strong>
@@ -269,7 +269,7 @@ export function AnimatedStoryFlowShowcase({
             <div className="rflow-node-body">
               <div className="rflow-app-row">
                 <span className="rflow-app-icon">
-                  <Image src="/images/integrations/vozon.svg" alt="" width={19} height={19} />
+                  <Image src="/images/vozon-mark.svg" alt="" width={19} height={19} />
                 </span>
                 <div className="rflow-app-copy">
                   <strong>{step2.title}</strong>
@@ -434,7 +434,7 @@ export function AnimatedStoryFlowShowcase({
               <div className="rflow-node-body">
                 <div className="rflow-app-row">
                   <span className="rflow-app-icon">
-                    <Image src="/images/integrations/vozon.svg" alt="" width={19} height={19} />
+                    <Image src="/images/vozon-mark.svg" alt="" width={19} height={19} />
                   </span>
                   <div className="rflow-app-copy">
                     <strong>{step2.title}</strong>
@@ -593,7 +593,7 @@ export function AnimatedStoryFlowShowcase({
           <div className="rflow-node-body">
             <div className="rflow-app-row">
               <span className="rflow-app-icon">
-                <Image src="/images/integrations/vozon.svg" alt="" width={20} height={20} />
+                <Image src="/images/vozon-mark.svg" alt="" width={20} height={20} />
               </span>
               <div className="rflow-app-copy">
                 <strong>{step2.title}</strong>

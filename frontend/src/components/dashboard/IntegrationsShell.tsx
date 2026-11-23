@@ -939,7 +939,7 @@ export function IntegrationsShell() {
                     <div className="mt-auto flex flex-wrap gap-2 pt-5">
                       {provider.id === "vobiz" ? (
                         <Link
-                          className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           href="/dashboard/phone-number"
                           prefetch={false}
                           onFocus={() =>
@@ -959,7 +959,7 @@ export function IntegrationsShell() {
                           <>
                             {googleExtraFeature ? (
                               <button
-                                className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                                className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                                 disabled={busy}
                                 type="button"
                                 onClick={() => void previewGoogle(googleExtraFeature)}
@@ -968,7 +968,7 @@ export function IntegrationsShell() {
                               </button>
                             ) : (
                               <button
-                                className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                                className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                                 disabled={busy}
                                 type="button"
                                 onClick={() => void openGoogleManager(googleView)}
@@ -987,7 +987,7 @@ export function IntegrationsShell() {
                           </>
                         ) : (
                           <button
-                            className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void connectGoogle(googleExtraFeature ?? "core")}
@@ -999,12 +999,12 @@ export function IntegrationsShell() {
                         displayConnected ? (
                           <>
                             {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth(provider.metadata?.mode === "test" ? "test" : "live")}>Reconnect for workflows</button> : null}
-                            <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void previewRazorpayOAuth()}>Check payments</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("razorpay_oauth")}>Disconnect</button>
                           </>
                         ) : (
                           <>
-                            <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth()}>Connect {item.name}</button>
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth()}>Connect {item.name}</button>
                             {provider.metadata?.testConfigured === true ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#171717]" disabled={busy} type="button" onClick={() => void connectRazorpayOAuth("test")}>Use test mode</button> : null}
                           </>
                         )
@@ -1012,18 +1012,18 @@ export function IntegrationsShell() {
                         displayConnected ? (
                           <>
                             {reconnectForWorkflow ? <button className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white" disabled={busy} type="button" onClick={() => void connectCrm("zoho")}>Reconnect for workflows</button> : null}
-                            <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void previewCrm(provider.id as "zoho" | "salesforce")}>View contacts</button>
                             <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect(provider.id as "zoho" | "salesforce")}>Disconnect</button>
                           </>
                         ) : (
                           <>
-                            <button className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => void connectCrm(provider.id as "zoho" | "salesforce")}>Connect {item.name}</button>
                             {provider.id === "salesforce" ? <button className="rounded-lg border border-[#dfe7e4] px-4 py-2.5 text-sm font-semibold text-[#171717]" disabled={busy} type="button" onClick={() => void connectCrm("salesforce", true)}>Use sandbox</button> : null}
                           </>
                         )
                       ) : provider.id === "whatsapp" ? (
                         <button
-                          className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black transition"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8] transition"
                           type="button"
                           onClick={() => {
                             setSelected("whatsapp");
@@ -1034,7 +1034,7 @@ export function IntegrationsShell() {
                         </button>
                       ) : provider.id === "digitalbot" ? (
                         <button
-                          className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           type="button"
                           onClick={() => {
                             setSelected("digitalbot");
@@ -1050,7 +1050,7 @@ export function IntegrationsShell() {
                         <>
                         {provider.id === "razorpay_api" ? (
                           <button
-                            className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void previewRazorpayPayments()}
@@ -1060,7 +1060,7 @@ export function IntegrationsShell() {
                         ) : null}
                         {isTokenProviderId(provider.id) ? (
                           <button
-                            className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                            className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                             disabled={busy}
                             type="button"
                             onClick={() => void previewTokenProvider(provider.id as TokenProviderId)}
@@ -1086,7 +1086,7 @@ export function IntegrationsShell() {
                         </>
                       ) : (
                         <button
-                          className="rounded-lg bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                          className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]"
                           type="button"
                           onClick={() => {
                             setSelected(
@@ -1284,7 +1284,7 @@ export function IntegrationsShell() {
               />
             </label>
             <button
-              className="mt-5 w-full rounded-lg bg-[#171717] px-4 py-3 text-sm font-semibold text-white hover:bg-black disabled:opacity-50"
+              className="mt-5 w-full rounded-lg bg-[#2563eb] px-4 py-3 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:opacity-50"
               type="button"
               disabled={
                 busy ||
@@ -1382,7 +1382,7 @@ export function IntegrationsShell() {
                 placeholder="https://docs.google.com/spreadsheets/d/..."
               />
               <button
-                className="rounded-lg bg-[#171717] px-4 text-sm font-semibold text-white transition hover:bg-black disabled:opacity-50"
+                className="rounded-lg bg-[#2563eb] px-4 text-sm font-semibold text-white transition hover:bg-[#1d4ed8] disabled:opacity-50"
                 disabled={busy || !spreadsheetInput.trim()}
                 type="button"
                 onClick={() => void inspectSpreadsheet()}

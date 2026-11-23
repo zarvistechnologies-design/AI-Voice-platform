@@ -180,7 +180,7 @@ function CallRoute({
 }) {
   const route = callRoute(call);
   const numberClass = compact
-    ? "max-w-44 truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs font-semibold text-slate-900"
+    ? "max-w-44 truncate rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-sans text-[13px] font-medium leading-4 tabular-nums text-slate-900"
     : "min-w-0 truncate rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-mono text-sm font-semibold text-slate-950";
   return (
     <div className={`grid gap-1.5 ${compact ? "min-w-56" : ""}`}>
@@ -231,7 +231,7 @@ function statusTone(status: CallRecord["status"]) {
     return "bg-[#fafafa] text-[#171717] ring-1 ring-[#eaeaea]";
   if (status === "failed" || status === "cancelled")
     return "bg-rose-50 text-rose-700 ring-1 ring-rose-200";
-  if (status === "active") return "bg-[#171717] text-white ring-1 ring-[#171717]";
+  if (status === "active") return "bg-blue-600 text-white ring-1 ring-blue-600 dark:bg-blue-500 dark:ring-blue-500";
   return "bg-[#f4f4f5] text-[#52525b] ring-1 ring-[#eaeaea]";
 }
 
@@ -452,14 +452,14 @@ export function CallLogsShell() {
           actions={
             <div className="flex items-center gap-2">
               <button
-                className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
+                className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:border-blue-300 hover:bg-blue-50"
                 type="button"
                 onClick={() => void loadCalls()}
               >
                 Refresh
               </button>
               <button
-                className="inline-flex h-8 items-center rounded-md bg-[#171717] px-3 text-[12px] font-medium text-white hover:bg-black"
+                className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3 text-[12px] font-medium text-white hover:bg-[#1d4ed8]"
                 type="button"
                 onClick={() => void exportCsv()}
               >
@@ -468,12 +468,12 @@ export function CallLogsShell() {
             </div>
           }
         />
-        <div className="dashboard-page-content grid w-full py-0">
+        <div className="dashboard-page-content call-logs-page-content grid w-full py-0">
           <section className="dashboard-flat-panel overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
             <div className="dashboard-filter-bar grid gap-2.5 p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <input
-                  className="h-8 min-w-[220px] flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none placeholder:text-[#71717a] focus:border-black"
+                  className="h-8 min-w-[220px] flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] outline-none placeholder:text-[#71717a] focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"
                   placeholder="Search transcript, tag, or outcome"
                   value={search}
                   onChange={(event) => {
@@ -525,7 +525,7 @@ export function CallLogsShell() {
                   ))}
                 </select>
                 <button
-                  className={`inline-flex h-8 items-center rounded-md border px-2.5 text-[12px] font-medium transition ${showAdvancedFilters || advancedFilterCount ? "border-black bg-[#fafafa] text-[#171717]" : "border-[#eaeaea] bg-white text-[#52525b] hover:bg-[#f4f4f5] hover:text-[#171717]"}`}
+                  className={`inline-flex h-8 items-center rounded-md border px-2.5 text-[12px] font-medium transition ${showAdvancedFilters || advancedFilterCount ? "border-blue-200 bg-blue-50 text-blue-700" : "border-[#eaeaea] bg-white text-[#52525b] hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"}`}
                   type="button"
                   onClick={() => setShowAdvancedFilters((current) => !current)}
                 >

@@ -16,6 +16,10 @@
   font-family: var(--font-site-sans), Arial, sans-serif;
 }
 
+:is(#about-page, #career-page, #partners-page, #contact-page, #integration-page, #integration-detail-page, #integrations-page) {
+  background-image: none !important;
+}
+
 :is(#about-page, #career-page, #partners-page, #contact-page, #integration-page, #integration-detail-page) h1,
 :is(#about-page, #career-page, #partners-page, #contact-page, #integration-page, #integration-detail-page) h2,
 :is(#about-page, #career-page, #partners-page, #contact-page, #integration-page, #integration-detail-page) h3 {
@@ -60,7 +64,7 @@
 #partners-page :is(a[href^="/contact"], a[href^="#programme"]) { transition: transform .2s ease, background-color .2s ease, border-color .2s ease; }
 
 /* Pricing keeps its calculator but uses the current site hierarchy and quiet surfaces. */
-.website-content:has(.pricing-page-refresh) { background: var(--public-paper); }
+.website-content:has(.pricing-page-refresh) { background-color: var(--public-paper); }
 
 /* Integrations uses a clear catalog surface. */
 #integration-detail-page > section:first-of-type {

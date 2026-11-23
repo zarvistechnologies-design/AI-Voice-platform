@@ -419,10 +419,10 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
               <div className="grid gap-3">
                 <audio className="w-full rounded-lg" controls src={recordingPlayerHref} />
                 <div className="flex gap-3">
-                  <a className="text-sm font-semibold text-[#0e6f62] hover:text-white" href={recordingPlayerHref} target="_blank" rel="noreferrer">
+                  <a className="text-sm font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200" href={recordingPlayerHref} target="_blank" rel="noreferrer">
                     Open in new tab
                   </a>
-                  <a className="text-sm font-semibold text-white/65 hover:text-white" href={recordingPlayerHref} download>
+                  <a className="text-sm font-semibold text-slate-600 hover:text-blue-700 dark:text-zinc-300 dark:hover:text-blue-300" href={recordingPlayerHref} download>
                     ↓ Download
                   </a>
                 </div>
@@ -446,18 +446,25 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
             )}
           </section>
 
-          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+          <section className="call-cost-breakdown overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
             <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800 dark:bg-zinc-900">
               <div>
                 <h3 className="m-0 text-sm font-semibold text-slate-950 dark:text-white">Call cost breakdown</h3>
                 <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">Provider usage plus the platform fee, prorated by seconds.</p>
               </div>
               <div className="grid gap-1 text-right text-xs">
-                <span className="text-slate-500 dark:text-zinc-400">Customer total: <strong className="text-emerald-700 dark:text-emerald-400">{money(billing?.customerCost ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
+                <span className="text-slate-500 dark:text-zinc-400">Customer total: <strong className="text-blue-700 dark:text-blue-300">{money(billing?.customerCost ?? cost?.customerCost ?? charged ?? 0, billing?.currency || cost?.currency, inrPerUsd)}</strong></span>
               </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full table-fixed text-left text-xs sm:text-sm">
+                <colgroup>
+                  <col className="w-[16%]" />
+                  <col className="w-[24%]" />
+                  <col className="w-[12%]" />
+                  <col className="w-[33%]" />
+                  <col className="w-[15%]" />
+                </colgroup>
                 <thead className="bg-white text-xs uppercase tracking-wider text-slate-500 dark:bg-zinc-900 dark:text-zinc-400">
                   <tr>
                     {["Component", "Provider / Model", "Usage", "Rate used", "Cost"].map((item) => <th className="px-4 py-3" key={item}>{item}</th>)}
@@ -466,15 +473,36 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
                 <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                   {costItems.map(([label, provider, usage, pricing, providerCost]) => (
                     <tr key={label}>
-                      <td className="px-4 py-3 font-semibold text-slate-950 dark:text-white">{label}</td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-zinc-300">{provider}</td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-zinc-300">{usage}</td>
-                      <td className="px-4 py-3 text-xs font-semibold text-slate-600 dark:text-zinc-300" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
-                      <td className="px-4 py-3 text-slate-700 dark:text-zinc-200">{money(providerCost, cost?.currency, inrPerUsd)}</td>
+                      <td className="break-words px-2.5 py-3 font-semibold text-slate-950 dark:text-white sm:px-3">{label}</td>
+                      <td className="break-words px-2.5 py-3 text-slate-600 dark:text-zinc-300 sm:px-3">{provider}</td>
+                      <td className="break-words px-2.5 py-3 text-slate-600 dark:text-zinc-300 sm:px-3">{usage}</td>
+                      <td className="break-words px-2.5 py-3 text-[11px] font-semibold leading-4 text-slate-600 dark:text-zinc-300 sm:px-3 sm:text-xs" title={rateTitle(pricing)}>{rateLabel(pricing)}</td>
+                      <td className="break-words px-2.5 py-3 text-slate-700 dark:text-zinc-200 sm:px-3">{money(providerCost, cost?.currency, inrPerUsd)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-zinc-800 md:hidden">
+              {costItems.map(([label, provider, usage, pricing, providerCost]) => (
+                <article className="grid gap-3 px-4 py-3" key={label}>
+                  <div className="flex items-start justify-between gap-3">
+                    <strong className="text-sm font-semibold text-slate-950 dark:text-white">{label}</strong>
+                    <strong className="shrink-0 text-sm font-semibold text-slate-950 dark:text-white">{money(providerCost, cost?.currency, inrPerUsd)}</strong>
+                  </div>
+                  <span className="break-words text-xs text-slate-600 dark:text-zinc-300">{provider}</span>
+                  <div className="grid min-w-0 grid-cols-2 gap-3 text-xs">
+                    <div className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">Usage</span>
+                      <span className="mt-1 block break-words text-slate-700 dark:text-zinc-300">{usage}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-500 dark:text-zinc-400">Rate used</span>
+                      <span className="mt-1 block break-words text-slate-700 dark:text-zinc-300" title={rateTitle(pricing)}>{rateLabel(pricing)}</span>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 
@@ -505,10 +533,10 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
               {transcript.length ? (
                 transcript.map((item) => (
                   <article
-                    className={`max-w-[88%] rounded-2xl border px-4 py-3 ${item.role === "assistant"
-                        ? "justify-self-start rounded-bl-md border-[#d7e0dd] bg-[#eef5f3] text-[#30313a] dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100"
+                    className={`call-transcript-message max-w-[88%] rounded-2xl border px-4 py-3 ${item.role === "assistant"
+                        ? "justify-self-start rounded-bl-md border-blue-100 bg-blue-50 text-[#30313a] dark:border-blue-950 dark:bg-[#111827] dark:text-zinc-100"
                         : item.role === "user"
-                          ? "justify-self-end rounded-br-md border-[#0e6f62] bg-[#118778] dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+                          ? "call-transcript-user-message justify-self-end rounded-br-md border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-600 dark:text-white"
                           : "justify-self-center border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-400"
                       }`}
                     key={item.itemId}

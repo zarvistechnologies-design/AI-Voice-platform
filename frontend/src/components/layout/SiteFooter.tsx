@@ -85,7 +85,7 @@ export function SiteFooter() {
         </nav>
       </div>
         <div className="design-four-footer-wordmark">
-          <Link href="/" aria-label="Vozon home"><Image src="/images/vozon-footer-v.svg" alt="Vozon" width={370} height={350} /></Link>
+          <Link href="/" aria-label="Vozon home"><Image src="/images/vozon-mark.svg" alt="Vozon" width={370} height={350} /></Link>
           <FooterSoundWave />
         </div>
         <div className="design-four-footer-tags" aria-hidden="true">

@@ -60,7 +60,18 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
 
   const effectiveBrand = useMemo<BrandConfig>(() => {
     if (remoteBrand) return remoteBrand;
-    if (session?.organization?.brand) return session.organization.brand;
+    if (session?.organization?.brand) {
+      const organizationBrand = session.organization.brand;
+      if (organizationBrand.source === "platform") {
+        return {
+          ...organizationBrand,
+          logoUrl: brand.logoUrl,
+          logoDarkUrl: brand.logoDarkUrl,
+          iconUrl: brand.iconUrl,
+        };
+      }
+      return organizationBrand;
+    }
     if (brand.source === "white_label") return brand;
 
     if (isPartnerOrCustomer) {
@@ -114,7 +125,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
 
       // Update all browser tab favicon links dynamically to partner brand logo/icon
       const iconTarget = effectiveBrand.iconUrl || effectiveBrand.logoDarkUrl || effectiveBrand.logoUrl;
-      if (iconTarget && !iconTarget.includes("logo_2.svg") && !iconTarget.includes("vozon-mark")) {
+      if (iconTarget && !iconTarget.includes("logo_2.svg") && !iconTarget.includes("vozon-logo.svg") && !iconTarget.includes("vozon-mark")) {
         const iconLinks = document.querySelectorAll<HTMLLinkElement>(
           "link[rel~='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']",
         );

@@ -757,11 +757,12 @@ export function WhatsAppAgentsView({
                       loadAgentIntoForm(agent);
                       if (editorTab === "admin") setEditorTab("identity");
                     }}
-                    className={`group flex flex-col justify-between rounded-xl border p-3 text-left transition ${
+                    className={`whatsapp-agent-card group flex flex-col justify-between rounded-xl border p-3 text-left transition ${
                       isSelected
                         ? "border-[#2563eb] bg-[#eff6ff]/50 ring-2 ring-[#2563eb]/15"
                         : "border-[#e5e7eb] bg-[#fafafa] hover:border-[#93c5fd] hover:bg-white"
                     }`}
+                    aria-pressed={isSelected}
                   >
                     <div className="flex w-full items-start justify-between gap-2">
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -778,7 +779,7 @@ export function WhatsAppAgentsView({
                           <div className="truncate text-[13px] font-semibold text-[#111827]">
                             {agent.name}
                           </div>
-                          <div className="flex items-center gap-1.5 text-[11px] text-[#6b7280]">
+                          <div className="whatsapp-agent-muted flex items-center gap-1.5 text-[11px] text-[#6b7280]">
                             <span>{agent.role || "General"}</span>
                             <span>·</span>
                             <span className="inline-flex items-center gap-1 capitalize">
@@ -789,13 +790,13 @@ export function WhatsAppAgentsView({
                         </div>
                       </div>
                       {agent.isDefault && (
-                        <span className="shrink-0 rounded-full border border-[#bfdbfe] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#1d4ed8]">
+                        <span className="whatsapp-agent-default shrink-0 rounded-full border border-[#bfdbfe] bg-white px-2 py-0.5 text-[10px] font-semibold text-[#1d4ed8]">
                           Default
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-2.5 flex w-full items-center justify-between gap-2 border-t border-[#e5e7eb]/70 pt-2 text-[11px] text-[#6b7280]">
+                    <div className="whatsapp-agent-muted mt-2.5 flex w-full items-center justify-between gap-2 border-t border-[#e5e7eb]/70 pt-2 text-[11px] text-[#6b7280]">
                       <span className="truncate font-mono">
                         {agent.displayPhoneNumber || "All WhatsApp Lines"}
                       </span>

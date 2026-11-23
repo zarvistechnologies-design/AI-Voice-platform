@@ -13,6 +13,7 @@
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+  container-type: inline-size;
 }
 
 .wf-showcase-header {
@@ -97,7 +98,8 @@
 
 .wf-diagram {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) 74px minmax(260px, 1.08fr) 70px minmax(250px, 1fr);
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1.08fr) 70px minmax(0, 1fr);
   align-items: center;
   gap: 0;
   padding: clamp(1rem, 2vw, 1.5rem);
@@ -281,9 +283,9 @@
 /* Stage 2: Dark Agent Core Card */
 .wf-card-agent {
   border-radius: 18px;
-  border: 1px solid #1e293b;
-  background: linear-gradient(155deg, #0b1120 0%, #090d16 100%);
-  color: #fafafa;
+  border: 1px solid #1d4ed8;
+  background: #2563eb;
+  color: #ffffff;
   padding: 1.05rem 1.1rem;
   box-shadow:
     0 22px 48px rgba(9, 13, 22, 0.28),
@@ -301,7 +303,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -365,7 +367,7 @@
 .wf-agent-main small {
   display: block;
   margin-top: 0.12rem;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -376,9 +378,9 @@
   margin: 0 0 0.85rem;
   padding: 0.72rem 0.85rem;
   border-radius: 11px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.16);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 0.76rem;
   line-height: 1.48;
 }
@@ -395,9 +397,9 @@
   gap: 0.3rem;
   padding: 0.26rem 0.62rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #475569;
   font-size: 0.68rem;
   font-weight: 500;
 }
@@ -536,6 +538,26 @@
   }
 }
 
+@container (max-width: 900px) {
+  .wf-stage-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .wf-tabs {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  }
+
+  .wf-diagram {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .wf-connector-mid,
+  .wf-branches-svg {
+    display: none;
+  }
+}
+
 /* Whole-Black Dark Theme System */
 :is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-showcase {
   background: #09090b !important;
@@ -635,9 +657,29 @@
 }
 
 :is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-card-agent {
-  background: #121215 !important;
-  border-color: #27272a !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7) !important;
+  background: #2563eb !important;
+  background-image: none !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 40px rgba(37, 99, 235, 0.22) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-agent-tag {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-agent-main strong {
+  color: #ffffff;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-agent-main small {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-agent-quote {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.16);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 :is(html[data-dashboard-theme="dark"], html.dark, body.dark, [data-dashboard-theme="dark"], .dark) .wf-outcome-card {

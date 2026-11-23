@@ -11,7 +11,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       start_url: "/",
       display: "standalone",
       background_color: "#020d0b",
-      theme_color: "#020d0b",
+      theme_color: "#2563eb",
       icons: [
         { src: "/icons/vozon-mark-192.png", sizes: "192x192", type: "image/png" },
         { src: "/icons/vozon-mark-512.png", sizes: "512x512", type: "image/png" },

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ReviewsPage() {
   return (
     <SiteLayout>
-      <div className="min-h-screen bg-white text-[#171719]">
+      <div className="public-dotted-canvas min-h-screen bg-white text-[#171719]">
         <section className="px-4 pb-8 pt-32 sm:px-7 sm:pb-10 sm:pt-40 lg:px-10">
           <div className="mx-auto max-w-[1180px] text-center">
             <h1 className="text-balance text-[clamp(2.25rem,5vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.055em]">What our customers say</h1>

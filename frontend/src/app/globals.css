@@ -195,12 +195,12 @@ nextjs-portal,
 
 /* Keep the public Vozon mark aligned with the website & dashboard palette. Partner
    logos retain their uploaded colors on white-label hostnames. */
-html:not([data-brand-source="white_label"]) .platform-brand-logo {
-  filter: brightness(0) saturate(100%);
+html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-source="white_label"]) .platform-brand-logo {
+  filter: brightness(0) !important;
 }
 
-html:not([data-brand-source="white_label"]) .landing-header-logo .platform-brand-logo {
-  filter: brightness(0) saturate(100%);
+html:is([data-dashboard-theme="dark"], .dark):not([data-brand-source="white_label"]) .platform-brand-logo {
+  filter: brightness(0) invert(1) !important;
 }
 
 @source not "../../.runlogs";
@@ -841,7 +841,7 @@ html[data-brand-theme="green"][data-brand-source="white_label"] :is(.dashboard-h
 }
 
 :is(.dashboard-home-theme, .agents-home-palette) .dashboard-sidebar-shell[data-expanded="true"] .dashboard-sidebar-logo {
-  filter: grayscale(1) brightness(0.12);
+  filter: brightness(0) !important;
   max-height: 30px !important;
   max-width: 104px !important;
   object-fit: contain;
@@ -853,7 +853,7 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
   max-width: 24px !important;
   object-fit: contain;
   object-position: center;
-  filter: grayscale(1) brightness(0.12);
+  filter: brightness(0) !important;
 }
 
 .dark {
@@ -1687,6 +1687,10 @@ html:not([data-brand-source="white_label"]) :is(.dashboard-home-theme, .agents-h
     padding-bottom: 2rem;
   }
 
+  .dashboard-home-theme.dashboard-home-theme .dashboard-page-content.call-logs-page-content {
+    margin-top: 1rem !important;
+  }
+
   .dashboard-home-theme.dashboard-home-theme .dashboard-primary-panel {
     border: 1px solid #eaeaea !important;
     border-radius: 0.5rem !important;
@@ -2216,7 +2220,7 @@ textarea.ai-prompt-textarea:focus-visible {
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
-    filter: grayscale(1) brightness(0) invert(1) !important;
+    filter: brightness(0) invert(1) !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-group-label {
@@ -2481,4 +2485,1431 @@ textarea.ai-prompt-textarea:focus-visible {
     background-color: #27272a !important;
     border-color: #3f3f46 !important;
   }
+
+  /* Keep the call dialog and its controls in the same color scheme. */
+  html:not([data-dashboard-theme="dark"]):not(.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal {
+    background: #fff !important;
+    border-color: #e4e4e7 !important;
+    color: #18181b !important;
+    color-scheme: light !important;
+    box-shadow: 0 28px 80px rgb(0 0 0 / 0.22) !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal {
+    background: #121215 !important;
+    border-color: #303036 !important;
+    color: #fafafa !important;
+    color-scheme: dark !important;
+    box-shadow: 0 28px 80px rgb(0 0 0 / 0.48) !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-modal-header {
+    background: rgb(18 18 21 / 0.96) !important;
+    border-color: #303036 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-close {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #f4f4f5 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-mode {
+    background: #1f1f23 !important;
+    border-color: #303036 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-mode [aria-pressed="true"] {
+    background: #2563eb !important;
+    color: #fff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-mode [aria-pressed="false"] {
+    color: #d4d4d8 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-stage {
+    background: #18181b !important;
+    border-color: #303036 !important;
+    color: #fafafa !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-orb {
+    background: #1d355a !important;
+    border-color: #3b82f6 !important;
+    color: #dbeafe !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal #test-call-status {
+    color: #e4e4e7 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-diagnostics > span {
+    background: #27272a !important;
+    border-color: #3f3f46 !important;
+    color: #e4e4e7 !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-action-start {
+    background: #2563eb !important;
+    color: #fff !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-action-start:hover {
+    background: #1d4ed8 !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-action-end {
+    background: #dc2626 !important;
+    color: #fff !important;
+  }
+
+  .dashboard-home-theme.dashboard-home-theme .test-call-modal .test-call-action-end:hover {
+    background: #b91c1c !important;
+  }
+
+  /* The selected WhatsApp agent needs its own dark surface and readable metadata. */
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .whatsapp-agent-card {
+    background: #18181b !important;
+    border-color: #34343b !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .whatsapp-agent-card[aria-pressed="true"] {
+    background: #14213b !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.22) !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .whatsapp-agent-card .whatsapp-agent-muted {
+    color: #b4b4bf !important;
+    border-color: #34343b !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .whatsapp-agent-card .whatsapp-agent-default {
+    background: #223b65 !important;
+    border-color: #3b82f6 !important;
+    color: #dbeafe !important;
+  }
+
+  /* Developer overview uses the same dark panels and dividers as the dashboard. */
+  :is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace.developer-workspace .developer-panel {
+    background: #121215 !important;
+    border-color: #303036 !important;
+    box-shadow: none !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace.developer-workspace .developer-stat,
+  :is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace.developer-workspace .developer-step-panel {
+    background: #18181b !important;
+    border-color: #303036 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace .developer-metric-detail {
+    color: #b4b4bf !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace :is([class*="border-[#e1e9e6]"], [class*="border-[#edf1f0]"], [class*="border-[#d9e4e0]"]) {
+    border-color: #303036 !important;
+  }
+
+  /* Workspace subpages use blue accents; the agents dashboard stays as designed. */
+  html:not([data-brand-source="white_label"]) main.dashboard-home-theme.dashboard-home-theme:not(.agents-home-palette) {
+    --app-color-accent: #2563eb !important;
+    --dashboard-moody: #2563eb !important;
+    --dashboard-moody-dark: #1d4ed8 !important;
+    --dashboard-moody-soft: #eff6ff !important;
+    --dashboard-moody-border: #bfdbfe !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark):not([data-brand-source="white_label"]) main.dashboard-home-theme.dashboard-home-theme:not(.agents-home-palette) {
+    --app-color-accent: #60a5fa !important;
+    --dashboard-moody: #2563eb !important;
+    --dashboard-moody-dark: #93c5fd !important;
+    --dashboard-moody-soft: #172554 !important;
+    --dashboard-moody-border: #1d4ed8 !important;
+  }
+
+  html:not([data-brand-source="white_label"]) main.dashboard-home-theme.dashboard-home-theme:not(.agents-home-palette) .dashboard-page-eyebrow {
+    color: #2563eb !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark):not([data-brand-source="white_label"]) main.dashboard-home-theme.dashboard-home-theme:not(.agents-home-palette) .dashboard-page-eyebrow {
+    color: #93c5fd !important;
+  }
+
+  main.dashboard-home-theme.dashboard-home-theme:not(.agents-home-palette) :is(button, a, input, select, textarea):focus-visible {
+    outline-color: var(--app-color-accent) !important;
+  }
+
+  /* Compact, aligned type in the voice agent workspace. */
+  main.voice-agent-theme.dashboard-home-theme .dashboard-page-header-inner h1 {
+    font-size: 20px !important;
+    line-height: 1.3 !important;
+  }
+
+  main.voice-agent-theme.dashboard-home-theme .dashboard-page-header-inner h1 > span {
+    align-items: center;
+  }
+
+  main.voice-agent-theme.dashboard-home-theme :is(.agent-editor-shell, .agent-runtime-card) .app-section-title {
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+  }
+
+  main.voice-agent-theme.dashboard-home-theme :is(.agent-editor-shell, .agent-runtime-card) :is(.app-caption, .app-label) {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  main.voice-agent-theme.dashboard-home-theme .agent-runtime-card .app-strong {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  main.voice-agent-theme.dashboard-home-theme .agent-prompt-editor :is(input, textarea) {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Keep public-page dots inside content cards; page and homepage canvases stay plain. */
+.public-dotted-canvas {
+  background-image: none !important;
+}
+
+:is(main.hcr-page, main#product-detail-page, main.solution-shared, .page.pricing-page-refresh, .home-design-four:not(.footer-home-shell), .marketing-site) :is(article, [class*="card"], [class*="Card"], [class*="panel"], [class*="Panel"]):not(.wf-card-agent),
+#contact-page .contact-channel-card,
+#contact-page .contact-page-form,
+#contact-page .contact-page-support,
+:is(.company-page, .cmp-page) :is(.cmp-hero-stage, .cmp-ledger, .company-conversation, .company-career-visual, .company-platform, .company-channel-list, .company-partner-frame, .company-article-card, .company-cta) {
+  background-image: radial-gradient(circle, rgb(37 99 235 / 0.2) 1px, transparent 1.2px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+}
+
+/* Laptop-width workspace pages keep the same compact hierarchy as the dashboard. */
+@media (min-width: 640px) and (max-width: 1440px) {
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-xs"] { font-size: 11px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-sm"] { font-size: 12px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-base"] { font-size: 13px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-lg"] { font-size: 15px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-xl"] { font-size: 17px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-2xl"] { font-size: 19px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-3xl"] { font-size: 22px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) [class*="text-4xl"] { font-size: 26px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) .dashboard-page-header-inner h1 { font-size: 18px !important; }
+  main.dashboard-home-theme:not(.agents-home-palette) :is(h1, h2, h3) { line-height: 1.3; }
+}
+
+/* Public website pages use fluid headings and a tighter text scale on laptop screens. */
+@media (min-width: 641px) and (max-width: 1440px) {
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-xs"] { font-size: 11px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-sm"] { font-size: 13px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-base"] { font-size: 14px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-lg"] { font-size: 16px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-xl"] { font-size: 18px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-2xl"] { font-size: 21px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-3xl"] { font-size: 25px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-4xl"] { font-size: 30px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-5xl"] { font-size: 36px !important; }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-6xl"],
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) [class*="text-7xl"] { font-size: 42px !important; }
+
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) :is(h1, .heroCopy h1, .pricing-center h1, .company-page h1) {
+    font-size: clamp(34px, 3.4vw, 48px) !important;
+    line-height: 1.08 !important;
+  }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) :is(h2, .sectionHeading h2, .pricing-faq-intro h2, .company-page h2) {
+    font-size: clamp(27px, 2.8vw, 39px) !important;
+    line-height: 1.12 !important;
+  }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) :is(h3, .company-page h3) {
+    font-size: clamp(19px, 1.8vw, 25px) !important;
+    line-height: 1.25 !important;
+  }
+  :is(.marketing-site main, main.hcr-page, main#product-detail-page, main.solution-shared, .home-design-four:not(.footer-home-shell)) :is(.company-lead, .pricing-center-description, .heroCopy > p) {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+  .page.pricing-page-refresh.page.pricing-page-refresh .heroCopy h1,
+  .page.pricing-page-refresh.page.pricing-page-refresh .sectionHeading h2,
+  .page.pricing-page-refresh.page.pricing-page-refresh .faqIntro h2,
+  .page.pricing-page-refresh.page.pricing-page-refresh .cta h2 {
+    font-size: clamp(28px, 3.2vw, 46px) !important;
+    line-height: 1.08 !important;
+  }
+  .page.pricing-page-refresh.page.pricing-page-refresh .heroCopy > p { font-size: 15px !important; }
+  .page.pricing-page-refresh.page.pricing-page-refresh .priceRow strong,
+  .page.pricing-page-refresh.page.pricing-page-refresh .pricing-plan-price,
+  .page.pricing-page-refresh.page.pricing-page-refresh .pricing-estimate-panel > div:nth-child(2) > strong {
+    font-size: clamp(34px, 3.2vw, 46px) !important;
+  }
+}
+
+/* Company page headlines use a lighter, more compact weight at every desktop size. */
+main.hcr-page.cmp-page h1,
+#contact-page .contact-page-hero h1 {
+  font-size: clamp(30px, 2.7vw, 42px) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.05em !important;
+  line-height: 1.08 !important;
+}
+
+#contact-page .contact-page-hero p:last-child {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+
+@media (max-width: 900px) {
+  #contact-page .contact-page-hero h1 { font-size: clamp(30px, 4.4vw, 40px) !important; }
+}
+
+/* Keep the guided setup dialog in one theme and use blue for its active controls. */
+main.dashboard-home-theme .guided-agent-dialog-panel {
+  background: #ffffff !important;
+  border-color: #dbe3ef !important;
+  color: #171719 !important;
+  color-scheme: light;
+}
+
+main.dashboard-home-theme .guided-agent-dialog-header {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #171719 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) main.dashboard-home-theme .guided-agent-dialog-panel {
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+  color-scheme: dark;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) main.dashboard-home-theme .guided-agent-dialog-header {
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+.dashboard-home-theme .guided-agent-dialog :is(button, input, select, textarea):focus-visible {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px;
+}
+
+/* Give the Call Logs filters breathing room below the sticky page header. */
+.dashboard-home-theme .call-logs-page-content {
+  margin-top: 16px !important;
+}
+
+/* Automation creation uses the workspace blue and never mixes a light form into a dark modal. */
+.automation-layout .automation-create-modal {
+  background: #ffffff !important;
+  border: 1px solid #dbe3ef !important;
+  color: #171719 !important;
+}
+
+.automation-layout .automation-prompt-box {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+}
+
+.automation-layout .automation-prompt-box label,
+.automation-layout .automation-kicker {
+  color: #2563eb !important;
+}
+
+.automation-layout .automation-prompt-box textarea {
+  border-color: #bfdbfe !important;
+  background: #ffffff !important;
+  color: #171719 !important;
+  caret-color: #2563eb;
+}
+
+.automation-layout .automation-template-card {
+  border-color: #dbe3ef !important;
+  background: #ffffff !important;
+  color: #171719 !important;
+}
+
+.automation-layout .automation-template-card:hover {
+  border-color: #60a5fa !important;
+  background: #eff6ff !important;
+}
+
+.automation-layout .automation-primary {
+  border-color: #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.automation-layout .automation-primary:hover:not(:disabled) {
+  border-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
+}
+
+.automation-layout .automation-secondary {
+  border-color: #bfdbfe !important;
+  background: #ffffff !important;
+  color: #2563eb !important;
+}
+
+.automation-layout .automation-secondary:hover:not(:disabled) {
+  border-color: #60a5fa !important;
+  background: #eff6ff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-create-modal {
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-modal-head {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-icon-button {
+  background: #27272a !important;
+  color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box {
+  border-color: #303f59 !important;
+  background: #18181b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box label {
+  color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box textarea {
+  border-color: #3f3f46 !important;
+  background: #09090b !important;
+  color: #f4f4f5 !important;
+  caret-color: #93c5fd;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-actions span,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card small {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card {
+  border-color: #303036 !important;
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card:hover {
+  border-color: #3b82f6 !important;
+  background: #172554 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-secondary {
+  border-color: #1d4ed8 !important;
+  background: #18181b !important;
+  color: #93c5fd !important;
+}
+
+/* Agent editor uses blue for actions and keeps information surfaces neutral. */
+.voice-agent-theme .voice-pipeline-flow {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.voice-agent-theme .voice-pipeline-node {
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgb(15 23 42 / 5%) !important;
+}
+
+.voice-agent-theme .voice-pipeline-node[aria-pressed="true"] {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 12%) !important;
+}
+
+.voice-agent-theme .agent-runtime-health-summary {
+  border-color: transparent !important;
+  background: #f8fafc !important;
+}
+
+.voice-agent-theme [class~="bg-[#118778]"],
+.voice-agent-theme [class~="bg-[#0e6f62]"],
+.voice-agent-theme [class*="peer-checked:bg-[#118778]"] {
+  background-color: #2563eb !important;
+}
+
+.voice-agent-theme [class*="bg-[#118778]/"],
+.voice-agent-theme [class*="bg-[#0e6f62]/"] {
+  background-color: rgb(37 99 235 / 8%) !important;
+}
+
+.voice-agent-theme [class*="text-[#118778]"],
+.voice-agent-theme [class*="text-[#0e6f62]"] {
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+}
+
+.voice-agent-theme [class*="border-[#118778]"],
+.voice-agent-theme [class*="focus:border-[#118778]"] {
+  border-color: #2563eb !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme .voice-pipeline-flow {
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme .voice-pipeline-node {
+  border-color: transparent !important;
+  background: #18181b !important;
+  box-shadow: none !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme .voice-pipeline-node[aria-pressed="true"] {
+  border-color: #3b82f6 !important;
+  background: #18181b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme .agent-runtime-health-summary {
+  border-color: transparent !important;
+  background: #18181b !important;
+}
+
+/* Keep voice-agent surfaces above the generic dashboard utility overrides. */
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme .agent-runtime-health-summary {
+  border-color: transparent !important;
+  background: #18181b !important;
+}
+
+.voice-agent-theme [class~="bg-[#edf7f4]"],
+.voice-agent-theme [class~="bg-[#f1f9f6]"] {
+  background-color: #eff6ff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme [class~="bg-[#edf7f4]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme [class~="bg-[#f1f9f6]"] {
+  background-color: #172554 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme :is([class*="text-[#118778]"], [class*="text-[#0e6f62]"], [class*="text-[#108D82]"]) {
+  color: #93c5fd !important;
+  -webkit-text-fill-color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme :is(
+  [class~="border-[#edf0f4]"],
+  [class~="border-[#edf0f5]"],
+  [class~="border-[#dfe2f0]"]
+) {
+  border-color: transparent !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme.voice-agent-theme :is(
+  [class*="divide-[#edf0f4]"],
+  [class*="divide-[#edf0f5]"],
+  [class*="divide-[#dfe2f0]"]
+) > :not(:last-child) {
+  border-color: transparent !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class~="bg-[#118778]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class~="bg-[#0e6f62]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="peer-checked:bg-[#118778]"] {
+  background-color: #2563eb !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="bg-[#118778]/"],
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="bg-[#0e6f62]/"] {
+  background-color: rgb(37 99 235 / 18%) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="text-[#118778]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="text-[#0e6f62]"] {
+  color: #93c5fd !important;
+  -webkit-text-fill-color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="border-[#118778]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme [class*="focus:border-[#118778]"] {
+  border-color: #3b82f6 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .voice-agent-theme .agent-runtime-health-summary > div:last-child {
+  border-color: transparent !important;
+}
+
+/* Keep modal and call detail primary actions on the same blue workspace accent. */
+.dashboard-home-theme :is([role="dialog"], [aria-modal="true"]) :is(button, a).bg-blue-600,
+.dashboard-home-theme :is([role="dialog"], [aria-modal="true"]) button[class*="bg-blue-600"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.dashboard-home-theme :is([role="dialog"], [aria-modal="true"]) button[class*="bg-blue-600"]:hover:not(:disabled) {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .call-cost-breakdown tbody tr:hover {
+  background: #172554 !important;
+}
+
+/* Keep the same Roboto family throughout the workspace, including Agents. */
+main.dashboard-home-theme,
+main.dashboard-home-theme :is(button, a, input, select, textarea) {
+  font-family: var(--font-site-sans), Roboto, Arial, sans-serif !important;
+}
+
+/* Refined workflow creation dialog: calmer spacing, clear hierarchy, and
+   template cards that stay readable at both laptop and smaller widths. */
+.automation-layout .automation-modal-backdrop {
+  padding: clamp(12px, 3vw, 26px) !important;
+  background: rgb(15 23 42 / 54%) !important;
+  backdrop-filter: blur(6px);
+}
+
+.automation-layout .automation-create-modal {
+  display: flex !important;
+  flex-direction: column;
+  width: min(880px, 100%) !important;
+  max-height: min(92dvh, 820px) !important;
+  padding: 0 !important;
+  overflow: auto;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #dbe3ef !important;
+  color: #111827 !important;
+  box-shadow: 0 24px 72px rgb(15 23 42 / 18%) !important;
+}
+
+.automation-layout .automation-modal-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  align-items: center;
+  flex: none;
+  margin: 0 !important;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid #e8edf5;
+  background: #ffffff !important;
+}
+
+.automation-layout .automation-modal-head h2 {
+  margin: 3px 0 0 !important;
+  color: #111827 !important;
+  font-size: clamp(20px, 2.1vw, 22px) !important;
+  font-weight: 600 !important;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.automation-layout .automation-modal-subtitle {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.automation-layout .automation-kicker {
+  color: #2563eb !important;
+  font-size: 10px !important;
+  letter-spacing: 0.14em;
+}
+
+.automation-layout .automation-icon-button {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: 1px solid #dbe3ef !important;
+  border-radius: 9px;
+  background: #ffffff !important;
+  color: #475569 !important;
+  font-size: 20px !important;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.automation-layout .automation-icon-button:hover {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.automation-layout .automation-prompt-box {
+  margin: 16px 24px 0;
+  padding: 14px;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 10px;
+  background: #ffffff !important;
+}
+
+.automation-layout .automation-prompt-box label {
+  margin-bottom: 8px;
+  color: #334155 !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+}
+
+.automation-layout .automation-prompt-box textarea {
+  min-height: 74px;
+  padding: 10px 11px;
+  border: 1px solid #dbe1e8 !important;
+  border-radius: 8px;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-size: 13px !important;
+  line-height: 1.5;
+}
+
+.automation-layout .automation-prompt-box textarea:focus {
+  border-color: #60a5fa !important;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 12%);
+}
+
+.automation-layout .automation-prompt-actions {
+  margin-top: 10px;
+}
+
+.automation-layout .automation-prompt-actions span {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.automation-layout .automation-prompt-actions .automation-primary {
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 8px;
+  box-shadow: none;
+  font-size: 12px !important;
+}
+
+.automation-layout .automation-prompt-actions .automation-primary:disabled {
+  opacity: 1 !important;
+  border-color: #dbeafe !important;
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  box-shadow: none !important;
+}
+
+.automation-layout .automation-template-heading {
+  margin: 20px 24px 10px !important;
+  padding-top: 16px;
+  border-top: 1px solid #edf0f4;
+  color: #1f2937 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+.automation-layout .automation-template-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 24px 22px;
+  background: #ffffff;
+}
+
+.automation-layout .automation-template-card {
+  width: 100%;
+  min-height: 78px;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-content: center;
+  justify-items: start;
+  column-gap: 11px;
+  row-gap: 3px;
+  padding: 12px 13px;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px;
+  background: #ffffff !important;
+  color: #111827 !important;
+  text-align: left !important;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.automation-layout .automation-template-card:hover:not(:disabled) {
+  border-color: #93c5fd !important;
+  background: #f8fbff !important;
+  box-shadow: 0 5px 16px rgb(37 99 235 / 9%);
+  transform: translateY(-1px);
+}
+
+.automation-layout .automation-template-card strong,
+.automation-layout .automation-template-card small {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  text-align: left !important;
+}
+
+.automation-layout .automation-template-card strong {
+  color: #172033 !important;
+  font-size: 12.5px !important;
+  font-weight: 650 !important;
+  line-height: 1.35;
+}
+
+.automation-layout .automation-template-card small {
+  color: #64748b !important;
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+
+.automation-layout .automation-template-icon {
+  width: 32px;
+  height: 32px;
+  grid-row: span 2;
+  align-self: center;
+  border-radius: 9px;
+  font-size: 15px;
+}
+
+.automation-layout .automation-create-modal .automation-alert {
+  margin: 0 24px 18px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-modal-head {
+  border-color: #303036;
+  background: #121215 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-modal-head h2 {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-create-modal {
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box {
+  border-color: #303744 !important;
+  background: #121215 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-modal-subtitle {
+  color: #a1a1aa;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-actions .automation-primary:disabled {
+  border-color: #1e3a8a !important;
+  background: #1e3a8a !important;
+  color: #dbeafe !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box label {
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box textarea {
+  border-color: #3f3f46 !important;
+  background: #121215 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-heading {
+  border-color: #303036;
+  color: #e4e4e7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card {
+  border-color: #303744 !important;
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card strong {
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card small,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-actions span {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-card:hover:not(:disabled) {
+  border-color: #3b82f6 !important;
+  background: #172554 !important;
+}
+
+@media (max-width: 640px) {
+  .automation-layout .automation-modal-backdrop {
+    align-items: end;
+    padding: 8px !important;
+  }
+
+  .automation-layout .automation-create-modal {
+    width: 100% !important;
+    max-height: 96dvh !important;
+    border-radius: 14px !important;
+  }
+
+  .automation-layout .automation-modal-head {
+    padding: 16px 16px 14px;
+  }
+
+  .automation-layout .automation-modal-subtitle {
+    max-width: 36ch;
+  }
+
+  .automation-layout .automation-prompt-box {
+    margin: 12px 14px 0;
+    padding: 12px;
+  }
+
+  .automation-layout .automation-prompt-actions {
+    align-items: flex-start;
+  }
+
+  .automation-layout .automation-prompt-actions span {
+    max-width: 210px;
+  }
+
+  .automation-layout .automation-template-heading {
+    margin: 16px 14px 9px !important;
+    padding-top: 13px;
+  }
+
+  .automation-layout .automation-template-grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 14px 16px;
+  }
+
+  .automation-layout .automation-create-modal .automation-alert {
+    margin: 0 14px 14px;
+  }
+}
+
+/* The popup uses an id-scoped palette to beat legacy dashboard utility overrides. */
+#whatsapp-integration-dialog {
+  color-scheme: light;
+  background: #ffffff !important;
+  border-color: #e4e7ec !important;
+  color: #18181b !important;
+}
+
+#whatsapp-integration-dialog .wa-integration-surface {
+  background: #f8fafc !important;
+  border-color: #e4e7ec !important;
+  color: #475569 !important;
+}
+
+#whatsapp-integration-dialog .wa-integration-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+#whatsapp-integration-dialog .wa-integration-tab[class*="border-b-2"] {
+  border-color: #2563eb !important;
+  color: #2563eb !important;
+}
+
+#whatsapp-integration-dialog .wa-integration-tab:not([class*="border-b-2"]) {
+  color: #64748b !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog {
+  color-scheme: dark;
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog .wa-integration-surface {
+  background: #18181b !important;
+  border-color: #303036 !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog :is(h2, strong, [class~="text-slate-950"], [class~="text-slate-900"], [class~="text-[#123d35]"]) {
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog :is([class~="text-slate-700"], [class~="text-slate-600"], [class~="text-slate-500"], [class~="text-slate-400"]) {
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog :is([class~="text-[#0e6f62]"], [class~="text-[#118778]"]) {
+  color: #93c5fd !important;
+  -webkit-text-fill-color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog :is(input:not([type="checkbox"]), select, textarea) {
+  color-scheme: dark;
+  background: #09090b !important;
+  border-color: #3f3f46 !important;
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog .wa-integration-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog [class*="bg-emerald-50"],
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog [class*="bg-emerald-100"] {
+  background: #052e24 !important;
+  border-color: #065f46 !important;
+  color: #6ee7b7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog [role="alert"] {
+  background: #422006 !important;
+  border-color: #92400e !important;
+  color: #fde68a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) #whatsapp-integration-dialog [class*="bg-rose-50"] {
+  background: #3f1018 !important;
+  border-color: #881337 !important;
+  color: #fecdd3 !important;
+}
+
+/* Apply dashboard theme changes atomically so surfaces never cross-fade between palettes. */
+html.theme-switching,
+html.theme-switching * {
+  transition: none !important;
+}
+
+/* WhatsApp integration popup keeps all of its surfaces in the selected dashboard theme. */
+.wa-integration-dialog {
+  color-scheme: light;
+  background: #ffffff !important;
+  border-color: #e4e7ec !important;
+  color: #18181b !important;
+}
+
+.wa-integration-dialog .wa-integration-surface {
+  background: #f8fafc !important;
+  border-color: #e4e7ec !important;
+  color: #475569 !important;
+}
+
+.wa-integration-dialog .wa-integration-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-backdrop {
+  background-color: rgb(3 7 18 / 78%) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog {
+  color-scheme: dark;
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 28px 84px rgb(0 0 0 / 58%) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-header,
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-tabs {
+  border-color: #303036 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-surface {
+  background: #18181b !important;
+  border-color: #303036 !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog :is(
+  h2,
+  strong,
+  [class~="text-slate-950"],
+  [class~="text-slate-900"],
+  [class~="text-[#123d35]"]
+) {
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog :is(
+  [class~="text-slate-700"],
+  [class~="text-slate-600"],
+  [class~="text-slate-500"],
+  [class~="text-slate-400"]
+) {
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog :is(
+  [class~="text-[#0e6f62]"],
+  [class~="text-[#118778]"]
+) {
+  color: #93c5fd !important;
+  -webkit-text-fill-color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-tab[class*="border-b-2"] {
+  border-color: #3b82f6 !important;
+  color: #93c5fd !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-tab:not([class*="border-b-2"]) {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-close {
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-close:hover {
+  background: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog :is(input:not([type="checkbox"]), select, textarea) {
+  color-scheme: dark;
+  background: #09090b !important;
+  border-color: #3f3f46 !important;
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog :is(input, select, textarea)::placeholder {
+  color: #71717a !important;
+  -webkit-text-fill-color: #71717a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog .wa-integration-primary {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog [class*="bg-emerald-50"],
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog [class*="bg-emerald-100"] {
+  background: #052e24 !important;
+  border-color: #065f46 !important;
+  color: #6ee7b7 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog [role="alert"] {
+  background: #422006 !important;
+  border-color: #92400e !important;
+  color: #fde68a !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme .wa-integration-dialog [class*="bg-rose-50"] {
+  background: #3f1018 !important;
+  border-color: #881337 !important;
+  color: #fecdd3 !important;
+}
+
+/* Keep the workflow dialog header fixed while its content scrolls below it. */
+.automation-layout .automation-create-modal {
+  overflow: hidden !important;
+}
+
+.automation-layout .automation-modal-head {
+  position: relative !important;
+  top: auto !important;
+  z-index: 1;
+}
+
+.automation-layout .automation-modal-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  background: #ffffff;
+}
+
+.automation-layout .automation-template-grid {
+  background: #f8fafc !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-modal-body,
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-template-grid {
+  background: #121215 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .automation-layout .automation-prompt-box {
+  background: #18181b !important;
+}
+
+/* Match every workspace page header to the compact Agents page hierarchy. */
+main.dashboard-home-theme .dashboard-page-header-inner :where(.dashboard-page-eyebrow) {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  line-height: 16px !important;
+  letter-spacing: 0.14em !important;
+}
+
+main.dashboard-home-theme.dashboard-home-theme .dashboard-page-header-inner h1 {
+  margin-top: 2px !important;
+  font-family: var(--font-site-sans), Roboto, Arial, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 25px !important;
+  letter-spacing: -0.03em !important;
+}
+
+main.dashboard-home-theme.dashboard-home-theme .dashboard-page-header-inner p {
+  margin-top: 2px !important;
+  font-family: var(--font-site-sans), Roboto, Arial, sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  letter-spacing: 0 !important;
+}
+
+/* One interface typeface across every route and element in the application. */
+html body,
+html body *:not(svg) {
+  font-family: var(--font-site-sans), Roboto, Arial, sans-serif !important;
+}
+
+/* Keep caller text readable against the blue transcript bubble in both themes. */
+main.dashboard-home-theme .call-transcript-user-message,
+main.dashboard-home-theme .call-transcript-user-message :where(*) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Voice-agent provider dialogs keep one complete surface in each theme. */
+.agent-stack-config-dialog {
+  color-scheme: light;
+  background: #ffffff !important;
+  color: #17191d !important;
+}
+
+.agent-stack-config-header,
+.agent-stack-config-footer {
+  background: #ffffff !important;
+  border-color: #e4e7ec !important;
+}
+
+.agent-stack-config-mode[aria-pressed="true"],
+.agent-stack-config-save {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.agent-stack-config-mode[aria-pressed="true"]:hover,
+.agent-stack-config-save:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.agent-stack-config-save:disabled {
+  background: #dbeafe !important;
+  border-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+  opacity: 1 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-backdrop {
+  background: rgb(3 7 18 / 74%) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog {
+  color-scheme: dark;
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 28px 84px rgb(0 0 0 / 58%) !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog > header,
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog > footer,
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog > div,
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog main {
+  background: #121215 !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog :is(section, article, .agent-stack-config-panel) {
+  background-color: #18181b !important;
+  border-color: #303036 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog :is(
+  [class~="bg-white"],
+  [class~="bg-[#ffffff]"],
+  [class~="bg-[#fafcfb]"],
+  [class~="bg-[#fbfbfe]"],
+  [class~="bg-[#fbfdff]"],
+  [class~="bg-[#f8fafc]"],
+  [class~="bg-[#f8fbff]"]
+) {
+  background-color: #18181b !important;
+  background-image: none !important;
+  border-color: #303036 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog :is(h3, h4, strong, .app-section-title, .app-strong, [class~="text-black"], [class~="text-[#0f172a]"], [class~="text-slate-950"], [class~="text-slate-900"]) {
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog :is(p, .app-caption, .app-label, [class~="text-[#64748b]"], [class~="text-[#475569]"], .text-slate-600, .text-slate-500, .text-slate-400) {
+  color: #a1a1aa !important;
+  -webkit-text-fill-color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog :is(input:not([type="checkbox"]), select, textarea) {
+  color-scheme: dark;
+  background: #09090b !important;
+  border-color: #3f3f46 !important;
+  color: #f4f4f5 !important;
+  -webkit-text-fill-color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog option {
+  background: #121215 !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-mode-list,
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-close,
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-cancel {
+  background: #18181b !important;
+  border-color: #3f3f46 !important;
+  color: #d4d4d8 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-mode[aria-pressed="false"] {
+  background: transparent !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-mode[aria-pressed="true"],
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-save {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog .agent-stack-config-save:disabled {
+  background: #1e3a8a !important;
+  border-color: #1e3a8a !important;
+  color: #dbeafe !important;
+  -webkit-text-fill-color: #dbeafe !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog [class~="bg-[#edf7f4]"],
+:is(html[data-dashboard-theme="dark"], html.dark) .agent-stack-config-dialog [class~="bg-[#edf9f7]"] {
+  background: #172554 !important;
+  border-color: #1d4ed8 !important;
+  color: #bfdbfe !important;
+}
+
+/* Prevent mobile browsers from inflating text inside narrow cards and columns. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: clamp(14px, 4vw, 16px);
+  }
+
+  :is(
+    .marketing-site main,
+    .website-content,
+    main.hcr-page,
+    main#product-detail-page,
+    main.solution-shared,
+    .home-design-four:not(.footer-home-shell),
+    .company-page,
+    .cmp-page
+  ) :is(h1, .heroCopy h1, .pricing-center h1, .company-page h1) {
+    font-size: clamp(27px, 7.4vw, 34px) !important;
+    line-height: 1.16 !important;
+  }
+
+  :is(
+    .marketing-site main,
+    .website-content,
+    main.hcr-page,
+    main#product-detail-page,
+    main.solution-shared,
+    .home-design-four:not(.footer-home-shell),
+    .company-page,
+    .cmp-page
+  ) :is(h2, .sectionHeading h2, .pricing-faq-intro h2, .company-page h2) {
+    font-size: clamp(21px, 6vw, 28px) !important;
+    line-height: 1.2 !important;
+  }
+
+  :is(
+    .marketing-site main,
+    .website-content,
+    main.hcr-page,
+    main#product-detail-page,
+    main.solution-shared,
+    .home-design-four:not(.footer-home-shell),
+    .company-page,
+    .cmp-page
+  ) :is(h3, .company-page h3) {
+    font-size: clamp(17px, 4.8vw, 22px) !important;
+    line-height: 1.25 !important;
+  }
+
+  main.dashboard-home-theme [class*="text-xs"] { font-size: 10px !important; }
+  main.dashboard-home-theme [class*="text-sm"] { font-size: 12px !important; }
+  main.dashboard-home-theme [class*="text-base"] { font-size: 13px !important; }
+  main.dashboard-home-theme [class*="text-lg"] { font-size: 15px !important; }
+  main.dashboard-home-theme [class*="text-xl"] { font-size: 17px !important; }
+  main.dashboard-home-theme [class*="text-2xl"] { font-size: 19px !important; }
+  main.dashboard-home-theme [class*="text-3xl"] { font-size: 22px !important; }
+  main.dashboard-home-theme [class*="text-4xl"] { font-size: 26px !important; }
+
+  /* Preserve comfortable tap targets and prevent iOS input zoom. */
+  main.dashboard-home-theme :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    font-size: 16px !important;
+  }
+}
+
+/* Keep primary actions consistently blue across public pages, sign-in, and dashboard screens. */
+:is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary) {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+:is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary):is(:hover, :focus-visible) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+/* Existing dark primary action utility buttons used throughout dashboard subpages. */
+.dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]) {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]):is(:hover, :focus-visible) {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+/* Keep cost table separators quiet in dark mode instead of bright white. */
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .call-cost-breakdown tbody tr + tr {
+  border-top: 1px solid #303036 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .call-cost-breakdown .divide-y > article + article {
+  border-top: 1px solid #303036 !important;
 }

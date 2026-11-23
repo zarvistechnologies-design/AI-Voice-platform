@@ -463,7 +463,7 @@ export function KnowledgeBaseShell() {
           description="Manage the indexed sources your voice agents use to answer caller questions."
           actions={
             <button
-              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-black px-3.5 text-[12.5px] font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 shadow-sm disabled:opacity-50"
+              className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md bg-blue-600 px-3.5 text-[12.5px] font-medium text-white transition hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400 shadow-sm disabled:opacity-50"
               disabled={!selectedAgent || atCapacity}
               onClick={() => {
                 setError("");
@@ -687,10 +687,10 @@ export function KnowledgeBaseShell() {
           }}
         >
           <section
-            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
+            className="grid max-h-[calc(100dvh-2rem)] w-full max-w-[640px] overflow-y-auto rounded-2xl border border-slate-200 border-t-2 border-t-blue-600 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:border-t-blue-500 dark:bg-zinc-900 dark:text-white"
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <header className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/95">
+            <header className="flex items-start justify-between gap-4 bg-white/95 px-5 py-4 sm:px-6 dark:bg-zinc-900/95">
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Knowledge base</span>
                 <h2
@@ -751,7 +751,7 @@ export function KnowledgeBaseShell() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
-                  className="flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-black dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 cursor-pointer"
+                  className="flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-blue-500 hover:bg-blue-50/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 cursor-pointer"
                   disabled={!selectedAgent || busy || atCapacity}
                   onClick={() => {
                     setShowAddKnowledge(false);
@@ -775,7 +775,7 @@ export function KnowledgeBaseShell() {
                   </span>
                 </button>
                 <label
-                  className={`flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-black dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`flex min-h-20 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5 text-left transition hover:border-blue-500 hover:bg-blue-50/40 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20 ${busy || atCapacity ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
                     className="sr-only"
@@ -807,7 +807,7 @@ export function KnowledgeBaseShell() {
                 <label className="text-xs font-semibold text-slate-700 dark:text-zinc-200 grid gap-1.5">
                   Website URL
                   <input
-                    className="h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-black dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-white"
+                    className="h-11 w-full rounded-lg border border-[#eaeaea] bg-white px-3 text-xs text-[#171717] outline-none transition placeholder:text-[#71717a] focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500 dark:focus:border-blue-400"
                     placeholder="https://example.com/help"
                     type="url"
                     value={url}
@@ -898,8 +898,8 @@ function TextEditorModal({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 dark:text-white">
-        <header className="flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-4 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/95">
+      <section className="grid max-h-[calc(100vh-24px)] w-full max-w-2xl grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl border border-slate-200 border-t-2 border-t-blue-600 bg-white text-slate-900 shadow-2xl dark:border-zinc-800 dark:border-t-blue-500 dark:bg-zinc-900 dark:text-white">
+        <header className="flex items-start justify-between gap-4 bg-white/95 px-5 py-4 sm:px-6 dark:bg-zinc-900/95">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white m-0">
               {editor.sourceId ? "Edit knowledge" : "Add text knowledge"}
@@ -938,7 +938,7 @@ function TextEditorModal({
           <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
             Knowledge text
             <textarea
-              className="min-h-80 resize-y rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none transition focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
+            className="min-h-80 resize-y rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-blue-400"
               placeholder="Add approved facts, policies, FAQs, and procedures…"
               value={editor.content}
               onChange={(event) =>
@@ -947,7 +947,7 @@ function TextEditorModal({
             />
           </label>
         </div>
-        <footer className="flex justify-end gap-2 border-t border-slate-200 bg-slate-50/50 px-5 py-3 sm:px-6 dark:border-zinc-800 dark:bg-zinc-900/50">
+        <footer className="flex justify-end gap-2 bg-slate-50/50 px-5 py-3 sm:px-6 dark:bg-zinc-900/50">
           <button
             className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-xs font-medium text-slate-700 transition hover:bg-slate-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
             disabled={busy}

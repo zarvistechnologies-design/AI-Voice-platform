@@ -10,9 +10,12 @@
 }
 
 .page * { box-sizing: border-box; }
-:global(.website-content) .page.page,
+:global(.website-content) .page.page {
+  background-color: #f8f9f9 !important;
+  background-image: none !important;
+}
 :global(.website-content) .page.page > section {
-  background-color: #fff !important;
+  background-color: transparent !important;
   background-image: none !important;
 }
 .page :is(section, nav) { scroll-margin-top: 138px; }
@@ -305,6 +308,11 @@
 .page.pricing-page-refresh .sectionHeading { max-width: 780px; margin-bottom: 37px; }
 .page.pricing-page-refresh .sectionHeading h2 { margin-top: 13px; font-size: clamp(2.4rem, 4vw, 4.1rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.02; }
 .page.pricing-page-refresh .sectionHeading p { max-width: 640px; font-size: 16px; line-height: 1.65; }
+.page:global(.pricing-page-refresh) .sectionHeading p {
+  color: #55585f !important;
+  -webkit-text-fill-color: #55585f !important;
+  opacity: 1 !important;
+}
 .page.pricing-page-refresh .featureCard { min-height: 205px; border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgb(20 20 22 / 3%); }
 .page.pricing-page-refresh .featureCard:hover { transform: translateY(-3px); border-color: #cbc6f4; background: #fff; }
 .page.pricing-page-refresh .billingNote { border-radius: 10px; }

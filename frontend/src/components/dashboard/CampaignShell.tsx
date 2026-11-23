@@ -976,7 +976,7 @@ export function CampaignShell() {
                       return (
                         <li className="min-w-0" key={step}>
                           <span
-                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#171717]" : "bg-[#eaeaea]"}`}
+                            className={`block h-1.5 rounded-full ${active || complete ? "bg-[#2563eb]" : "bg-[#eaeaea]"}`}
                           />
                           <span
                             className={`mt-1 hidden truncate text-[10px] font-semibold sm:block ${active ? "text-[#171717]" : "text-[#71717a]"}`}
@@ -1683,7 +1683,7 @@ function ProgressBar({
       className={`h-1.5 overflow-hidden rounded-full bg-[#f4f4f5] ${className}`}
     >
       <div
-        className="h-full rounded-full bg-[#171717] transition-all"
+        className="h-full rounded-full bg-[#2563eb] transition-all"
         style={{ width: `${progressValue(value)}%` }}
       />
     </div>

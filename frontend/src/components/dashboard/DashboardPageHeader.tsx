@@ -64,6 +64,8 @@ export function DashboardWorkspaceBar() {
     setDarkMode((prev) => {
       const next = !prev;
       const value = next ? "dark" : "light";
+      const root = document.documentElement;
+      root.classList.add("theme-switching");
       document.documentElement.setAttribute("data-dashboard-theme", value);
       document.documentElement.classList.toggle("dark", next);
       try {
@@ -71,6 +73,9 @@ export function DashboardWorkspaceBar() {
       } catch {
         /* localStorage may be unavailable */
       }
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => root.classList.remove("theme-switching"));
+      });
       return next;
     });
   }
@@ -235,7 +240,7 @@ export function DashboardPageHeader({
         <div className={`flex flex-col justify-center gap-3 sm:flex-row sm:items-center sm:justify-between ${compact ? "min-h-10" : "min-h-12"}`}>
           <div className="min-w-0">
             {eyebrow ? (
-              <div className="text-[10px] font-semibold uppercase leading-4 tracking-[0.14em] text-[#71717a] dark:text-zinc-400">
+              <div className="dashboard-page-eyebrow text-[10px] font-semibold uppercase leading-4 tracking-[0.14em] text-[#71717a] dark:text-zinc-400">
                 {eyebrow}
               </div>
             ) : null}

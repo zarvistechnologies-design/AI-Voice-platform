@@ -294,7 +294,7 @@ export function WorkflowCanvasSection() {
 
               <div className="wf-agent-main">
                 <span className="wf-agent-logo" aria-hidden="true">
-                  <Image alt="" height={17} src="/images/vozon-footer-v.svg" width={17} />
+                  <Image alt="" height={17} src="/images/vozon-mark.svg" width={17} />
                 </span>
                 <div>
                   <strong>{active.agentTitle}</strong>

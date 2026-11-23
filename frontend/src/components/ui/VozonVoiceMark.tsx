@@ -7,7 +7,7 @@ export function VozonVoiceMark({ className }: { className?: string }) {
       aria-hidden="true"
       className={className}
       height={80}
-      src="/images/vozon-footer-v.svg"
+      src="/images/vozon-mark.svg"
       width={80}
     />
   );
