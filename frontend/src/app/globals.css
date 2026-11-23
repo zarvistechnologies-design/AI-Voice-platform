@@ -3056,6 +3056,53 @@ main.dashboard-home-theme .guided-agent-dialog-header {
 }
 
 /* Keep the same Roboto family throughout the workspace, including Agents. */
+
+/* White-label accents must outrank the legacy dark-dashboard skin above.
+   Apply the partner's primary color to dashboard actions and current states;
+   leave neutral surfaces and semantic status colors unchanged. */
+@layer components {
+  html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) {
+    --app-color-accent: var(--brand-primary) !important;
+    --dashboard-moody: var(--brand-primary) !important;
+    --dashboard-moody-dark: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+    --dashboard-moody-soft: color-mix(in srgb, var(--brand-primary) 9%, #ffffff) !important;
+    --dashboard-moody-border: color-mix(in srgb, var(--brand-primary) 28%, #e5e7eb) !important;
+    --voice-accent: var(--brand-primary) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-500"], [class~="bg-[#2563eb]"], [class~="bg-[#1d4ed8]"], [class~="bg-[#118778]"], [class~="bg-[#0e6f62]"], [class~="bg-[#108D82]"]) {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    color: #ffffff !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"],
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-shell[data-expanded="false"] .dashboard-sidebar-nav[aria-current="page"] .dashboard-sidebar-icon {
+    background: var(--brand-primary) !important;
+    background-color: var(--brand-primary) !important;
+    color: #ffffff !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] :is(.dashboard-sidebar-icon, .dashboard-sidebar-label) {
+    color: #ffffff !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class*="text-blue-"], [class*="text-[#2563eb]"], [class*="text-[#1d4ed8]"], [class*="text-[#118778]"], [class*="text-[#0e6f62]"], [class*="text-[#108D82]"]) {
+    color: var(--brand-primary) !important;
+    -webkit-text-fill-color: var(--brand-primary) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is(button, a[href], input, select, textarea):focus-visible {
+    outline-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 16%, transparent) !important;
+  }
+
+  html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme.voice-agent-theme .voice-pipeline-node[aria-pressed="true"] {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
+  }
+}
 main.dashboard-home-theme,
 main.dashboard-home-theme :is(button, a, input, select, textarea) {
   font-family: var(--font-site-sans), Roboto, Arial, sans-serif !important;
@@ -3880,28 +3927,42 @@ html {
 }
 
 /* Keep primary actions consistently blue across public pages, sign-in, and dashboard screens. */
-:is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary) {
+html:not([data-brand-source="white_label"]) :is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary) {
   background: #2563eb !important;
   border-color: #2563eb !important;
   color: #ffffff !important;
 }
 
-:is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary):is(:hover, :focus-visible) {
+html:not([data-brand-source="white_label"]) :is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary):is(:hover, :focus-visible) {
   background: #1d4ed8 !important;
   border-color: #1d4ed8 !important;
   color: #ffffff !important;
 }
 
 /* Existing dark primary action utility buttons used throughout dashboard subpages. */
-.dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]) {
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]) {
   background-color: #2563eb !important;
   border-color: #2563eb !important;
   color: #ffffff !important;
 }
 
-.dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]):is(:hover, :focus-visible) {
+html:not([data-brand-source="white_label"]) .dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]):is(:hover, :focus-visible) {
   background-color: #1d4ed8 !important;
   border-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+html[data-brand-source="white_label"] :is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary),
+html[data-brand-source="white_label"] .dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]) {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #ffffff !important;
+}
+
+html[data-brand-source="white_label"] :is(.saas-primary, .automation-primary, .auth-submit, .cmp-btn-primary, .company-button-primary, .contact-primary-button, .contact-submit-button, .service-primary-button, .vozon-hero-btn-primary):is(:hover, :focus-visible),
+html[data-brand-source="white_label"] .dashboard-home-theme :is(button, a[href]):is([class~="bg-black"], [class~="bg-[#171717]"], [class~="bg-[#0f172a]"], [class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-500"], [class*="bg-emerald-600"], [class*="bg-emerald-700"], [class*="bg-violet-600"], [class*="bg-purple-600"]):is(:hover, :focus-visible) {
+  background-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
   color: #ffffff !important;
 }
 

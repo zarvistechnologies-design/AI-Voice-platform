@@ -620,6 +620,18 @@ html:not([data-brand-source="white_label"]) .dashboard-home-theme .dashboard-sid
 /* Shared blue utility classes still appear in several dashboard shells. Keep
    them in sync with the active white-label brand color in both light and dark
    dashboard modes. */
+html[data-brand-source="white_label"] :is(.dashboard-home-theme, .agents-home-palette) {
+  --dashboard-moody: var(--brand-primary) !important;
+  --dashboard-moody-dark: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  --dashboard-moody-soft: color-mix(in srgb, var(--brand-primary) 9%, #ffffff) !important;
+  --dashboard-moody-border: color-mix(in srgb, var(--brand-primary) 28%, #e5e7eb) !important;
+  --dashboard-border-strong: color-mix(in srgb, var(--brand-primary) 28%, #e1e3ed) !important;
+  --app-color-accent: var(--brand-primary) !important;
+  --voice-accent: var(--brand-primary) !important;
+  --voice-accent-soft: color-mix(in srgb, var(--brand-primary) 9%, #ffffff) !important;
+  --voice-accent-border: color-mix(in srgb, var(--brand-primary) 28%, #e1e3ed) !important;
+}
+
 html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-500"]) {
   background-color: var(--brand-primary) !important;
   border-color: var(--brand-primary) !important;
@@ -650,4 +662,28 @@ html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme
 }
 html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is(button, a, input, select, textarea):focus-visible {
   outline-color: var(--brand-primary) !important;
+}
+
+/* Bring legacy green accents and the voice-agent editor into the same brand
+   palette. Pale surfaces and semantic success/error/warning colors stay intact. */
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class~="bg-[#118778]"], [class~="bg-[#0e6f62]"], [class~="bg-[#108D82]"], [class~="bg-[#2563eb]"], [class~="bg-[#1d4ed8]"]) {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #ffffff !important;
+}
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class*="hover:bg-[#0e6f62]"]):hover:not(:disabled),
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class*="hover:bg-[#1d4ed8]"]):hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+}
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class*="text-[#118778]"], [class*="text-[#0e6f62]"], [class*="text-[#108D82]"], [class*="text-[#2563eb]"], [class*="text-[#1d4ed8]"]) {
+  color: var(--brand-primary) !important;
+  -webkit-text-fill-color: var(--brand-primary) !important;
+}
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme :is([class*="border-[#118778]"], [class*="border-[#0e6f62]"], [class*="border-[#108D82]"], [class*="border-[#2563eb]"], [class*="focus:border-[#118778]"]) {
+  border-color: var(--brand-primary) !important;
+}
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .voice-agent-theme .voice-pipeline-node[aria-pressed="true"] {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 14%, transparent) !important;
 }
