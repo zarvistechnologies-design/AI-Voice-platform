@@ -440,9 +440,10 @@ export function DashboardSidebar({
     return [
       ...sidebarGroups.map((group) => ({
         ...group,
-        items: hideCustomerAutomationAndWhatsApp
-          ? group.items.filter((item) => item.href !== "/dashboard/automations")
-          : group.items,
+        items: group.items.filter((item) =>
+          !(hideCustomerAutomationAndWhatsApp && item.href === "/dashboard/automations")
+          && !(isWhiteLabelCustomer && item.href === "/dashboard/assistant"),
+        ),
       })),
       ...(showPlatformAdministration || isWhiteLabelPartner
         ? [
@@ -477,7 +478,7 @@ export function DashboardSidebar({
         ]
         : []),
     ];
-  }, [hideCustomerAutomationAndWhatsApp, showPlatformAdministration, isWhiteLabelPartner]);
+  }, [hideCustomerAutomationAndWhatsApp, showPlatformAdministration, isWhiteLabelPartner, isWhiteLabelCustomer]);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {

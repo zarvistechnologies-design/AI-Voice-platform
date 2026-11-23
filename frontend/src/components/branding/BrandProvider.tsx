@@ -14,7 +14,9 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
 
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
-  const isPartnerOrCustomer = isWhiteLabelPartner || isWhiteLabelCustomer || brand.source === "white_label";
+  const isWhiteLabelAccount = isWhiteLabelPartner || isWhiteLabelCustomer;
+  const isWhiteLabelHost = brand.source === "white_label";
+  const isPartnerOrCustomer = isWhiteLabelAccount || isWhiteLabelHost;
 
   // Listen for live brand updates (e.g. after editing in White Label console)
   useEffect(() => {
@@ -30,7 +32,9 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
 
   // Fetch current organization brand if authenticated as partner or customer
   useEffect(() => {
-    if (!isPartnerOrCustomer || remoteBrand || !session?.organization?.id) return;
+    // On Vozon's platform host, keep Vozon's brand even when a partner account
+    // signs in. Resolve the account's brand only on its white-label host.
+    if (!isWhiteLabelAccount || !isWhiteLabelHost || remoteBrand || !session?.organization?.id) return;
 
     let cancelled = false;
     async function loadBrand() {
@@ -56,9 +60,10 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     return () => {
       cancelled = true;
     };
-  }, [isPartnerOrCustomer, session?.organization?.id, session?.token, remoteBrand]);
+  }, [isWhiteLabelAccount, isWhiteLabelHost, session?.organization?.id, session?.token, remoteBrand]);
 
   const effectiveBrand = useMemo<BrandConfig>(() => {
+    if (isWhiteLabelAccount && !isWhiteLabelHost) return brand;
     if (remoteBrand) return remoteBrand;
     if (session?.organization?.brand) {
       const organizationBrand = session.organization.brand;
@@ -89,9 +94,9 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     }
 
     return brand;
-  }, [brand, remoteBrand, session?.organization?.brand, session?.organization?.name, isPartnerOrCustomer]);
+  }, [brand, remoteBrand, session?.organization?.brand, session?.organization?.name, isPartnerOrCustomer, isWhiteLabelAccount, isWhiteLabelHost]);
 
-  const isWhiteLabel = isPartnerOrCustomer || effectiveBrand.source === "white_label";
+  const isWhiteLabel = effectiveBrand.source === "white_label";
   // If explicitly set or resolved by backend brand, use that:
   // Existing white-label users -> Classic Green theme
   // New white-label onboarding -> Recent modern monochrome theme

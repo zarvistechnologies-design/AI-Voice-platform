@@ -183,6 +183,7 @@ function FormattedContent({ content }: { content: string }) {
 function AssistantChat() {
   const router = useRouter();
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
+  const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
   const [conversationId, setConversationId] = useState<string>();
@@ -417,6 +418,12 @@ function AssistantChat() {
     if (hour < 17) return "Good afternoon";
     return "Good evening";
   })();
+
+  useEffect(() => {
+    if (isWhiteLabelCustomer) router.replace("/dashboard/analytics");
+  }, [isWhiteLabelCustomer, router]);
+
+  if (isWhiteLabelCustomer) return null;
 
   return (
     <main

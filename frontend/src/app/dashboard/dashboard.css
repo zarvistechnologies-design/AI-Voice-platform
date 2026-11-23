@@ -331,7 +331,7 @@ html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"], [class*="bg-violet-600"], [class*="bg-purple-600"]) { background-color: #000000 !important; color: #ffffff !important; }
 html:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="ring-[#118778]"], [class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-violet-"], [class*="ring-purple-"]) { --tw-ring-color: rgb(0 0 0 / 12%) !important; }
 /* Preserve the blue platform mark and partner logo colors in the recent theme. */
-html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):not([data-brand-theme="green"]) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
+html:not([data-dashboard-theme="dark"]):not(.dark):has(.dashboard-home-theme):not([data-brand-theme="green"]):not([data-brand-source="white_label"]) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
   filter: brightness(0) !important;
 }
 
@@ -553,10 +553,55 @@ html:not([data-brand-source="white_label"]) .dashboard-home-theme :where(button,
   outline-color: #2563eb;
 }
 
+/* The recent dashboard theme uses fixed monochrome/blue accents for platform
+   accounts. White-label workspaces should retain the uploaded logo and use the
+   partner's configured palette, regardless of the selected dashboard theme. */
+html[data-brand-source="white_label"] .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-logo {
+  filter: none !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit),
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(button, a)[class~="bg-black"],
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(button, a)[class~="bg-[#171717]"] {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #ffffff !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(.saas-primary, .automation-primary, .auth-submit):hover,
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(button, a)[class~="bg-black"]:hover,
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(button, a)[class~="bg-[#171717]"]:hover {
+  background-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+  border-color: color-mix(in srgb, var(--brand-primary) 82%, #000000) !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] {
+  background-color: var(--brand-primary) !important;
+  color: #ffffff !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]):has(.dashboard-home-theme) .dashboard-home-theme.dashboard-home-theme .dashboard-sidebar-nav[aria-current="page"] :is(.dashboard-sidebar-icon, .dashboard-sidebar-label) {
+  color: #ffffff !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)) :is(button, a, input, select, textarea):focus-visible {
+  outline-color: var(--brand-primary) !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="text-teal-"], [class*="text-emerald-"], [class*="text-green-"], [class*="text-[#118778]"], [class*="text-[#108D82]"], [class*="text-[#0e6f62]"], [class*="text-[#0f8777]"]) {
+  color: var(--brand-primary) !important;
+  -webkit-text-fill-color: var(--brand-primary) !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="bg-[#118778]"], [class*="bg-[#108D82]"], [class*="bg-[#0e6f62]"], [class*="bg-teal-600"], [class*="bg-teal-700"], [class*="bg-emerald-600"]) {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #ffffff !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="border-teal-"], [class*="border-emerald-"], [class*="border-green-"]) {
+  border-color: color-mix(in srgb, var(--brand-primary) 28%, #e5e7eb) !important;
+}
+html[data-brand-source="white_label"]:not([data-dashboard-theme="dark"]):not(.dark):not([data-brand-theme="green"]) .dashboard-home-theme:not(.automation-layout):not(:has(.automation-layout)):not(.voice-agent-theme):not(:has(.voice-agent-theme)) :is([class*="ring-teal-"], [class*="ring-emerald-"], [class*="ring-green-"]) {
+  --tw-ring-color: color-mix(in srgb, var(--brand-primary) 20%, transparent) !important;
+}
+
 /* Keep submenu labels readable when a dark sidebar item is hovered. */
 .dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem[aria-current="page"],
 .dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem[aria-current="page"]:hover {
-  background-color: #2563eb !important;
+  background-color: var(--brand-primary, #2563eb) !important;
   color: #ffffff !important;
 }
 :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .dashboard-sidebar a.dashboard-sidebar-subitem:not([aria-current="page"]):hover {
