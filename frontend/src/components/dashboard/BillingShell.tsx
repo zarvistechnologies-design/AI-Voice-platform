@@ -238,6 +238,11 @@ export function BillingShell() {
                   <p className="mt-1 text-xs text-[#71717a]">
                     Your workspace is provided and managed directly by <strong className="text-[#171717]">{data.whiteLabel.productName}</strong>.
                   </p>
+                  {data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? (
+                    <p className="mt-1 text-xs font-medium text-[#52525b]">
+                      {money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / {data.subscription.priceSnapshot.interval ?? "month"}
+                    </p>
+                  ) : null}
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-xs font-medium text-[#171717]">
                   <span className="size-1.5 rounded-full bg-[#171717]" />

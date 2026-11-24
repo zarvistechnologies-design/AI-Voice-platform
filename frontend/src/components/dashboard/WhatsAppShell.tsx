@@ -256,6 +256,42 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
     return () => window.clearInterval(interval);
   }, [activeTab]);
 
+  // Recheck pending template approvals with Meta while the template screen is open.
+  const hasPendingTemplates = templates.some((template) => template.status === "PENDING");
+  useEffect(() => {
+    if (activeTab !== "templates" || !hasPendingTemplates) return;
+
+    let stopped = false;
+    let syncing = false;
+    const syncPendingTemplates = async () => {
+      if (syncing) return;
+      syncing = true;
+      try {
+        const result = await whatsappApi.syncTemplates();
+        if (stopped || !result.ok) return;
+        setTemplates(result.templates);
+        if (globalWhatsAppDataCache) {
+          globalWhatsAppDataCache = {
+            ...globalWhatsAppDataCache,
+            templates: result.templates,
+            fetchedAt: Date.now(),
+          };
+        }
+      } catch {
+        // Keep showing the last known Meta status if a temporary sync fails.
+      } finally {
+        syncing = false;
+      }
+    };
+
+    void syncPendingTemplates();
+    const interval = window.setInterval(() => void syncPendingTemplates(), 15_000);
+    return () => {
+      stopped = true;
+      window.clearInterval(interval);
+    };
+  }, [activeTab, hasPendingTemplates]);
+
   const tabTitles: Record<WhatsAppTab, { title: string; desc: string }> = {
     templates: {
       title: "Templates",
@@ -446,7 +482,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
               )}
 
               {activeTab === "flow-maker" && (
-                <WhatsAppFlowMakerView flows={flows} onRefresh={() => void loadData(true)} />
+                <WhatsAppFlowMakerView flows={flows} accounts={connectedAccounts} onRefresh={() => void loadData(true)} />
               )}
             </div>
           )}

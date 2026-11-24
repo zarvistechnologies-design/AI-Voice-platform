@@ -23,6 +23,8 @@ export type WhatsAppTemplate = {
   createdAt: string;
 };
 
+export type WhatsAppTemplateHeaderType = "NONE" | "TEXT" | "IMAGE" | "VIDEO" | "DOCUMENT";
+
 export type WhatsAppContactGroup = {
   _id: string;
   name: string;
@@ -39,7 +41,7 @@ export type WhatsAppContact = {
   email?: string;
   groupIds: Array<{ _id: string; name: string; color: string } | string>;
   tags: string[];
-  status: "subscribed" | "opted_out";
+  status: "subscribed" | "opted_out" | "pending_consent";
   lastContactedAt?: string;
   createdAt: string;
 };
@@ -204,6 +206,8 @@ export type WhatsAppFlow = {
   description?: string;
   triggerType: "keyword" | "new_contact" | "campaign_response" | "manual";
   triggerKeyword?: string;
+  /** Connected WhatsApp phone number for this flow; empty means all lines. */
+  phoneNumberId?: string;
   status: "active" | "draft" | "paused";
   nodes: WhatsAppFlowNode[];
   edges: WhatsAppFlowEdge[];
@@ -313,7 +317,26 @@ export const whatsappApi = {
 
   // Templates
   listTemplates: () => req<{ ok: boolean; templates: WhatsAppTemplate[] }>("/api/whatsapp/templates"),
-  createTemplate: (data: Partial<WhatsAppTemplate>) => req<{ ok: boolean; template: WhatsAppTemplate }>("/api/whatsapp/templates", {
+  uploadTemplateHeaderSample: async (file: File) => {
+    const session = getSession();
+    const headers = new Headers();
+    if (session?.token) headers.set("Authorization", `Bearer ${session.token}`);
+    for (const [key, val] of Object.entries(getAuthHeaders())) {
+      if (val && !headers.has(key)) headers.set(key, val);
+    }
+    const form = new FormData();
+    form.append("file", file);
+    const response = await fetch(`${API_BASE}/api/whatsapp/templates/header-sample`, {
+      method: "POST",
+      credentials: "include",
+      headers,
+      body: form,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data?.message || data?.error || `Upload failed (${response.status})`);
+    return data as { ok: boolean; handle: string };
+  },
+  createTemplate: (data: Partial<WhatsAppTemplate> & { headerMediaHandle?: string }) => req<{ ok: boolean; template: WhatsAppTemplate }>("/api/whatsapp/templates", {
     method: "POST",
     body: JSON.stringify(data),
   }),
@@ -342,13 +365,13 @@ export const whatsappApi = {
     const qs = query.toString() ? `?${query.toString()}` : "";
     return req<{ ok: boolean; contacts: WhatsAppContact[] }>(`/api/whatsapp/contacts${qs}`);
   },
-  createContact: (data: { name: string; phoneNumber: string; email?: string; groupIds?: string[]; tags?: string[] }) => req<{ ok: boolean; contact: WhatsAppContact }>("/api/whatsapp/contacts", {
+  createContact: (data: { name: string; phoneNumber: string; email?: string; groupIds?: string[]; tags?: string[]; marketingOptIn?: boolean }) => req<{ ok: boolean; contact: WhatsAppContact }>("/api/whatsapp/contacts", {
     method: "POST",
     body: JSON.stringify(data),
   }),
-  importContacts: (contacts: Array<{ name: string; phoneNumber: string; email?: string; tags?: string[] }>, defaultGroupId?: string) => req<{ ok: boolean; count: number }>("/api/whatsapp/contacts/import", {
+  importContacts: (contacts: Array<{ name: string; phoneNumber: string; email?: string; tags?: string[] }>, defaultGroupId?: string, optInConfirmed = false) => req<{ ok: boolean; count: number }>("/api/whatsapp/contacts/import", {
     method: "POST",
-    body: JSON.stringify({ contacts, defaultGroupId }),
+    body: JSON.stringify({ contacts, defaultGroupId, optInConfirmed }),
   }),
   deleteContact: (id: string) => req<{ ok: boolean }>("/api/whatsapp/contacts/" + id, {
     method: "DELETE",

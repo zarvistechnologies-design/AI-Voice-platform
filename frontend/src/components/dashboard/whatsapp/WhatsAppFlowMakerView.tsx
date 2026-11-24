@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { WhatsAppFlow, WhatsAppFlowEdge, WhatsAppFlowNode } from "@/lib/whatsapp";
+import type { WhatsAppAccountItem, WhatsAppFlow, WhatsAppFlowEdge, WhatsAppFlowNode } from "@/lib/whatsapp";
 import { whatsappApi } from "@/lib/whatsapp";
 
 interface WhatsAppFlowMakerViewProps {
   flows: WhatsAppFlow[];
+  accounts: WhatsAppAccountItem[];
   onRefresh: () => void;
 }
 
@@ -332,7 +333,7 @@ const PRESET_WORKFLOWS = [
   },
 ];
 
-export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerViewProps) {
+export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFlowMakerViewProps) {
   const [selectedFlow, setSelectedFlow] = useState<WhatsAppFlow | null>(flows[0] || null);
 
   useEffect(() => {
@@ -472,6 +473,7 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
         description: selectedFlow.description,
         triggerType: selectedFlow.triggerType,
         triggerKeyword: selectedFlow.triggerKeyword,
+        phoneNumberId: selectedFlow.phoneNumberId || "",
         status: selectedFlow.status,
         nodes: data.nodes || activeNodes,
         edges: data.edges || selectedFlow.edges || [],
@@ -507,6 +509,7 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
           newFlowDesc.trim() || preset?.description || "Automated WhatsApp conversation flow",
         triggerType: "keyword",
         triggerKeyword: newFlowKeyword.trim().toUpperCase() || "START",
+      phoneNumberId: "",
         status: "active",
         nodes: preset?.nodes || [
           {
@@ -648,6 +651,21 @@ export function WhatsAppFlowMakerView({ flows, onRefresh }: WhatsAppFlowMakerVie
               <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 font-mono text-[11px] text-[#52525b]">
                 Trigger: {selectedFlow.triggerKeyword || selectedFlow.triggerType}
               </span>
+              <label className="flex items-center gap-1.5 text-[10px] font-medium text-[#71717a]">
+                Number
+                <select
+                  aria-label="WhatsApp number for this flow"
+                  value={selectedFlow.phoneNumberId || ""}
+                  onChange={(e) => void saveFlowData({ phoneNumberId: e.target.value })}
+                  disabled={accounts.length === 0 || isSaving}
+                  className="h-8 max-w-52 rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717] disabled:bg-[#f4f4f5]"
+                >
+                  <option value="">All connected numbers</option>
+                  {accounts.map((account) => <option key={account.phoneNumberId} value={account.phoneNumberId}>
+                    {(account.label || account.verifiedName || "WhatsApp") + " · " + account.displayPhoneNumber}
+                  </option>)}
+                </select>
+              </label>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { WhatsAppTemplate, WhatsAppTemplateButton } from "@/lib/whatsapp";
+import type { WhatsAppTemplate, WhatsAppTemplateButton, WhatsAppTemplateHeaderType } from "@/lib/whatsapp";
 import { whatsappApi } from "@/lib/whatsapp";
 
 interface WhatsAppTemplatesViewProps {
@@ -186,8 +186,11 @@ export function WhatsAppTemplatesView({
   const [newName, setNewName] = useState("");
   const [newCategory, setNewCategory] = useState<"UTILITY" | "MARKETING" | "AUTHENTICATION">("UTILITY");
   const [newLanguage, setNewLanguage] = useState("en_US");
-  const [newHeaderType, setNewHeaderType] = useState<"NONE" | "TEXT">("TEXT");
+  const [newHeaderType, setNewHeaderType] = useState<WhatsAppTemplateHeaderType>("TEXT");
   const [newHeaderText, setNewHeaderText] = useState("Appointment Confirmed");
+  const [newHeaderMediaHandle, setNewHeaderMediaHandle] = useState("");
+  const [newHeaderMediaName, setNewHeaderMediaName] = useState("");
+  const [uploadingHeaderMedia, setUploadingHeaderMedia] = useState(false);
   const [newBodyText, setNewBodyText] = useState(
     "Hi {{1}}, your appointment with {{2}} is confirmed for {{3}} at {{4}}.",
   );
@@ -319,6 +322,8 @@ export function WhatsAppTemplatesView({
     setNewCategory(bp.category);
     setNewHeaderType(bp.headerType);
     setNewHeaderText(bp.headerText);
+    setNewHeaderMediaHandle("");
+    setNewHeaderMediaName("");
     setNewBodyText(bp.bodyText);
     setNewFooterText(bp.footerText);
     setNewButtons(bp.buttons.map((b) => ({ ...b })));
@@ -334,6 +339,8 @@ export function WhatsAppTemplatesView({
     setNewLanguage(tpl.language || "en_US");
     setNewHeaderType(tpl.headerType === "TEXT" ? "TEXT" : "NONE");
     setNewHeaderText(tpl.headerText || "");
+    setNewHeaderMediaHandle("");
+    setNewHeaderMediaName("");
     setNewBodyText(tpl.bodyText);
     setNewFooterText(tpl.footerText || "");
     setNewButtons(tpl.buttons ? tpl.buttons.map((b) => ({ ...b })) : []);
@@ -373,10 +380,31 @@ export function WhatsAppTemplatesView({
     }
   }
 
+  async function handleHeaderMediaUpload(file?: File) {
+    setNewHeaderMediaHandle("");
+    setNewHeaderMediaName("");
+    if (!file) return;
+    setUploadingHeaderMedia(true);
+    setCreateError("");
+    try {
+      const result = await whatsappApi.uploadTemplateHeaderSample(file);
+      setNewHeaderMediaHandle(result.handle);
+      setNewHeaderMediaName(file.name);
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : "Could not upload the sample to Meta.");
+    } finally {
+      setUploadingHeaderMedia(false);
+    }
+  }
+
   async function handleCreateTemplate(e: React.FormEvent) {
     e.preventDefault();
     if (!newName.trim() || !newBodyText.trim()) {
       setCreateError("Template name and body text are required.");
+      return;
+    }
+    if (["IMAGE", "VIDEO", "DOCUMENT"].includes(newHeaderType) && !newHeaderMediaHandle) {
+      setCreateError("Upload a sample file for the media header before submitting the template.");
       return;
     }
     setCreating(true);
@@ -392,6 +420,7 @@ export function WhatsAppTemplatesView({
         language: newLanguage.trim() || "en_US",
         headerType: newHeaderType,
         headerText: newHeaderType === "TEXT" ? newHeaderText.trim() : undefined,
+        headerMediaHandle: newHeaderMediaHandle || undefined,
         bodyText: newBodyText.trim(),
         footerText: newFooterText.trim() || undefined,
         buttons: newButtons
@@ -794,17 +823,47 @@ export function WhatsAppTemplatesView({
                   </div>
 
                   <div>
-                    <label className="block text-[12px] font-medium text-[#171717]">Header (Optional)</label>
-                    <input
-                      type="text"
-                      value={newHeaderText}
+                    <label className="block text-[12px] font-medium text-[#171717]">Header</label>
+                    <select
+                      value={newHeaderType}
                       onChange={(e) => {
-                        setNewHeaderText(e.target.value);
-                        setNewHeaderType(e.target.value.trim() ? "TEXT" : "NONE");
+                        const next = e.target.value as WhatsAppTemplateHeaderType;
+                        setNewHeaderType(next);
+                        setNewHeaderMediaHandle("");
+                        setNewHeaderMediaName("");
                       }}
-                      placeholder="e.g. Appointment Confirmed"
                       className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
-                    />
+                    >
+                      <option value="NONE">No header</option>
+                      <option value="TEXT">Text</option>
+                      <option value="IMAGE">Image</option>
+                      <option value="VIDEO">Video</option>
+                      <option value="DOCUMENT">Document (PDF)</option>
+                    </select>
+                    {newHeaderType === "TEXT" && (
+                      <input
+                        type="text"
+                        value={newHeaderText}
+                        onChange={(e) => setNewHeaderText(e.target.value)}
+                        placeholder="e.g. Appointment Confirmed"
+                        className="mt-2 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12.5px] text-[#171717]"
+                      />
+                    )}
+                    {["IMAGE", "VIDEO", "DOCUMENT"].includes(newHeaderType) && (
+                      <div className="mt-2 rounded-md border border-dashed border-[#d4d4d8] bg-white p-3">
+                        <input
+                          type="file"
+                          accept={newHeaderType === "IMAGE" ? "image/jpeg,image/png" : newHeaderType === "VIDEO" ? "video/mp4" : "application/pdf"}
+                          onChange={(e) => void handleHeaderMediaUpload(e.target.files?.[0])}
+                          className="block w-full text-[11.5px] text-[#52525b] file:mr-2 file:rounded file:border-0 file:bg-[#f4f4f5] file:px-2 file:py-1 file:text-[11px]"
+                        />
+                        <p className="mb-0 mt-1.5 text-[10.5px] text-[#71717a]">
+                          {newHeaderType === "IMAGE" ? "JPG or PNG, up to 5 MB" : newHeaderType === "VIDEO" ? "MP4, up to 16 MB" : "PDF, up to 16 MB"}. Meta uses this as the approval sample.
+                        </p>
+                        {uploadingHeaderMedia && <p className="mb-0 mt-1 text-[11px] text-blue-700">Uploading sample to Meta…</p>}
+                        {newHeaderMediaName && !uploadingHeaderMedia && <p className="mb-0 mt-1 truncate text-[11px] text-emerald-700">Uploaded: {newHeaderMediaName}</p>}
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -912,6 +971,11 @@ export function WhatsAppTemplatesView({
                         {newHeaderText}
                       </div>
                     )}
+                    {["IMAGE", "VIDEO", "DOCUMENT"].includes(newHeaderType) && (
+                      <div className="grid min-h-20 place-items-center rounded bg-[#f4f4f5] text-[11px] font-medium text-[#71717a]">
+                        {newHeaderMediaName ? `${newHeaderType}: ${newHeaderMediaName}` : `${newHeaderType} header sample`}
+                      </div>
+                    )}
                     <div className="whitespace-pre-line text-[12.5px] leading-relaxed text-[#171717]">
                       {interpolatedCreateBody || "Start typing your message body..."}
                     </div>
@@ -958,10 +1022,10 @@ export function WhatsAppTemplatesView({
                 </button>
                 <button
                   type="submit"
-                  disabled={creating}
+                  disabled={creating || uploadingHeaderMedia}
                   className="inline-flex h-8 items-center rounded-md bg-[#2563eb] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#1d4ed8] disabled:opacity-50"
                 >
-                  {creating ? "Creating..." : "Create Template"}
+                  {uploadingHeaderMedia ? "Uploading sample..." : creating ? "Creating..." : "Create Template"}
                 </button>
               </div>
             </form>

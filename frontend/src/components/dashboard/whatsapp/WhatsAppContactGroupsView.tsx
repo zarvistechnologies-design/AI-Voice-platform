@@ -32,10 +32,12 @@ export function WhatsAppContactGroupsView({
   const [contactEmail, setContactEmail] = useState("");
   const [contactTargetGroup, setContactTargetGroup] = useState("");
   const [contactTags, setContactTags] = useState("");
+  const [contactMarketingOptIn, setContactMarketingOptIn] = useState(false);
   const [busyContact, setBusyContact] = useState(false);
 
   const [importText, setImportText] = useState("");
   const [importGroupId, setImportGroupId] = useState("");
+  const [importOptInConfirmed, setImportOptInConfirmed] = useState(false);
   const [busyImport, setBusyImport] = useState(false);
 
   const filteredContacts = contacts.filter((c) => {
@@ -94,11 +96,13 @@ export function WhatsAppContactGroupsView({
         email: contactEmail.trim(),
         groupIds: contactTargetGroup ? [contactTargetGroup] : [],
         tags: contactTags.split(",").map((t) => t.trim()).filter(Boolean),
+        marketingOptIn: contactMarketingOptIn,
       });
       setShowAddContactModal(false);
       setContactName("");
       setContactPhone("");
       setContactEmail("");
+      setContactMarketingOptIn(false);
       onRefresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to add contact");
@@ -125,9 +129,10 @@ export function WhatsAppContactGroupsView({
         })
         .filter((p) => p.phoneNumber);
 
-      await whatsappApi.importContacts(parsed, importGroupId || undefined);
+      await whatsappApi.importContacts(parsed, importGroupId || undefined, importOptInConfirmed);
       setShowImportModal(false);
       setImportText("");
+      setImportOptInConfirmed(false);
       onRefresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to import contacts");
@@ -483,6 +488,10 @@ export function WhatsAppContactGroupsView({
                   className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717]"
                 />
               </div>
+              <label className="flex items-start gap-2 text-[11.5px] text-[#52525b]">
+                <input type="checkbox" checked={contactMarketingOptIn} onChange={(e) => setContactMarketingOptIn(e.target.checked)} className="mt-0.5" />
+                I confirm this person explicitly agreed to receive WhatsApp broadcasts. Without consent, they will not be campaign eligible.
+              </label>
               <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
                 <button
                   type="button"
@@ -544,6 +553,10 @@ export function WhatsAppContactGroupsView({
                   className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-3 font-mono text-[12px] text-[#171717]"
                 />
               </div>
+              <label className="flex items-start gap-2 text-[11.5px] text-[#52525b]">
+                <input type="checkbox" checked={importOptInConfirmed} onChange={(e) => setImportOptInConfirmed(e.target.checked)} className="mt-0.5" />
+                I confirm every imported contact explicitly agreed to receive WhatsApp broadcasts. Leave unchecked to import contacts without broadcast consent.
+              </label>
               <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
                 <button
                   type="button"
