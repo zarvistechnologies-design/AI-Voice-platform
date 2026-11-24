@@ -140,7 +140,7 @@ export function WhatsAppCampaignsView({
         templateId: selectedTemplateId,
         groupId: selectedGroupId,
         scheduleType,
-        scheduledAt: scheduleType === "later" ? scheduledDate : undefined,
+        scheduledAt: scheduleType === "later" && scheduledDate ? new Date(scheduledDate).toISOString() : undefined,
         senderPhoneNumberId: selectedSenderNumberId || undefined,
       });
       setShowCreateModal(false);
@@ -470,6 +470,7 @@ export function WhatsAppCampaignsView({
                               <span className={`size-1.5 rounded-full ${statusDotClass(camp.status)}`} />
                               {camp.status}
                             </span>
+                            {camp.failureReason && <span className="mt-1 block max-w-48 text-[10.5px] leading-snug text-rose-700">{camp.failureReason}</span>}
                           </td>
                           <td className="px-4 py-2.5 text-right">
                             <div className="flex items-center justify-end gap-1">

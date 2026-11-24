@@ -343,7 +343,7 @@ export function WhatsAppContactGroupsView({
                         <td className="px-4 py-2.5">
                           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[11px] font-medium text-[#171717]">
                             <span className="size-1.5 rounded-full bg-[#171717]" />
-                            {contact.status}
+                            {contact.status === "pending_consent" ? "Pending opt-in" : contact.status === "opted_out" ? "Opted out" : "Subscribed"}
                           </span>
                         </td>
                         <td className="px-4 py-2.5 text-right">

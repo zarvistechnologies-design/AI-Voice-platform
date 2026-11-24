@@ -56,6 +56,7 @@ export type WhatsAppCampaign = {
   senderPhoneNumberId?: string;
   senderDisplayPhone?: string;
   status: "draft" | "scheduled" | "running" | "completed" | "failed";
+  failureReason?: string;
   scheduledAt?: string;
   sentAt?: string;
   stats: {
