@@ -256,12 +256,13 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
     return () => window.clearInterval(interval);
   }, [activeTab]);
 
-  const hasActiveCampaigns = campaigns.some((campaign) => campaign.status === "scheduled" || campaign.status === "running");
+  const hasRunningCampaigns = campaigns.some((campaign) => campaign.status === "running");
+  const hasScheduledCampaigns = campaigns.some((campaign) => campaign.status === "scheduled");
   useEffect(() => {
-    if (activeTab !== "campaigns" || !hasActiveCampaigns) return;
-    const interval = window.setInterval(() => void loadData(true), 5_000);
+    if (activeTab !== "campaigns" || (!hasRunningCampaigns && !hasScheduledCampaigns)) return;
+    const interval = window.setInterval(() => void loadData(true), hasRunningCampaigns ? 5_000 : 60_000);
     return () => window.clearInterval(interval);
-  }, [activeTab, hasActiveCampaigns]);
+  }, [activeTab, hasRunningCampaigns, hasScheduledCampaigns]);
 
   // Recheck pending template approvals with Meta while the template screen is open.
   const hasPendingTemplates = templates.some((template) => template.status === "PENDING");

@@ -49,6 +49,7 @@ export function WhatsAppCampaignsView({
   const [scheduledDate, setScheduledDate] = useState("");
   const [sampleVar1, setSampleVar1] = useState("Alex Johnson");
   const [sampleVar2, setSampleVar2] = useState("Acme Corp");
+  const [variableMappings, setVariableMappings] = useState<Record<string, string>>({});
   const [busyCreate, setBusyCreate] = useState(false);
   const [createNotice, setCreateNotice] = useState("");
 
@@ -93,6 +94,18 @@ export function WhatsAppCampaignsView({
   }, [inspectedCampaign, composerTemplate, templates]);
 
   const activeTestTemplate = showCreateModal ? composerTemplate : inspectedTemplate || templates[0] || null;
+  const composerVariableIndices = useMemo(() => {
+    const matches = composerTemplate?.bodyText.match(/\{\{(\d+)\}\}/g) || [];
+    return Array.from(new Set(matches.map((match) => match.replace(/\D/g, ""))))
+      .sort((a, b) => Number(a) - Number(b));
+  }, [composerTemplate?.bodyText]);
+
+  useEffect(() => {
+    setVariableMappings(Object.fromEntries(composerVariableIndices.map((index) => [
+      index,
+      index === "1" ? "name" : index === "2" ? "phone" : index === "3" ? "email" : "",
+    ])));
+  }, [composerTemplate?._id, composerVariableIndices]);
 
   const filteredCampaigns = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -142,6 +155,7 @@ export function WhatsAppCampaignsView({
         scheduleType,
         scheduledAt: scheduleType === "later" && scheduledDate ? new Date(scheduledDate).toISOString() : undefined,
         senderPhoneNumberId: selectedSenderNumberId || undefined,
+        variableMappings,
       });
       setShowCreateModal(false);
       setCampaignName("");
@@ -621,6 +635,47 @@ export function WhatsAppCampaignsView({
                     />
                   </div>
                 </div>
+
+                {composerVariableIndices.length > 0 && (
+                  <div className="space-y-2 rounded-md border border-[#eaeaea] bg-[#fafafa] p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-wide text-[#71717a]">Personalize template variables</div>
+                    {composerVariableIndices.map((index) => {
+                      const mapping = variableMappings[index] || "";
+                      const mappingKind = mapping.startsWith("attribute:") ? "attribute" : mapping.startsWith("static:") ? "static" : mapping;
+                      return (
+                        <div key={index} className="grid grid-cols-[90px_1fr] gap-2 items-center">
+                          <label className="text-[11.5px] text-[#52525b]">{"{{"}{index}{"}}"}</label>
+                          <select
+                            value={mappingKind}
+                            onChange={(e) => {
+                              const kind = e.target.value;
+                              setVariableMappings((prev) => ({ ...prev, [index]: kind === "attribute" ? "attribute:" : kind === "static" ? "static:" : kind }));
+                            }}
+                            className="h-8 rounded border border-[#eaeaea] bg-white px-2 text-[11.5px] text-[#171717]"
+                          >
+                            <option value="">Choose a contact field…</option>
+                            <option value="name">Contact name</option>
+                            <option value="phone">WhatsApp number</option>
+                            <option value="email">Email address</option>
+                            <option value="attribute">Custom contact attribute</option>
+                            <option value="static">Same text for everyone</option>
+                          </select>
+                          {(mappingKind === "attribute" || mappingKind === "static") && (
+                            <input
+                              type="text"
+                              required
+                              value={mapping.slice(mapping.indexOf(":") + 1)}
+                              onChange={(e) => setVariableMappings((prev) => ({ ...prev, [index]: `${mappingKind}:${e.target.value}` }))}
+                              placeholder={mappingKind === "attribute" ? "Attribute key, e.g. appointmentDate" : "Value to send to every contact"}
+                              maxLength={mappingKind === "static" ? 500 : 80}
+                              className="col-start-2 h-8 rounded border border-[#eaeaea] bg-white px-2.5 text-[11.5px] text-[#171717]"
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-[12px] font-medium text-[#171717]">Schedule</label>

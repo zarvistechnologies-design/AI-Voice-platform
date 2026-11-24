@@ -387,6 +387,7 @@ export const whatsappApi = {
     scheduleType: "now" | "later";
     scheduledAt?: string;
     senderPhoneNumberId?: string;
+    variableMappings?: Record<string, string>;
   }) => req<{ ok: boolean; campaign: WhatsAppCampaign }>("/api/whatsapp/campaigns", {
     method: "POST",
     body: JSON.stringify(data),
