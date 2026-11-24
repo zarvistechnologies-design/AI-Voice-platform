@@ -78,7 +78,7 @@ export function SiteFooter() {
           <div>
             <b>Contact US</b>
             <a href="mailto:hello@vozon.ai">hello@vozon.ai</a>
-            <a className="design-four-footer-phone" href="tel:+917892518414">+91 78925 18414</a>
+            <a className="design-four-footer-phone" href="tel:+918423655336">+91 78925 18414</a>
             <Link href="/contact#office-locations">Our Office Locations</Link>
             <Link className="design-four-footer-demo" href="/contact">Book a free demo</Link>
           </div>
