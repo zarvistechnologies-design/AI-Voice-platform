@@ -10,6 +10,7 @@ export type BillingPlan = {
   monthlyPrice: number | null;
   currency?: string;
   interval?: string;
+  includedMinutes?: number;
   limits: {
     agents: number | null;
     members: number | null;

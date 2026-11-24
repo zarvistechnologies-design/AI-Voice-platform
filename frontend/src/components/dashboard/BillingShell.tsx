@@ -280,7 +280,20 @@ export function BillingShell() {
             </section>
           ) : (
             <>
-              {data?.paymentReadiness ? (
+              {data?.whiteLabel && !data.whiteLabel.managedByPartner ? (
+                <section className="rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">
+                  <span className="app-label text-[#71717a]">Your subscription plan</span>
+                  <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</h2>
+                  <p className="mt-1 text-xs text-[#71717a]">Plan provided by {data.whiteLabel.productName}.</p>
+                  <dl className="mt-4 grid gap-3 border-t border-[#eaeaea] pt-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? `${money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / ${data.subscription.priceSnapshot.interval ?? "month"}` : "Managed by provider"}</dd></div>
+                    <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{(data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min</dd></div>
+                    <div><dt className="text-[11px] text-[#71717a]">Monthly minute limit</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.limits?.monthlyMinutes?.toLocaleString() ?? "—"} min</dd></div>
+                    <div><dt className="text-[11px] text-[#71717a]">Status</dt><dd className="m-0 mt-1 text-sm font-semibold capitalize text-[#171717]">{data.subscription?.status?.replaceAll("_", " ") ?? "Active"}</dd></div>
+                  </dl>
+                </section>
+              ) : null}
+              {data?.paymentReadiness && (!data.whiteLabel || data.configured) ? (
                 <section className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-[#eaeaea] bg-white px-4 py-3">
                   <div className="flex items-center gap-2.5"><span className={`size-2 rounded-full ${data.configured ? "bg-[#171717]" : "bg-amber-500"}`} /><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Payment setup</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">{data.configured ? "Checkout is ready" : "Checkout configuration is incomplete"}</p></div></div>
                   <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
@@ -294,21 +307,21 @@ export function BillingShell() {
               <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
                 <div className="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-5">
                   <div><span className="app-label text-[#71717a]">Available balance</span><h2 className="mt-1 mb-0 text-3xl font-semibold tracking-tight text-[#171717]">{money(toInr(balance))}</h2><p className="app-caption mt-1.5 mb-0 text-xs text-[#71717a]">{money(toInr(lifetime))} lifetime credits purchased</p><p className="app-caption mt-0.5 mb-0 text-xs text-[#a1a1aa]">All balances and usage are shown in Indian rupees.</p></div>
-                  <div className="grid gap-2.5 border-t border-[#eaeaea] pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-5">
+                  {(!data?.whiteLabel || data.configured) ? <div className="grid gap-2.5 border-t border-[#eaeaea] pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-5">
                     <span className="app-label text-xs font-semibold text-[#71717a]">Add credits</span>
                     <div className="grid grid-cols-3 gap-1.5">
                       {topUpOptions.map((amount) => <button className={`h-8 rounded-md border text-xs font-medium transition ${selectedTopUp === amount ? "border-black bg-[#171717] text-white" : "border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
                     </div>
                     <button className="h-8 rounded-md bg-[#2563eb] px-3 text-xs font-medium text-white hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
                     <p className="app-caption m-0 text-[11px] text-[#a1a1aa]">18% GST is added securely at checkout.</p>
-                  </div>
+                  </div> : null}
                 </div>
                 <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
                   {[["This month", money(toInr(data?.usage.chargedCredits ?? 0))], ["Provider spend", money(toInr(data?.usage.providerCost ?? 0, "USD"))], ["Minimum to call", money(toInr(data?.creditSettings.minimumCallStartCredits ?? 0, data?.creditSettings.currency ?? walletCurrency))], ["Recent top-ups", `${totals.topUps} (${money(toInr(totals.net))})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
                 </dl>
               </section>
 
-              <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+              {!data?.whiteLabel ? <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
                 <div className="border-b border-[#eaeaea] px-5 py-3.5"><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Billing details</h2></div>
                 <div className="grid md:grid-cols-2">
                   {data?.canManageBillingProfile ? <div className="flex flex-col gap-4 border-b border-[#eaeaea] p-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
@@ -339,7 +352,7 @@ export function BillingShell() {
                     </dl>
                   </div>
                 </div>
-              </section>
+              </section> : null}
             </>
           )}
 
