@@ -116,7 +116,7 @@ export function TalkToAgentWidget({ variant = "phone" }: { variant?: "phone" | "
       }
 
       setCallingState("ringing");
-      setStatusMessage(`Calling ${fullPhoneNumber}! Your phone will ring shortly from +918044318955.`);
+      setStatusMessage(`Calling ${fullPhoneNumber}! Your phone will ring shortly from +917971442102.`);
     } catch (err) {
       setCallingState("error");
       setStatusMessage(err instanceof Error ? err.message : "Call failed. Please try again.");
@@ -349,7 +349,7 @@ export function TalkToAgentWidget({ variant = "phone" }: { variant?: "phone" | "
 
         {/* Caller ID Info Badge */}
         <p className={styles.callerIdNote}>
-          Incoming call from <strong>+918044318955</strong> • Zero spam
+          Incoming call from <strong>+917971442102</strong> • Zero spam
         </p>
       </div>
 
