@@ -498,7 +498,8 @@ export function PhoneNumberShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 bg-white text-[#111827] ${
+      className={`dashboard-home-theme phone-number-workspace grid min-h-screen w-full min-w-0 bg-white text-[#111827] ${
+
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"

@@ -480,7 +480,7 @@ export function OrganizationSettingsShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
+      className={`dashboard-home-theme workspace-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -505,7 +505,7 @@ export function OrganizationSettingsShell() {
           description="Manage organizations, teammates, permissions, invitations, and activity."
           actions={
             <Link
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#eaeaea] hover:text-[#171717]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dbeafe] bg-white px-3.5 text-xs font-bold text-[#1d4ed8] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
               href="/dashboard/profile"
             >
               <WorkspaceIcon className="size-4" name="profile" />
@@ -519,7 +519,7 @@ export function OrganizationSettingsShell() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#171717] text-lg font-bold text-white">
+                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-lg font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.22)]">
                     {initials(activeOrganization?.name)}
                   </span>
                   <div className="min-w-0">
@@ -679,7 +679,7 @@ export function OrganizationSettingsShell() {
                               </span>
                             </span>
                             {active ? (
-                              <span className="grid size-6 place-items-center rounded-full bg-[#171717] text-white">
+                              <span className="grid size-6 place-items-center rounded-full bg-[#2563eb] text-white">
                                 <WorkspaceIcon
                                   className="size-3.5"
                                   name="check"
@@ -701,7 +701,7 @@ export function OrganizationSettingsShell() {
                 className="grid gap-3 rounded-2xl border border-[#e2eaf0] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
                 onSubmit={createWorkspace}
               >
-                <span className="grid size-9 place-items-center rounded-xl bg-[#f7f9f8] text-[#087f75] ring-1 ring-[#dfe7e4]">
+                <span className="grid size-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#bfdbfe]">
                   <WorkspaceIcon className="size-4.5" name="plus" />
                 </span>
                 <div>
@@ -726,7 +726,7 @@ export function OrganizationSettingsShell() {
                   onChange={(event) => setWorkspaceName(event.target.value)}
                 />
                 <button
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#ffffff] px-4 text-sm font-bold text-white transition hover:bg-[#123a33] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={busy || workspaceName.trim().length < 2}
                   type="submit"
                 >
@@ -743,7 +743,7 @@ export function OrganizationSettingsShell() {
               >
                 {visibleSections.map((item) => (
                   <a
-                    className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#f7f9f8] hover:text-[#087f75]"
+                    className="inline-flex min-w-max items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
                     href={`#${item.id}`}
                     key={item.id}
                   >
@@ -833,7 +833,7 @@ export function OrganizationSettingsShell() {
                         </span>
                       </label>
                       <div className="rounded-xl border border-[#dfe7e4] bg-[#f7fbfa] p-4">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2563eb]">
                           Workspace identity
                         </span>
                         <p className="mt-2 truncate text-sm font-bold text-slate-900">
@@ -850,7 +850,7 @@ export function OrganizationSettingsShell() {
                         not affect your other organizations.
                       </p>
                       <button
-                        className="min-h-11 shrink-0 rounded-xl bg-[#171717] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                        className="min-h-11 shrink-0 rounded-xl bg-[#2563eb] px-5 text-sm font-extrabold text-[#ffffff] shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={busy || organizationName.trim().length < 2}
                         type="submit"
                       >
@@ -926,7 +926,7 @@ export function OrganizationSettingsShell() {
                     onSubmit={inviteMember}
                   >
                     <div className="lg:col-span-3">
-                      <span className="grid size-9 place-items-center rounded-xl bg-[#dff5f1] text-[#087f75]">
+                      <span className="grid size-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                         <WorkspaceIcon className="size-4.5" name="invite" />
                       </span>
                       <h3 className="mt-3 text-sm font-bold text-slate-950">
@@ -974,7 +974,7 @@ export function OrganizationSettingsShell() {
                       </select>
                     </label>
                     <button
-                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#171717] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 text-sm font-extrabold text-[#ffffff] shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={busy || !inviteEmail.trim()}
                       type="submit"
                     >
