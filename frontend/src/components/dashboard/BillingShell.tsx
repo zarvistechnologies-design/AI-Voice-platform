@@ -46,7 +46,7 @@ export function BillingShell() {
 
   const load = useCallback(async () => {
     try {
-      const summary = await billingApi.summary(true);
+      const summary = await billingApi.summary();
       setData(summary);
       setGstin(summary.billingProfile?.gstin ?? "");
       setBillingAddress(summary.billingProfile?.address ?? "");
