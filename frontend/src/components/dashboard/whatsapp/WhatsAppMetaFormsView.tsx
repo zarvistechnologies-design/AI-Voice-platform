@@ -274,9 +274,20 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                 return (
                   <div
                     key={form._id}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedFormId(form._id)}
-                    className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition ${
-                      isSelected ? "bg-[#fafafa]" : "hover:bg-[#fafafa]"
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedFormId(form._id);
+                      }
+                    }}
+                    className={`flex w-full items-center justify-between gap-3 border-l-2 px-4 py-3 text-left cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-zinc-400 ${
+                      isSelected
+                        ? "border-l-zinc-400 bg-[#f4f4f5]"
+                        : "border-l-transparent hover:bg-[#fafafa]"
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">

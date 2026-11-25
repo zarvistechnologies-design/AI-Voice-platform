@@ -224,7 +224,7 @@ export function DashboardPageHeader({
   if (workspaceBarOnly) {
     return (
       <header
-        className="dashboard-page-header sticky top-0 z-30 bg-white dark:bg-[#09090b]"
+        className="dashboard-page-header bg-white dark:bg-[#09090b]"
       >
         <DashboardWorkspaceBar />
       </header>
@@ -233,7 +233,7 @@ export function DashboardPageHeader({
 
   return (
     <header
-      className="dashboard-page-header sticky top-0 z-30 bg-[#fafafa] dark:bg-[#09090b]"
+      className="dashboard-page-header bg-[#fafafa] dark:bg-[#09090b]"
     >
       <DashboardWorkspaceBar />
       <div className={`dashboard-page-header-inner w-full px-5 sm:px-6 lg:px-7 ${compact ? "pt-3 pb-1" : "pt-4 pb-1"}`}>

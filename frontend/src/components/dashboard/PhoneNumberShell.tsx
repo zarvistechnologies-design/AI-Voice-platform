@@ -498,7 +498,7 @@ export function PhoneNumberShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-white text-[#111827] lg:h-screen lg:overflow-hidden ${
+      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 bg-white text-[#111827] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -515,7 +515,7 @@ export function PhoneNumberShell() {
         showUserSidebar={showUserSidebar}
         setShowUserSidebar={setShowUserSidebar}
       />
-      <section className="min-w-0 overflow-y-auto">
+      <section className="grid min-w-0 content-start">
         <DashboardPageHeader
           eyebrow="Telephony"
           title="Phone numbers"

@@ -4027,46 +4027,169 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
 /* Base-layer important rules override the dashboard's earlier dark palette. */
 @layer base {
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme {
-    --dashboard-surface: #1d2936 !important;
-    --dashboard-border: #364555 !important;
-    --voice-surface: #1d2936 !important;
-    --voice-surface-raised: #243140 !important;
-    --voice-surface-soft: #2b3948 !important;
-    --voice-border: #364555 !important;
-    background-color: #151e29 !important;
+    --dashboard-surface: #111113 !important;
+    --dashboard-border: #29292e !important;
+    --voice-surface: #111113 !important;
+    --voice-surface-raised: #18181b !important;
+    --voice-surface-soft: #202024 !important;
+    --voice-border: #29292e !important;
+    background-color: #09090b !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(.agent-stack-panel, .agent-runtime-card, .agent-editor-shell, .agent-prompt-editor, .dashboard-page-header) {
-    border-color: #364555 !important;
-    background-color: #1d2936 !important;
+    border-color: #29292e !important;
+    background-color: #111113 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .agent-runtime-health-summary {
+    border-color: #34343a !important;
+    background-color: #18181b !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(textarea, input, select) {
-    background-color: #202d3b !important;
-    border-color: #405164 !important;
+    background-color: #141418 !important;
+    border-color: #34343a !important;
     color: #f4f7fb !important;
     -webkit-text-fill-color: #f4f7fb !important;
     caret-color: #ffffff !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node {
-    border-color: #364555 !important;
-    background-color: #243140 !important;
+    border-color: #34343a !important;
+    background-color: #18181b !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node[aria-pressed="true"] {
     border-color: var(--pipeline-accent) !important;
-    background-color: #2b3948 !important;
+    background-color: #202024 !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node > span:first-child > span:first-child > span:first-child {
-    background-color: color-mix(in srgb, var(--pipeline-accent) 22%, #243140) !important;
+    background-color: color-mix(in srgb, var(--pipeline-accent) 22%, #18181b) !important;
     color: color-mix(in srgb, var(--pipeline-accent) 62%, white) !important;
   }
 
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(textarea, input)::selection {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    background-color: #3768a8 !important;
+    background-color: #2563eb !important;
   }
+}
+
+@media (min-width: 1024px) {
+  main.voice-agent-theme.dashboard-home-theme .dashboard-sidebar-shell {
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    height: 100dvh !important;
+    align-self: start;
+  }
+}
+
+/* Keep the shared workspace bar pinned even on pages with their own scroller. */
+.dashboard-home-theme .dashboard-page-header {
+  position: static !important;
+}
+
+.dashboard-home-theme .dashboard-page-header:has(> .dashboard-workspace-bar)::before {
+  content: "";
+  display: block;
+  height: 48px;
+  flex: none;
+}
+
+.dashboard-home-theme .dashboard-page-header > .dashboard-workspace-bar {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 70 !important;
+  height: 48px !important;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-home-theme:has(.dashboard-sidebar-shell[data-expanded="true"]) .dashboard-page-header > .dashboard-workspace-bar {
+    left: 248px !important;
+  }
+
+  .dashboard-home-theme:has(.dashboard-sidebar-shell[data-expanded="false"]) .dashboard-page-header > .dashboard-workspace-bar {
+    left: 64px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dashboard-home-theme .dashboard-page-header > .dashboard-workspace-bar {
+    top: 62px !important;
+  }
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-chart {
+  --agent-chart-axis: #a1a1aa;
+  --agent-chart-grid: #303036;
+  --agent-chart-hover: #202024;
+  --agent-chart-completed: #3b82f6;
+  --agent-chart-incomplete: #4b5563;
+  background-color: #111113 !important;
+  border-color: #29292e !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-chart > div:first-child {
+  border-color: #29292e !important;
+  background-color: #111113 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-chart > div:nth-child(2) {
+  border-color: #29292e !important;
+  background-color: #18181b !important;
+  color: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-chart .recharts-cartesian-axis-tick-value {
+  fill: #a1a1aa !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-tooltip {
+  border-color: #3f3f46 !important;
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .agent-performance-tooltip :where(strong, span) {
+  color: #f4f4f5 !important;
+}
+
+/* Keep the Meta Forms workspace layered and readable in dark mode. */
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms > .grid > div:first-child > div:last-child,
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms > .grid > div:last-child > div:last-child {
+  border-color: #303038 !important;
+  background-color: #151519 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms > .grid > div:last-child > div:last-child > div > div:first-child,
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms > .grid > div:last-child > div:last-child > div > div > div:first-child {
+  border-color: #303038 !important;
+  background-color: #1b1b20 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms [aria-pressed="true"] {
+  border-left-color: #71717a !important;
+  background-color: #222228 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms [aria-pressed="false"]:hover {
+  background-color: #1c1c21 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme .whatsapp-forms [role="button"]:focus-visible {
+  outline: 2px solid #a1a1aa !important;
+  outline-offset: -2px;
+}
+
+/* Match the Agents page: let the Workflows header flow into the page canvas. */
+.automation-layout .dashboard-page-header {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.automation-layout .automation-home {
+  background: inherit !important;
 }

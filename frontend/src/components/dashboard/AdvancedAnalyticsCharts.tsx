@@ -37,7 +37,7 @@ const tooltipStyle = {
   color: "#171717",
   fontSize: 12,
 };
-const axis = { fill: "#71717a", fontSize: 10, fontWeight: 500 };
+const axis = { fill: "var(--agent-chart-axis, #71717a)", fontSize: 10, fontWeight: 500 };
 
 function Area(props: ComponentProps<typeof ReArea>) {
   return <ReArea {...props} isAnimationActive={false} />;
@@ -98,7 +98,7 @@ function AgentPerformanceTooltip({
   const row = payload?.[0]?.payload;
   if (!active || !row) return null;
   return (
-    <div className="min-w-52 rounded-lg border border-[#eaeaea] bg-white p-3 shadow-lg">
+    <div className="agent-performance-tooltip min-w-52 rounded-lg border border-[#eaeaea] bg-white p-3 shadow-lg">
       <div className="flex items-center justify-between gap-3">
         <strong className="text-[12.5px] text-[#171717]">{row.fullName}</strong>
         <span className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 text-[10px] font-medium text-[#171717]">
@@ -176,7 +176,7 @@ function AgentPerformanceCommandCenter({
   const routedCount = agents.filter((agent) => Boolean(agent.phone)).length;
 
   return (
-    <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+    <section className="agent-performance-chart overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eaeaea] px-4 py-3.5">
         <div>
           <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ function AgentPerformanceCommandCenter({
                 margin={{ top: 4, right: 24, bottom: 8, left: 16 }}
                 barCategoryGap="28%"
               >
-                <CartesianGrid stroke="#eaeaea" horizontal={false} />
+                <CartesianGrid stroke="var(--agent-chart-grid, #eaeaea)" horizontal={false} />
                 <XAxis
                   type="number"
                   tick={axis}
@@ -238,26 +238,26 @@ function AgentPerformanceCommandCenter({
                   type="category"
                   dataKey="name"
                   width={160}
-                  tick={{ ...axis, fill: "#171717", fontSize: 11 }}
+                  tick={{ ...axis, fontSize: 11 }}
                   tickLine={false}
                   axisLine={false}
                 />
                 <Tooltip
                   content={<AgentPerformanceTooltip />}
-                  cursor={{ fill: "#f4f4f5" }}
+                  cursor={{ fill: "var(--agent-chart-hover, #f4f4f5)" }}
                 />
                 <Bar
                   dataKey="completed"
                   name="Completed"
                   stackId="calls"
-                  fill="#2563eb"
+                  fill="var(--agent-chart-completed, #2563eb)"
                   radius={[4, 0, 0, 4]}
                 />
                 <Bar
                   dataKey="incomplete"
                   name="Not completed"
                   stackId="calls"
-                  fill="#cbd5e1"
+                  fill="var(--agent-chart-incomplete, #cbd5e1)"
                   radius={[0, 4, 4, 0]}
                 />
               </BarChart>
