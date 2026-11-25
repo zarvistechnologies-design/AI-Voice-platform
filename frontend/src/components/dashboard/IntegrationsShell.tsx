@@ -76,6 +76,13 @@ const catalog = {
     logo: "/images/integrations/razorpay.png",
     color: "from-[#171717] to-[#3f3f46]",
   },
+  shopify: {
+    name: "Shopify",
+    category: "Commerce",
+    description: "Connect your Shopify store to inspect recent orders and products, and let enabled voice agents answer store questions.",
+    logo: "/images/company-logos/shopify.svg",
+    color: "from-[#95bf47] to-[#5e8e3e]",
+  },
   asana: {
     name: "Asana",
     category: "Work management",
@@ -193,7 +200,7 @@ const catalog = {
 } as const;
 
 const tokenProviderIds = ["asana", "clickup", "linear", "freshsales", "highlevel"] as const;
-const voiceReadProviderIds: string[] = [...tokenProviderIds, "zoho", "salesforce", "razorpay_api", "razorpay_oauth", "google_calendar", "google_drive", "google_docs", "google_gmail"];
+const voiceReadProviderIds: string[] = [...tokenProviderIds, "zoho", "salesforce", "razorpay_api", "razorpay_oauth", "shopify", "google_calendar", "google_drive", "google_docs", "google_gmail"];
 type TokenProviderId = (typeof tokenProviderIds)[number];
 
 function isTokenProviderId(id: IntegrationProvider["id"]): id is TokenProviderId {
@@ -246,10 +253,12 @@ export function IntegrationsShell() {
   > | null>(null);
   const [credential, setCredential] = useState("");
   const [razorpayKeyId, setRazorpayKeyId] = useState("");
+  const [shopifyStore, setShopifyStore] = useState("");
   const [freshsalesSite, setFreshsalesSite] = useState("");
   const [highlevelLocationId, setHighlevelLocationId] = useState("");
   const [razorpayPayments, setRazorpayPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayPayments>> | null>(null);
   const [razorpayOAuthPayments, setRazorpayOAuthPayments] = useState<Awaited<ReturnType<typeof integrationsApi.razorpayOAuthPayments>> | null>(null);
+  const [shopifyPreview, setShopifyPreview] = useState<Awaited<ReturnType<typeof integrationsApi.shopifyPreview>> | null>(null);
   const [providerPreviews, setProviderPreviews] = useState<Partial<Record<TokenProviderId, Awaited<ReturnType<typeof integrationsApi.tokenProviderPreview>>>>>({});
   const [crmPreviews, setCrmPreviews] = useState<Partial<Record<"zoho" | "salesforce", Awaited<ReturnType<typeof integrationsApi.crmPreview>>>>>({});
   const [agentAccess, setAgentAccess] = useState<Array<{ id: string; name: string; status: string; providers: string[] }>>([]);
@@ -382,6 +391,7 @@ export function IntegrationsShell() {
       if (provider === "google") setGooglePreviews({});
       if (provider === "razorpay_api") setRazorpayPayments(null);
       if (provider === "razorpay_oauth") setRazorpayOAuthPayments(null);
+      if (provider === "shopify") setShopifyPreview(null);
       if (provider === "zoho" || provider === "salesforce") setCrmPreviews((current) => ({ ...current, [provider]: undefined }));
       if (isTokenProviderId(provider)) setProviderPreviews((current) => ({ ...current, [provider]: undefined }));
       await load();
@@ -432,6 +442,24 @@ export function IntegrationsShell() {
       setNotice(error instanceof Error ? error.message : "Could not start Razorpay authorization.");
       setBusy(false);
     }
+  }
+
+  async function connectShopify() {
+    setBusy(true);
+    try {
+      const { url } = await integrationsApi.shopifyOAuthUrl(shopifyStore.trim());
+      window.location.assign(url);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not start Shopify authorization.");
+      setBusy(false);
+    }
+  }
+
+  async function previewShopify() {
+    setBusy(true);
+    try { setShopifyPreview(await integrationsApi.shopifyPreview()); }
+    catch (error) { setNotice(error instanceof Error ? error.message : "Could not read Shopify store data."); }
+    finally { setBusy(false); }
   }
 
   async function previewRazorpayOAuth() {
@@ -619,7 +647,7 @@ export function IntegrationsShell() {
   >((items, provider) => {
     // Keep both CRM replacements visible so administrators can see their
     // setup state. Other unfinished OAuth connectors stay hidden.
-    if (!["zoho", "salesforce"].includes(provider.id) && provider.metadata?.platformConfigured === false && !provider.connected) {
+    if (!["zoho", "salesforce", "shopify"].includes(provider.id) && provider.metadata?.platformConfigured === false && !provider.connected) {
       return items;
     }
     if (provider.id === "google") {
@@ -892,6 +920,21 @@ export function IntegrationsShell() {
                         )) : <span className="mt-2 block">No recent payments found.</span>}
                       </div>
                     ) : null}
+                    {displayConnected && provider.id === "shopify" && shopifyPreview ? (
+                      <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
+                        <strong className="block text-slate-900">{shopifyPreview.shop.name} · Recent orders</strong>
+                        {shopifyPreview.orders.length ? shopifyPreview.orders.map((order) => (
+                          <div key={order.id} className="mt-2 border-t border-[#dfe7e4] pt-2">
+                            <div className="flex justify-between gap-2"><span className="font-semibold">{order.name}</span><span>{order.currency} {order.total}</span></div>
+                            <div className="mt-1 text-slate-500">{order.financialStatus} · {order.fulfillmentStatus}</div>
+                          </div>
+                        )) : <span className="mt-2 block">No recent orders found.</span>}
+                        <strong className="mt-3 block border-t border-[#dfe7e4] pt-2 text-slate-900">Products</strong>
+                        {shopifyPreview.products.length ? shopifyPreview.products.map((product) => (
+                          <div key={product.id} className="mt-2 flex justify-between gap-2 border-t border-[#dfe7e4] pt-2"><span className="truncate">{product.title}</span><span className="shrink-0 text-slate-500">{product.status}</span></div>
+                        )) : <span className="mt-2 block">No products found.</span>}
+                      </div>
+                    ) : null}
                     {displayConnected && isTokenProviderId(provider.id) && providerPreviews[provider.id] ? (
                       <div className="mt-3 rounded-xl bg-[#f7f9f8] p-3 text-xs text-slate-700">
                         <strong className="block text-slate-900">Accessible resources</strong>
@@ -954,6 +997,25 @@ export function IntegrationsShell() {
                         >
                           Manage Vobiz
                         </Link>
+                      ) : provider.id === "shopify" ? (
+                        displayConnected ? (
+                          <>
+                            <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8]" disabled={busy} type="button" onClick={() => void previewShopify()}>
+                              View products &amp; orders
+                            </button>
+                            <button className="rounded-lg border border-rose-200 px-4 py-2.5 text-sm font-semibold text-rose-700" disabled={busy} type="button" onClick={() => void disconnect("shopify")}>
+                              Disconnect
+                            </button>
+                          </>
+                        ) : (
+                          <button className="rounded-lg bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:bg-slate-300" disabled={busy || setupNeeded} type="button" onClick={() => {
+                            setShopifyStore("");
+                            setSelected("shopify");
+                            setModalError("");
+                          }}>
+                            Connect Shopify
+                          </button>
+                        )
                       ) : provider.id === "google" ? (
                         displayConnected ? (
                           <>
@@ -1167,6 +1229,8 @@ export function IntegrationsShell() {
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {selected === "slack"
                 ? "Create an incoming webhook in Slack and paste its URL. A verification message will be sent immediately."
+                : selected === "shopify"
+                  ? "Enter your store’s myshopify.com domain. Shopify will ask you to approve read-only access to products and orders."
                 : selected === "hubspot"
                   ? "Create a HubSpot private app with CRM contacts and notes permissions, then paste its access token."
                   : selected === "razorpay_api"
@@ -1181,6 +1245,18 @@ export function IntegrationsShell() {
                     ? "Create a connection key in the DigitalBot workspace, select the Vozon agent, then paste the key here."
                     : "Create a Calendly personal access token and paste it here."}
             </p>
+            {selected === "shopify" ? (
+              <label className="mt-4 grid gap-2 text-xs font-semibold text-slate-600">
+                Shopify store domain
+                <input
+                  className="rounded-xl border border-slate-200 px-3 py-3 text-sm font-normal text-slate-950"
+                  autoComplete="url"
+                  value={shopifyStore}
+                  onChange={(event) => setShopifyStore(event.target.value)}
+                  placeholder="your-store.myshopify.com"
+                />
+              </label>
+            ) : null}
             {selected === "digitalbot" ? (
               <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600">
                 <strong className="block text-slate-900">
@@ -1252,7 +1328,7 @@ export function IntegrationsShell() {
                 />
               </label>
             ) : null}
-            <label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">
+            {selected !== "shopify" ? <label className="mt-5 grid gap-2 text-xs font-semibold text-slate-600">
               {selected === "slack"
                 ? "Incoming webhook URL"
                 : selected === "razorpay_api"
@@ -1282,23 +1358,25 @@ export function IntegrationsShell() {
                       : "Paste provider token"
                 }
               />
-            </label>
+            </label> : null}
             <button
               className="mt-5 w-full rounded-lg bg-[#2563eb] px-4 py-3 text-sm font-semibold text-white hover:bg-[#1d4ed8] disabled:opacity-50"
               type="button"
               disabled={
                 busy ||
-                !credential.trim() ||
+                (selected === "shopify" ? !shopifyStore.trim() : !credential.trim()) ||
                 (selected === "razorpay_api" && !razorpayKeyId.trim()) ||
                 (selected === "freshsales" && !freshsalesSite.trim()) ||
                 (selected === "highlevel" && !highlevelLocationId.trim()) ||
                 (selected === "digitalbot" && !digitalBotAgentId)
               }
-              onClick={() => void connect()}
+              onClick={() => selected === "shopify" ? void connectShopify() : void connect()}
             >
               {busy
-                ? "Verifying..."
-                : selected === "digitalbot"
+                ? selected === "shopify" ? "Opening Shopify..." : "Verifying..."
+                : selected === "shopify"
+                  ? "Continue to Shopify"
+                  : selected === "digitalbot"
                   ? "Connect DigitalBot"
                   : "Connect and verify"}
             </button>
