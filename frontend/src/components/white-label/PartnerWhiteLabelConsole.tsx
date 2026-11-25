@@ -200,7 +200,7 @@ function BrandEditor({
       const msg = error instanceof Error ? error.message : "Email domain verification failed.";
       setActionError(msg);
       onError?.(msg);
-      await onReload?.().catch(() => {});
+      await onReload?.().catch(() => { });
     } finally {
       setVerifying(false);
     }
@@ -262,7 +262,7 @@ function BrandEditor({
     <div className="grid gap-4 md:grid-cols-2"><Input label="Product name" required value={form.productName} onChange={(event) => set("productName", event.target.value)} /><Input label="Legal/company display name" required value={form.companyName} onChange={(event) => set("companyName", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3">{([['logo', 'Logo URL (HTTPS)', 'logoUrl'], ['logoDark', 'Dark logo URL (HTTPS)', 'logoDarkUrl'], ['icon', 'Square icon URL (HTTPS)', 'iconUrl']] as const).map(([role, label, key]) => <div className="grid gap-2" key={role}><Input label={label} required={role !== "logoDark"} type="url" value={form[key]} onChange={(event) => set(key, event.target.value)} /><label className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8e2df] bg-[#f8faf9] px-3 text-xs font-semibold text-[#40564f] transition hover:border-[#b8cbc5] hover:bg-[#f1f6f4]"><input accept="image/avif,image/gif,image/jpeg,image/png,image/webp,image/x-icon" className="sr-only" disabled={busy || Boolean(uploading)} type="file" onChange={(event) => void uploadAsset(role, event.target.files?.[0])} />{uploading === role ? "Uploading…" : "Upload managed image"}</label></div>)}</div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{(["primaryColor", "secondaryColor", "accentColor", "surfaceColor"] as const).map((key) => <label className={labelClass} key={key}><span>{key.replace("Color", " color")}</span><span className="flex gap-2"><input aria-label={`${key} picker`} className="h-11 w-12 rounded-lg border border-[#d8e2df] bg-white p-1" type="color" value={form[key].slice(0, 7)} onChange={(event) => set(key, event.target.value)} /><input className={fieldClass} pattern="#[0-9a-fA-F]{6}" value={form[key]} onChange={(event) => set(key, event.target.value)} /></span></label>)}</div>
-    
+
     {/* Dashboard Theme Style Selector */}
     <div className="rounded-xl border border-[#dce7e3] bg-[#f8faf9] p-4">
       <div className="flex flex-col gap-1 mb-3">
@@ -277,11 +277,10 @@ function BrandEditor({
         <button
           type="button"
           onClick={() => set("themeStyle", "green")}
-          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
-            form.themeStyle === "green"
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${form.themeStyle === "green"
               ? "border-[#168a78] bg-[#eff8f5] shadow-xs ring-2 ring-[#168a78]/20"
               : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
-          }`}
+            }`}
         >
           <span className="mt-0.5 size-4 rounded-full bg-[#168a78] shrink-0" />
           <div>
@@ -294,11 +293,10 @@ function BrandEditor({
         <button
           type="button"
           onClick={() => set("themeStyle", "recent")}
-          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${
-            form.themeStyle === "recent"
+          className={`flex items-start gap-3 p-3.5 rounded-lg border text-left transition cursor-pointer ${form.themeStyle === "recent"
               ? "border-[#171717] bg-[#f4f4f5] shadow-xs ring-2 ring-black/20"
               : "border-[#d8e2df] bg-white hover:border-[#b8cbc5]"
-          }`}
+            }`}
         >
           <span className="mt-0.5 size-4 rounded-full bg-[#171717] shrink-0" />
           <div>
@@ -312,7 +310,7 @@ function BrandEditor({
     </div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Support email" required type="email" value={form.supportEmail} onChange={(event) => set("supportEmail", event.target.value)} /><Input label="Website URL" type="url" value={form.websiteUrl} onChange={(event) => set("websiteUrl", event.target.value)} /><Input label="Help center URL" type="url" value={form.helpCenterUrl} onChange={(event) => set("helpCenterUrl", event.target.value)} /></div>
     <div className="grid gap-4 md:grid-cols-3"><Input label="Terms URL" required type="url" value={form.termsUrl} onChange={(event) => set("termsUrl", event.target.value)} /><Input label="Privacy URL" required type="url" value={form.privacyUrl} onChange={(event) => set("privacyUrl", event.target.value)} /><Input label="Legal business name" required value={form.legalBusinessName} onChange={(event) => set("legalBusinessName", event.target.value)} /></div>
-    
+
     {/* Email Sending Configuration */}
     <div className="grid gap-4 md:grid-cols-3">
       <Input label="Email sender name" value={form.emailFromName} onChange={(event) => set("emailFromName", event.target.value)} />
@@ -381,10 +379,10 @@ function BrandEditor({
           {verifying
             ? "Verifying with Resend…"
             : isUnsaved
-            ? "Save before verification"
-            : isVerified
-            ? "✓ Email domain verified"
-            : "Verify email domain"}
+              ? "Save before verification"
+              : isVerified
+                ? "✓ Email domain verified"
+                : "Verify email domain"}
         </button>
         <button
           className={secondaryButtonClass}
@@ -417,7 +415,7 @@ export function PartnerWhiteLabelConsole() {
   const [domain, setDomain] = useState("");
   const [domainBrandId, setDomainBrandId] = useState("");
   const [domainKind, setDomainKind] = useState<"app" | "api" | "link">("app");
-  const [plan, setPlan] = useState({ name: "Growth", key: "growth", currency: "USD", monthlyPrice: "99", setupFee: "0", trialDays: "7", usageMode: "cost_markup", markupPercent: "40", perMinute: "0", minimumCall: "0", includedMinutes: "100", includedCredits: "0", agents: "10", members: "10", phoneNumbers: "5", concurrentCalls: "5", monthlyMinutes: "1000", modelAccess: { stt: [], llm: [], tts: [] } as WhiteLabelModelAccess });
+  const [plan, setPlan] = useState({ name: "Growth INR", key: "growth-inr", currency: "INR", monthlyPrice: "999", setupFee: "0", trialDays: "7", usageMode: "cost_markup", markupPercent: "40", perMinute: "0", minimumCall: "0", includedMinutes: "0", includedCredits: "999", agents: "10", members: "10", phoneNumbers: "5", concurrentCalls: "5", monthlyMinutes: "1000", modelAccess: { stt: [], llm: [], tts: [] } as WhiteLabelModelAccess });
   const [editingPlanId, setEditingPlanId] = useState("");
   const [customerPlanChoices, setCustomerPlanChoices] = useState<Record<string, string>>({});
   const planModelsInitialized = useRef(false);

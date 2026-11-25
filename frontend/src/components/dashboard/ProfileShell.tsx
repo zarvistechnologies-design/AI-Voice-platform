@@ -480,7 +480,7 @@ export function ProfileShell() {
           description="Manage your identity, sign-in protection, password, and trusted devices."
           actions={
             <Link
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dfe1ed] bg-white px-3.5 text-xs font-bold text-[#52645f] shadow-sm transition hover:border-[#9fcfc3] hover:text-[#0e6f62]"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-[#dbeafe] bg-white px-3.5 text-xs font-bold text-[#1d4ed8] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
               href="/dashboard/settings"
             >
               <ProfileIcon className="size-4" name="workspace" />
@@ -494,7 +494,7 @@ export function ProfileShell() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_180px] lg:items-center">
               <div className="min-w-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#171717] text-lg font-bold text-white">
+                  <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-lg font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.22)]">
                     {initials(session.name)}
                   </span>
                   <div className="min-w-0">
@@ -815,7 +815,7 @@ export function ProfileShell() {
                           </label>
                           <input
                             autoComplete="one-time-code"
-                            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                            className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 px-3 text-center text-base font-bold tracking-[0.32em] text-slate-950 outline-none transition focus:border-[#2563eb] focus:ring-3 focus:ring-[#2563eb]/20"
                             id="enable-two-factor-code"
                             inputMode="numeric"
                             maxLength={6}
@@ -827,7 +827,7 @@ export function ProfileShell() {
                             }
                           />
                           <button
-                            className="mt-3 min-h-11 w-full rounded-xl bg-[#118778] px-4 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
+                            className="mt-3 min-h-11 w-full rounded-xl bg-[#2563eb] px-4 text-sm font-extrabold text-[#ffffff] shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={
                               activeAction !== null || totpCode.length !== 6
                             }
@@ -990,7 +990,7 @@ export function ProfileShell() {
                       <span className="relative">
                         <input
                           autoComplete="current-password"
-                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                            className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#2563eb] focus:ring-3 focus:ring-[#2563eb]/20"
                           id="current-password"
                           maxLength={128}
                           minLength={8}
@@ -1022,7 +1022,7 @@ export function ProfileShell() {
                         <input
                           aria-describedby="password-requirement"
                           autoComplete="new-password"
-                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#0a9f8f] focus:ring-3 focus:ring-[#118778]/20"
+                          className="min-h-11 w-full rounded-xl border border-slate-200 px-3 pr-16 text-sm font-normal text-slate-950 outline-none transition focus:border-[#2563eb] focus:ring-3 focus:ring-[#2563eb]/20"
                           id="new-password"
                           maxLength={128}
                           minLength={8}
@@ -1068,7 +1068,7 @@ export function ProfileShell() {
                       </div>
                     </div>
                     <button
-                      className="min-h-11 rounded-xl bg-[#118778] px-5 text-sm font-extrabold text-[#ffffff] transition hover:bg-[#0e6f62] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-11 rounded-xl bg-[#2563eb] px-5 text-sm font-extrabold text-[#ffffff] shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={activeAction !== null || !passwordReady}
                       type="submit"
                     >

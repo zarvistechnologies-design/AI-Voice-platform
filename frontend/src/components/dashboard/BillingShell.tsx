@@ -234,19 +234,19 @@ export function BillingShell() {
                 <p className="mt-1 text-xs text-[#71717a]">Your assigned plan allowance, current wallet balance, and call charges.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(wallet?.balanceCredits ?? 0, walletCurrency)}</dd></div>
-                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits assigned by plan</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(data.currentPlan?.includedCredits ?? 0, data.currentPlan?.currency ?? walletCurrency)}</dd></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(toInr(wallet?.balanceCredits ?? 0, walletCurrency), "INR")}</dd></div>
+                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits assigned by plan</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(toInr(data.currentPlan?.includedCredits ?? 0, data.currentPlan?.currency ?? walletCurrency), "INR")}</dd></div>
                 <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.currentPlan?.includedMinutes ?? 0).toLocaleString()}</dd><p className="mt-1 text-[11px] text-[#71717a]">{Math.round(data.usage?.minutes ?? 0)} minutes used</p></div>
                 <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Calls handled</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.usage?.calls ?? 0}</dd></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
                 <strong className="text-[#171717]">Call pricing: </strong>
                 {data.currentPlan?.usagePricing?.mode === "fixed_per_minute"
-                  ? `${money((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per minute after included minutes.`
+                  ? `${money(toInr((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency), "INR")} per minute after included minutes.`
                   : data.currentPlan?.usagePricing?.mode === "included_only"
                     ? "Calls use the included minutes; no overage charge is configured."
                     : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup after included minutes. The final charge varies by the AI models used.`}
-                {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${money(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}.` : ""}
+                {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${money(toInr(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency), "INR")}.` : ""}
               </div>
             </section>
           ) : null}
@@ -264,7 +264,7 @@ export function BillingShell() {
                   </p>
                   {data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? (
                     <p className="mt-1 text-xs font-medium text-[#52525b]">
-                      {money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / {data.subscription.priceSnapshot.interval ?? "month"}
+                      {money(toInr(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency ?? walletCurrency), "INR")} / {data.subscription.priceSnapshot.interval ?? "month"}
                     </p>
                   ) : null}
                 </div>
@@ -379,6 +379,15 @@ export function BillingShell() {
               </section> : null}
             </>
           )}
+
+          <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+            <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Credit &amp; usage history</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Assigned credits, top-ups, and per-call deductions in rupees</p></div><span className="app-caption text-xs text-[#71717a]">{data?.transactions.length ?? 0} entries</span></div>
+            {data?.transactions.length ? <div className="divide-y divide-[#eaeaea]">{data.transactions.slice(0, 20).map((tx) => {
+              const amountInr = toInr(tx.amountCredits, tx.currency || walletCurrency);
+              const isCredit = tx.amountCredits >= 0;
+              return <div className="flex items-center justify-between gap-4 px-5 py-3 text-xs" key={tx._id}><div className="min-w-0"><strong className="block truncate font-semibold text-[#171717]">{tx.description || tx.type}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">{dateTime(tx.createdAt)}</span></div><div className="shrink-0 text-right"><strong className={`block font-semibold ${isCredit ? "text-emerald-700" : "text-[#171717]"}`}>{isCredit ? "+" : ""}{money(amountInr, "INR")}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">Balance: {money(toInr(tx.balanceAfterCredits, tx.currency || walletCurrency), "INR")}</span></div></div>;
+            })}</div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No credit transactions yet.</div>}
+          </section>
 
           <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
             <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Invoices</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Wallet top-ups and monthly charges</p></div><span className="app-caption text-xs text-[#71717a]">{data?.invoices.length ?? 0} invoices</span></div>

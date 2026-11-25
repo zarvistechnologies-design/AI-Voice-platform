@@ -10,9 +10,13 @@ export function BusinessDetailsGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   useEffect(() => {
     if (!session?.organization?.businessDetailsRequired) return;
-    void validateStoredSession({ force: true }).then((checked) => {
-      if (checked?.organization?.businessDetailsRequired) router.replace(`/signup/business?next=${encodeURIComponent(pathname)}`);
-    });
+    void validateStoredSession({ force: true })
+      .then((checked) => {
+        if (checked?.organization?.businessDetailsRequired) {
+          router.replace(`/signup/business?next=${encodeURIComponent(pathname)}`);
+        }
+      })
+      .catch(() => null);
   }, [pathname, router, session?.organization?.businessDetailsRequired]);
   if (session?.organization?.businessDetailsRequired) return <div className="grid min-h-screen place-items-center text-sm text-slate-600">Opening business details…</div>;
   return children;
