@@ -377,6 +377,16 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
   const [editTitle, setEditTitle] = useState<string>("");
   const [editDesc, setEditDesc] = useState<string>("");
   const [editType, setEditType] = useState<WhatsAppFlowNode["type"]>("message");
+  const [editMediaType, setEditMediaType] = useState<"none" | "image" | "document">("none");
+  const [editMediaUrl, setEditMediaUrl] = useState("");
+  const [editButtons, setEditButtons] = useState("");
+  const [editConditionMode, setEditConditionMode] = useState<"reply" | "case_status" | "case_priority">("reply");
+  const [editCaseAction, setEditCaseAction] = useState<"" | "create" | "lookup" | "update_status" | "escalate">("");
+  const [editCaseSubject, setEditCaseSubject] = useState("Customer support request");
+  const [editCaseCategory, setEditCaseCategory] = useState("Support");
+  const [editCaseSlaMinutes, setEditCaseSlaMinutes] = useState("60");
+  const [editCasePriority, setEditCasePriority] = useState<"low" | "medium" | "high" | "urgent">("medium");
+  const [editCaseStatus, setEditCaseStatus] = useState<"open" | "in_progress" | "resolved">("in_progress");
   const [editBranches, setEditBranches] = useState<WhatsAppFlowEdge[]>([]);
 
   useEffect(() => {
@@ -384,6 +394,16 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
       setEditTitle(selectedNode.title || "");
       setEditDesc(selectedNode.description || "");
       setEditType(selectedNode.type || "message");
+      setEditMediaType(selectedNode.mediaType || "none");
+      setEditMediaUrl(selectedNode.mediaUrl || "");
+      setEditButtons((selectedNode.buttons || []).join("\n"));
+      setEditConditionMode(selectedNode.conditionMode || "reply");
+      setEditCaseAction(selectedNode.caseAction || "");
+      setEditCaseSubject(selectedNode.caseSubject || "Customer support request");
+      setEditCaseCategory(selectedNode.caseCategory || "Support");
+      setEditCaseSlaMinutes(String(selectedNode.caseSlaMinutes ?? 60));
+      setEditCasePriority(selectedNode.casePriority || "medium");
+      setEditCaseStatus(selectedNode.caseStatus || "in_progress");
       setEditBranches((selectedFlow?.edges || []).filter((e) => e.from === selectedNode.id));
     }
   }, [selectedNode?.id, selectedFlow?._id]);
@@ -405,6 +425,20 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
             title: editTitle.trim() || n.title,
             description: editDesc.trim() || n.description,
             type: editType,
+            mediaType: editMediaType === "none" ? undefined : editMediaType,
+            mediaUrl: editMediaUrl.trim() || undefined,
+            buttons: editButtons
+              .split("\n")
+              .map((button) => button.trim())
+              .filter(Boolean)
+              .slice(0, 3),
+            conditionMode: editType === "condition" ? editConditionMode : undefined,
+            caseAction: editType === "action" && editCaseAction ? editCaseAction : undefined,
+            caseSubject: editCaseSubject.trim() || "Customer support request",
+            caseCategory: editCaseCategory.trim() || "Support",
+            caseSlaMinutes: Math.max(0, Number(editCaseSlaMinutes) || 0),
+            casePriority: editCasePriority,
+            caseStatus: editCaseStatus,
           }
         : n,
     );
@@ -862,6 +896,21 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                         {node.description}
                       </p>
 
+                      {(node.mediaType || (node.buttons?.length ?? 0) > 0) && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {node.mediaType && (
+                            <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[9.5px] font-semibold text-sky-800">
+                              {node.mediaType === "image" ? "Image attached" : "Document attached"}
+                            </span>
+                          )}
+                          {(node.buttons?.length ?? 0) > 0 && (
+                            <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[9.5px] font-semibold text-violet-800">
+                              {node.buttons?.length} quick {node.buttons?.length === 1 ? "reply" : "replies"}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       {node.type === "condition" && (() => {
                         const branches = (selectedFlow?.edges || []).filter((e) => e.from === node.id);
                         return (
@@ -987,9 +1036,65 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                     />
                   </div>
 
+                  {editType === "message" && (
+                    <div className="space-y-2.5 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3">
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#52525b]">Message format</label>
+                        <select
+                          value={editMediaType}
+                          onChange={(event) => setEditMediaType(event.target.value as "none" | "image" | "document")}
+                          className="mt-1 h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717]"
+                        >
+                          <option value="none">Text only</option>
+                          <option value="image">Image attachment + message</option>
+                          <option value="document">Document attachment + message</option>
+                        </select>
+                      </div>
+                      {editMediaType !== "none" && (
+                        <div>
+                          <label className="block text-[11px] font-medium text-[#52525b]">Public media URL</label>
+                          <input
+                            type="url"
+                            value={editMediaUrl}
+                            onChange={(event) => setEditMediaUrl(event.target.value)}
+                            placeholder="https://example.com/image.jpg"
+                            className="mt-1 h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2.5 text-[11px] text-[#171717]"
+                          />
+                          <p className="mt-1 text-[10px] leading-relaxed text-[#71717a]">Use a public HTTPS file URL that Meta can fetch. The message text is sent separately.</p>
+                        </div>
+                      )}
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#52525b]">Quick reply buttons (up to 3)</label>
+                        <textarea
+                          rows={3}
+                          value={editButtons}
+                          onChange={(event) => setEditButtons(event.target.value)}
+                          placeholder={"Book an appointment\nOpen a support case\nTalk to an agent"}
+                          className="mt-1 w-full rounded-md border border-[#eaeaea] bg-white p-2 text-[11px] text-[#171717]"
+                        />
+                        <p className="mt-1 text-[10px] leading-relaxed text-[#71717a]">Add one button per line, up to 3. Button titles are limited to 20 characters. Match replies with keywords on the next Decision step.</p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Multi-Case Branching Rules for Condition Nodes */}
                   {editType === "condition" && (
                     <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 space-y-2">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-amber-900">Branch on</label>
+                        <select
+                          value={editConditionMode}
+                          onChange={(event) => setEditConditionMode(event.target.value as "reply" | "case_status" | "case_priority")}
+                          className="mt-1 h-8 w-full rounded-md border border-amber-200 bg-white px-2 text-[11px] text-[#171717]"
+                        >
+                          <option value="reply">Customer reply / button</option>
+                          <option value="case_status">Current case status</option>
+                          <option value="case_priority">Current case priority</option>
+                        </select>
+                        {editConditionMode !== "reply" && (
+                          <p className="mt-1 text-[10px] text-amber-800">Add branch keywords that match the case field, such as open, in_progress, resolved, high, or urgent.</p>
+                        )}
+                      </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-amber-900">
                           Case Branch Rules ({editBranches.length})
@@ -1015,7 +1120,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                       </div>
                       {editBranches.length === 0 && (
                         <p className="text-[10px] text-amber-800">
-                          Add case branches so customer replies (e.g. &quot;1, book&quot; vs &quot;2, support&quot; vs &quot;default&quot;) route to different steps.
+                          Add branches for customer replies, case status, or priority. Use &quot;default&quot; as a fallback branch.
                         </p>
                       )}
                       {editBranches.map((br, idx) => (
@@ -1078,6 +1183,78 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                   {/* Integration Quick-Fill Chips for Action Steps */}
                   {editType === "action" && (
                     <div>
+                      <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50/50 p-2.5">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-amber-900">Support case operation</label>
+                        <select
+                          value={editCaseAction}
+                          onChange={(event) => setEditCaseAction(event.target.value as "" | "create" | "lookup" | "update_status" | "escalate")}
+                          className="mt-1 h-8 w-full rounded-md border border-amber-200 bg-white px-2 text-[11px] text-[#171717]"
+                        >
+                          <option value="">No case action</option>
+                          <option value="create">Create a new case</option>
+                          <option value="lookup">Look up this customer’s case</option>
+                          <option value="update_status">Update case status</option>
+                          <option value="escalate">Escalate case as urgent</option>
+                        </select>
+                        {editCaseAction === "create" && (
+                          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                            <input
+                              value={editCaseSubject}
+                              onChange={(event) => setEditCaseSubject(event.target.value)}
+                              placeholder="Case subject ({{message}} supported)"
+                              className="h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717] sm:col-span-2"
+                            />
+                            <input
+                              value={editCaseCategory}
+                              onChange={(event) => setEditCaseCategory(event.target.value)}
+                              placeholder="Category"
+                              className="h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717]"
+                            />
+                            <select
+                              value={editCasePriority}
+                              onChange={(event) => setEditCasePriority(event.target.value as "low" | "medium" | "high" | "urgent")}
+                              className="h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717]"
+                            >
+                              <option value="low">Low priority</option>
+                              <option value="medium">Medium priority</option>
+                              <option value="high">High priority</option>
+                              <option value="urgent">Urgent priority</option>
+                            </select>
+                            <select
+                              value={editCaseSlaMinutes}
+                              onChange={(event) => setEditCaseSlaMinutes(event.target.value)}
+                              className="h-8 rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717]"
+                            >
+                              <option value="0">No SLA timer</option>
+                              <option value="15">Escalate after 15 minutes</option>
+                              <option value="30">Escalate after 30 minutes</option>
+                              <option value="60">Escalate after 1 hour</option>
+                              <option value="240">Escalate after 4 hours</option>
+                              <option value="1440">Escalate after 24 hours</option>
+                            </select>
+                          </div>
+                        )}
+                        {editCaseAction === "update_status" && (
+                          <div className="mt-2">
+                            <label className="block text-[10px] font-medium text-[#52525b]">Set status</label>
+                            <select
+                              value={editCaseStatus}
+                              onChange={(event) => setEditCaseStatus(event.target.value as "open" | "in_progress" | "resolved")}
+                              className="mt-1 h-8 w-full rounded-md border border-[#eaeaea] bg-white px-2 text-[10.5px] text-[#171717]"
+                            >
+                              <option value="open">Open</option>
+                              <option value="in_progress">In progress</option>
+                              <option value="resolved">Resolved</option>
+                            </select>
+                          </div>
+                        )}
+                        {(editCaseAction === "lookup" || editCaseAction === "update_status") && (
+                          <p className="mt-1.5 text-[10px] leading-relaxed text-amber-900">Uses a case number mentioned in the customer’s reply, or the customer’s latest open case.</p>
+                        )}
+                        {editCaseAction === "escalate" && (
+                          <p className="mt-1.5 text-[10px] leading-relaxed text-amber-900">Sets the case to urgent, alerts the connected Slack channel, and updates active case automations.</p>
+                        )}
+                      </div>
                       <span className="block text-[10.5px] font-medium text-[#71717a]">
                         Quick Live Integration Action
                       </span>
@@ -1095,6 +1272,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                             onClick={() => {
                               setEditTitle(preset.title);
                               setEditDesc(preset.desc);
+                              if (preset.label.includes("Support Case")) setEditCaseAction("create");
                             }}
                             className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2 py-1 text-[10.5px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
                           >
@@ -1102,6 +1280,12 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                           </button>
                         ))}
                       </div>
+                      <a
+                        href="/dashboard/integrations"
+                        className="mt-2 inline-flex items-center gap-1 text-[10.5px] font-semibold text-blue-700 underline underline-offset-2"
+                      >
+                        Connect Razorpay in Integrations ↗
+                      </a>
                     </div>
                   )}
                   <div>
@@ -1109,7 +1293,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                       Insert Variable
                     </span>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {["{{name}}", "{{phone}}", "{{date}}", "{{time}}", "{{paymentLink}}", "{{calendlyLink}}", "{{caseNumber}}"].map((tag) => (
+                      {["{{name}}", "{{phone}}", "{{message}}", "{{date}}", "{{time}}", "{{paymentLink}}", "{{calendlyLink}}", "{{caseNumber}}", "{{caseStatus}}", "{{casePriority}}", "{{caseSubject}}"].map((tag) => (
                         <button
                           key={tag}
                           type="button"

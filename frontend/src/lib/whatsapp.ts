@@ -177,6 +177,16 @@ export type WhatsAppFlowNode = {
   type: "trigger" | "message" | "form" | "condition" | "action";
   title: string;
   description: string;
+  mediaType?: "image" | "document";
+  mediaUrl?: string;
+  buttons?: string[];
+  conditionMode?: "reply" | "case_status" | "case_priority";
+  caseAction?: "create" | "lookup" | "update_status" | "escalate";
+  caseSlaMinutes?: number;
+  caseSubject?: string;
+  caseCategory?: string;
+  casePriority?: "low" | "medium" | "high" | "urgent";
+  caseStatus?: "open" | "in_progress" | "resolved";
 };
 
 export type WhatsAppFlowEdge = {
@@ -197,6 +207,8 @@ export type WhatsAppSupportCase = {
   priority: "low" | "medium" | "high" | "urgent";
   status: "open" | "in_progress" | "resolved";
   notes?: string;
+  slaDueAt?: string | null;
+  slaEscalatedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 };

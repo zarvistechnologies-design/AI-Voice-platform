@@ -800,6 +800,16 @@ export function WhatsAppLiveChatView({
                           </select>
                         </div>
                         <div className="text-[#324640] truncate dark:text-zinc-300">{c.subject}</div>
+                        <div className="flex items-center justify-between gap-2 text-[10px] text-[#71717a] dark:text-zinc-400">
+                          <span className="capitalize">{c.priority} priority</span>
+                          {c.slaEscalatedAt ? (
+                            <span className="font-semibold text-rose-600 dark:text-rose-400">SLA breached · escalated</span>
+                          ) : c.slaDueAt && c.status !== "resolved" ? (
+                            <span>Due {new Date(c.slaDueAt).toLocaleString()}</span>
+                          ) : c.slaDueAt ? (
+                            <span className="text-emerald-700 dark:text-emerald-400">Resolved before SLA</span>
+                          ) : null}
+                        </div>
                       </div>
                     ))}
                   </div>
