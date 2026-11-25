@@ -4061,3 +4061,13 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
   -webkit-text-fill-color: #ffffff !important;
   background: #3768a8 !important;
 }
+
+/* The prompt editor is a native textarea, so style its selection directly.
+   Keep this in the base layer to override the dashboard's dark selection rule. */
+@layer base {
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(textarea, input)::selection {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-color: #2563eb !important;
+  }
+}
