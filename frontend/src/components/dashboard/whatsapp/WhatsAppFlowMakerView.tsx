@@ -331,7 +331,63 @@ const PRESET_WORKFLOWS = [
       { from: "node-3", to: "node-6", caseLabel: "Else: Live Agent", matchKeywords: "default" },
     ],
   },
+  {
+    name: "Support Desk Starter (Recommended)",
+    description: "A ready-to-run support menu for case intake, status checks, and urgent escalation, with a one-hour SLA.",
+    triggerKeyword: "SUPPORT",
+    nodes: [
+      { id: "node-1", type: "trigger" as const, title: "Support request received", description: 'Starts when a customer messages "SUPPORT".' },
+      { id: "node-2", type: "message" as const, title: "Choose a support option", description: "Hi {{name}}! Choose an option below and we’ll take it from there.", buttons: ["Create a case", "Check status", "Escalate"] },
+      { id: "node-3", type: "condition" as const, title: "Route support choice", description: "Routes each button reply to the matching support action.", conditionMode: "reply" as const },
+      { id: "node-4", type: "form" as const, title: "Collect issue details", description: "Please briefly describe the issue so our support team can help." },
+      { id: "node-5", type: "action" as const, title: "Create support case", description: "Create a tracked case and send the case number to the customer.", caseAction: "create" as const, caseSubject: "Support request: {{message}}", caseCategory: "Support", casePriority: "medium" as const, caseSlaMinutes: 60 },
+      { id: "node-6", type: "action" as const, title: "Look up latest case", description: "Find the customer’s latest support case and send its current status.", caseAction: "lookup" as const },
+      { id: "node-7", type: "action" as const, title: "Escalate to a specialist", description: "Raise the case to urgent and alert the connected support channel.", caseAction: "escalate" as const },
+      { id: "node-8", type: "action" as const, title: "Talk to a support agent", description: "Hand the conversation over to a human support agent." },
+    ],
+    edges: [
+      { from: "node-1", to: "node-2" },
+      { from: "node-2", to: "node-3" },
+      { from: "node-3", to: "node-4", caseLabel: "Create a case", matchKeywords: "create a case, new case, create" },
+      { from: "node-3", to: "node-6", caseLabel: "Check status", matchKeywords: "check status, status, check" },
+      { from: "node-3", to: "node-7", caseLabel: "Escalate", matchKeywords: "escalate, urgent" },
+      { from: "node-3", to: "node-8", caseLabel: "Other request", matchKeywords: "default" },
+      { from: "node-4", to: "node-5" },
+    ],
+  },
 ];
+
+function getFlowReadinessIssues(flow: WhatsAppFlow, accounts: WhatsAppAccountItem[]): string[] {
+  const issues: string[] = [];
+  if (accounts.length === 0) issues.push("Connect a WhatsApp number before activating this flow.");
+  if (!flow.triggerKeyword?.trim()) issues.push("Add a trigger keyword.");
+  if (!flow.nodes.some((node) => node.type === "trigger")) issues.push("Add a Trigger step.");
+
+  for (const node of flow.nodes) {
+    if (node.mediaType && !node.mediaUrl?.trim()) {
+      issues.push(`Add a public media URL to “${node.title}” or change it to text only.`);
+    }
+    if ((node.buttons?.length ?? 0) > 3) {
+      issues.push(`Reduce the quick reply buttons in “${node.title}” to three or fewer.`);
+    } else if (node.buttons?.some((button) => button.trim().length > 20)) {
+      issues.push(`Shorten the quick reply button labels in “${node.title}” to 20 characters or fewer.`);
+    }
+    if (node.type === "condition") {
+      const outgoing = flow.edges.filter((edge) => edge.from === node.id);
+      if (outgoing.length === 0) issues.push(`Connect at least one branch from “${node.title}”.`);
+      if (!outgoing.some((edge) => [edge.matchKeywords, edge.caseLabel].some((value) => ["default", "else", "*"].includes(String(value || "").trim().toLowerCase())))) {
+        issues.push(`Add a Default branch to “${node.title}” for replies that don’t match another case.`);
+      }
+      for (const edge of outgoing) {
+        if (!flow.nodes.some((target) => target.id === edge.to)) {
+          issues.push(`Choose a target step for every branch from “${node.title}”.`);
+          break;
+        }
+      }
+    }
+  }
+  return [...new Set(issues)];
+}
 
 export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFlowMakerViewProps) {
   const [selectedFlow, setSelectedFlow] = useState<WhatsAppFlow | null>(flows[0] || null);
@@ -364,6 +420,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
   const [inspectorOpen, setInspectorOpen] = useState<boolean>(true);
 
   const [showCreateFlowModal, setShowCreateFlowModal] = useState<boolean>(false);
+  const [createFlowError, setCreateFlowError] = useState("");
   const [showTestPhoneModal, setShowTestPhoneModal] = useState<boolean>(false);
   const [testPhone, setTestPhone] = useState<string>("");
   const [testNotice, setTestNotice] = useState<{ ok: boolean; msg: string } | null>(null);
@@ -373,6 +430,12 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
   const activeNodes: WhatsAppFlowNode[] = selectedFlow?.nodes || [];
   const selectedNode = activeNodes.find((n) => n.id === selectedNodeId) || activeNodes[0] || null;
+  const flowReadinessIssues = selectedFlow ? getFlowReadinessIssues(selectedFlow, accounts) : [];
+  const [editTriggerKeyword, setEditTriggerKeyword] = useState(selectedFlow?.triggerKeyword || "");
+
+  useEffect(() => {
+    setEditTriggerKeyword(selectedFlow?.triggerKeyword || "");
+  }, [selectedFlow?._id, selectedFlow?.triggerKeyword]);
 
   const [editTitle, setEditTitle] = useState<string>("");
   const [editDesc, setEditDesc] = useState<string>("");
@@ -476,7 +539,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
   function handleDeleteNode(nodeId: string) {
     if (!selectedFlow || activeNodes.length <= 1) {
-      alert("A workflow must have at least one step.");
+      setSaveBanner("Keep at least one step in the flow.");
       return;
     }
     const updatedNodes = activeNodes.filter((n) => n.id !== nodeId);
@@ -500,6 +563,14 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
   async function saveFlowData(data: Partial<WhatsAppFlow>, selectNodeIdAfter?: string) {
     if (!selectedFlow) return;
+    const nextStatus = data.status || selectedFlow.status;
+    if (nextStatus === "active") {
+      const issues = getFlowReadinessIssues({ ...selectedFlow, ...data }, accounts);
+      if (issues.length > 0) {
+        setSaveBanner(`Before activation: ${issues.join(" ")}`);
+        return;
+      }
+    }
     setIsSaving(true);
     setSaveBanner("");
 
@@ -521,12 +592,12 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
       if (res.ok && res.flow) {
         setSelectedFlow(res.flow);
         if (selectNodeIdAfter) setSelectedNodeId(selectNodeIdAfter);
-        setSaveBanner("Workflow saved and deployed.");
+        setSaveBanner(res.flow.status === "active" ? "Flow saved and active." : "Flow saved as a draft.");
         setTimeout(() => setSaveBanner(""), 3000);
         onRefresh();
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update workflow");
+      setSaveBanner(err instanceof Error ? err.message : "Failed to update workflow.");
     } finally {
       setIsSaving(false);
     }
@@ -536,6 +607,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
     e.preventDefault();
     if (!newFlowName.trim()) return;
 
+    setCreateFlowError("");
     setIsSaving(true);
     try {
       const preset = presetIndex !== null ? PRESET_WORKFLOWS[presetIndex] : null;
@@ -547,7 +619,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
         triggerType: "keyword",
         triggerKeyword: newFlowKeyword.trim().toUpperCase() || "START",
         phoneNumberId: newFlowPhoneNumberId,
-        status: "active",
+        status: "draft",
         nodes: preset?.nodes || [
           {
             id: "node-1",
@@ -579,7 +651,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
         onRefresh();
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Could not create flow");
+      setCreateFlowError(err instanceof Error ? err.message : "Could not create flow.");
     } finally {
       setIsSaving(false);
     }
@@ -688,9 +760,23 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                 {selectedFlow.status === "active" ? "Active" : "Draft"}
               </button>
 
-              <span className="rounded border border-[#eaeaea] bg-[#fafafa] px-2 py-0.5 font-mono text-[11px] text-[#52525b]">
-                Trigger: {selectedFlow.triggerKeyword || selectedFlow.triggerType}
-              </span>
+              <label className="flex items-center gap-1.5 text-[10px] font-medium text-[#71717a]">
+                Trigger keyword
+                <input
+                  aria-label="Flow trigger keyword"
+                  value={editTriggerKeyword}
+                  onChange={(event) => setEditTriggerKeyword(event.target.value.toUpperCase())}
+                  onBlur={() => {
+                    if (editTriggerKeyword.trim() !== (selectedFlow.triggerKeyword || "")) {
+                      void saveFlowData({ triggerKeyword: editTriggerKeyword.trim() });
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.currentTarget.blur();
+                  }}
+                  className="h-8 w-28 rounded-md border border-[#eaeaea] bg-white px-2 font-mono text-[10.5px] text-[#171717]"
+                />
+              </label>
               <label className="flex items-center gap-1.5 text-[10px] font-medium text-[#71717a]">
                 Number
                 <select
@@ -724,12 +810,19 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
             onClick={() => setShowTestPhoneModal(true)}
             className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
           >
-            Test on Phone
+            Send Preview
           </button>
 
           <button
             type="button"
             onClick={() => {
+              setCreateFlowError("");
+              const recommendedIndex = PRESET_WORKFLOWS.findIndex((template) => template.name.includes("(Recommended)"));
+              const recommendedTemplate = PRESET_WORKFLOWS[recommendedIndex];
+              setPresetIndex(recommendedIndex >= 0 ? recommendedIndex : null);
+              setNewFlowName(recommendedTemplate?.name.replace(" (Recommended)", "") || "");
+              setNewFlowDesc(recommendedTemplate?.description || "");
+              setNewFlowKeyword(recommendedTemplate?.triggerKeyword || "START");
               setNewFlowPhoneNumberId(
                 accounts.find((account) => account.isPrimary)?.phoneNumberId || accounts[0]?.phoneNumberId || "",
               );
@@ -742,11 +835,11 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
           <button
             type="button"
-            onClick={() => saveFlowData({})}
-            disabled={isSaving}
+            onClick={() => void saveFlowData({ status: "active" })}
+            disabled={isSaving || !selectedFlow}
             className="inline-flex h-8 items-center rounded-md bg-[#00a884] px-3.5 text-[12px] font-medium text-white hover:bg-[#008069] disabled:opacity-50"
           >
-            {isSaving ? "Saving..." : "Deploy Flow"}
+            {isSaving ? "Saving..." : selectedFlow?.status === "active" ? "Save & Deploy" : "Activate Flow"}
           </button>
         </div>
       </div>
@@ -755,6 +848,36 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
         <div className="flex items-center gap-2 rounded-md border border-[#eaeaea] bg-white px-3.5 py-2 text-[12px] text-[#171717]">
           <span className="size-1.5 rounded-full bg-[#171717]" />
           <span>{saveBanner}</span>
+        </div>
+      )}
+
+      {selectedFlow && (
+        <div className={`rounded-xl border p-4 ${flowReadinessIssues.length ? "border-amber-200 bg-amber-50" : "border-emerald-200 bg-emerald-50"}`}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className={`size-2 rounded-full ${flowReadinessIssues.length ? "bg-amber-500" : "bg-emerald-600"}`} />
+                <h3 className="text-[12.5px] font-semibold text-[#171717]">
+                  {flowReadinessIssues.length ? "Setup checklist" : selectedFlow.status === "active" ? "Flow is live" : "Ready to activate"}
+                </h3>
+              </div>
+              <p className="mt-1 text-[11px] text-[#52525b]">
+                {flowReadinessIssues.length
+                  ? "Fix these items before turning the flow on. New flows stay in draft until you activate them."
+                  : selectedFlow.status === "active"
+                    ? "Your trigger, WhatsApp connection, and branch targets are ready. The flow is listening for incoming messages."
+                    : "Your trigger, WhatsApp connection, and branch targets are ready. Activate the flow when you’re ready."}
+              </p>
+            </div>
+            {accounts.length === 0 && (
+              <a href="/dashboard/whatsapp" className="text-[11px] font-semibold text-[#008069] underline underline-offset-2">Connect WhatsApp</a>
+            )}
+          </div>
+          {flowReadinessIssues.length > 0 && (
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-[10.5px] text-amber-900">
+              {flowReadinessIssues.map((issue) => <li key={issue}>{issue}</li>)}
+            </ul>
+          )}
         </div>
       )}
 
@@ -910,6 +1033,11 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                           )}
                         </div>
                       )}
+                      {node.caseAction === "create" && (node.caseSlaMinutes ?? 0) > 0 && (
+                        <span className="mt-2 inline-flex rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9.5px] font-semibold text-amber-800">
+                          SLA · {node.caseSlaMinutes} min
+                        </span>
+                      )}
 
                       {node.type === "condition" && (() => {
                         const branches = (selectedFlow?.edges || []).filter((e) => e.from === node.id);
@@ -952,7 +1080,15 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                       {node.type === "action" && (() => {
                         const lower = `${node.title} ${node.description}`.toLowerCase();
                         const label =
-                          lower.includes("support case") || lower.includes("open case") || lower.includes("ticket")
+                          node.caseAction === "create"
+                            ? "🎫 Create support case"
+                            : node.caseAction === "lookup"
+                              ? "🔎 Look up customer case"
+                              : node.caseAction === "update_status"
+                                ? `📝 Update case to ${node.caseStatus?.replace("_", " ") || "in progress"}`
+                                : node.caseAction === "escalate"
+                                  ? "🚨 Escalate case to urgent"
+                                  : lower.includes("support case") || lower.includes("open case") || lower.includes("ticket")
                             ? "🎫 Live Action: Create Support Case (CASE-XXXX)"
                             : lower.includes("razorpay") || lower.includes("payment")
                               ? "💳 Live Integration: Razorpay Payment Link"
@@ -1272,7 +1408,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                             onClick={() => {
                               setEditTitle(preset.title);
                               setEditDesc(preset.desc);
-                              if (preset.label.includes("Support Case")) setEditCaseAction("create");
+                              setEditCaseAction(preset.label.includes("Support Case") ? "create" : "");
                             }}
                             className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-2 py-1 text-[10.5px] font-medium text-[#171717] hover:bg-[#f4f4f5]"
                           >
@@ -1351,6 +1487,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
             </div>
 
             <form onSubmit={handleCreateNewFlow} className="mt-4 space-y-3.5">
+              {createFlowError && <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[11px] text-rose-800">{createFlowError}</div>}
               <div>
                 <label className="block text-[11.5px] font-medium text-[#171717]">
                   Starting Blueprint
@@ -1377,12 +1514,14 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                     </div>
                   </div>
 
-                  {PRESET_WORKFLOWS.map((tmpl, idx) => (
+                  {PRESET_WORKFLOWS.map((tmpl, idx) => ({ tmpl, idx }))
+                    .sort((left, right) => Number(right.tmpl.name.includes("(Recommended)")) - Number(left.tmpl.name.includes("(Recommended)")))
+                    .map(({ tmpl, idx }) => (
                     <div
                       key={idx}
                       onClick={() => {
                         setPresetIndex(idx);
-                        setNewFlowName(tmpl.name);
+                        setNewFlowName(tmpl.name.replace(" (Recommended)", ""));
                         setNewFlowDesc(tmpl.description);
                         setNewFlowKeyword(tmpl.triggerKeyword);
                       }}
@@ -1393,10 +1532,13 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[12px] font-semibold text-[#171717]">
-                          {tmpl.name}
-                        </span>
-                        <span className="text-[10.5px] text-[#71717a]">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="truncate text-[12px] font-semibold text-[#171717]">
+                            {tmpl.name.replace(" (Recommended)", "")}
+                          </span>
+                          {tmpl.name.includes("(Recommended)") && <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">Recommended</span>}
+                        </div>
+                        <span className="shrink-0 text-[10.5px] text-[#71717a]">
                           {tmpl.nodes.length} steps
                         </span>
                       </div>
@@ -1485,7 +1627,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
           <div className="w-full max-w-md rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#eaeaea] pb-3">
-              <h3 className="text-[14px] font-semibold text-[#171717]">Test Workflow on Phone</h3>
+              <h3 className="text-[14px] font-semibold text-[#171717]">Send a Preview Message</h3>
               <button
                 type="button"
                 onClick={() => {
@@ -1500,9 +1642,10 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
             <form onSubmit={handleTestFlowOnPhone} className="mt-3.5 space-y-3.5">
               <p className="text-[12px] text-[#52525b]">
-                Sends the kickoff message for{" "}
+                Sends a sample of the first message for{" "}
                 <span className="font-semibold text-[#171717]">{selectedFlow?.name}</span> to your
-                phone via Meta Cloud API.
+                phone. This preview does not run the workflow; to test it, send the trigger keyword
+                from WhatsApp to the connected business number.
               </p>
 
               {testNotice && (
@@ -1538,7 +1681,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                   disabled={isSaving}
                   className="h-8 rounded-md bg-[#171717] px-4 text-[12px] font-medium text-white hover:bg-black disabled:opacity-50"
                 >
-                  {isSaving ? "Sending..." : "Send Test Trigger"}
+                  {isSaving ? "Sending..." : "Send Preview"}
                 </button>
               </div>
             </form>
