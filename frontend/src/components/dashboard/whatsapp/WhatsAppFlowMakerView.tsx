@@ -481,6 +481,24 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
   function handleSaveNodeEdits() {
     if (!selectedFlow || !selectedNode) return;
+    if (editType === "condition") {
+      if (editBranches.length === 0) {
+        setSaveBanner("Add at least one branch, then choose its matching reply and destination.");
+        return;
+      }
+      if (editBranches.some((branch) => !branch.to)) {
+        setSaveBanner("Choose a destination step for every branch before saving.");
+        return;
+      }
+      if (editBranches.some((branch) => !branch.matchKeywords?.trim() && !["default", "else", "*"].includes(String(branch.caseLabel || "").trim().toLowerCase()))) {
+        setSaveBanner('Add reply keywords to each branch. Use "default" for the fallback branch.');
+        return;
+      }
+      if (!editBranches.some((branch) => [branch.matchKeywords, branch.caseLabel].some((value) => ["default", "else", "*"].includes(String(value || "").trim().toLowerCase())))) {
+        setSaveBanner('Add a fallback branch by setting its match keywords to "default".');
+        return;
+      }
+    }
     const updatedNodes = activeNodes.map((n) =>
       n.id === selectedNode.id
         ? {
@@ -1238,22 +1256,24 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                         <button
                           type="button"
                           onClick={() => {
-                            const fallbackTarget = activeNodes.find((n) => n.id !== selectedNode.id)?.id || "";
                             setEditBranches((prev) => [
                               ...prev,
                               {
                                 from: selectedNode.id,
-                                to: fallbackTarget,
+                                to: "",
                                 caseLabel: `Case ${prev.length + 1}`,
-                                matchKeywords: `${prev.length + 1}`,
+                                matchKeywords: "",
                               },
                             ]);
                           }}
-                          className="rounded-md bg-[#171717] px-2 py-0.5 text-[10px] font-semibold text-white hover:bg-black"
+                          className="rounded-md bg-emerald-700 px-2.5 py-1 text-[10px] font-semibold text-white hover:bg-emerald-800"
                         >
-                          + Add Case
+                          + Add Branch
                         </button>
                       </div>
+                      <p className="text-[10px] leading-relaxed text-amber-900">
+                        Each branch needs a reply match and a destination step. Add one branch with match keyword <strong>default</strong> to catch all other replies.
+                      </p>
                       {editBranches.length === 0 && (
                         <p className="text-[10px] text-amber-800">
                           Add branches for customer replies, case status, or priority. Use &quot;default&quot; as a fallback branch.
@@ -1281,7 +1301,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                                   prev.map((item, i) => (i === idx ? { ...item, matchKeywords: e.target.value } : item)),
                                 )
                               }
-                              placeholder='Keywords or "default"'
+                              placeholder='Reply keywords, comma separated'
                               className="w-1/2 rounded border border-[#eaeaea] px-2 py-1 text-[11px]"
                             />
                             <button
