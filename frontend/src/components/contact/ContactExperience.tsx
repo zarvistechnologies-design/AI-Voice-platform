@@ -377,7 +377,7 @@ return (
                 <span><Icon name="location" /></span><strong>Head Office</strong><small>Bengaluru, India</small>
               </a>
               <a className="contact-info-card" href="tel:+918423655336">
-                <span><Icon name="phone" /></span><strong>Call Center</strong><small>+91 78925 18414</small>
+                <span><Icon name="phone" /></span><strong>Call Center</strong><small>+91 8423655336</small>
               </a>
               <a className="contact-info-card" href={`mailto:${salesEmail}`}>
                 <span><Icon name="email" /></span><strong>Email</strong><small>{salesEmail}</small>
