@@ -3981,8 +3981,10 @@ main.dashboard-home-theme .ask-vozon-user-message :where(*) {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
-/* Make selected text obvious against the dashboard's dark surfaces. */
-:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme ::selection {
-  background-color: #ffffff !important;
-  color: #171717 !important;
+@layer components {
+  /* Keep text selection visible on dark dashboard surfaces. */
+  :is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme.dashboard-home-theme ::selection {
+    background: #ffffff !important;
+    color: #171717 !important;
+  }
 }
