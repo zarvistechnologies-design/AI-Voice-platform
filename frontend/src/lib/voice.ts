@@ -80,6 +80,7 @@ export type AgentTool = {
   enabled: boolean;
   parameters?: AgentToolParameter[];
   runAfterCall?: boolean;
+  triggerOnCallerIntent?: "" | "whatsapp_details";
   executeAfterMessage?: boolean;
   excludeSessionId?: boolean;
   messages?: string[];
