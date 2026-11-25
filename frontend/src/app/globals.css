@@ -3981,3 +3981,83 @@ main.dashboard-home-theme .ask-vozon-user-message :where(*) {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* Give the voice agent workspace softer surfaces and a little more depth. */
+main.voice-agent-theme.dashboard-home-theme {
+  --dashboard-surface: #ffffff;
+  --dashboard-border: #d9e0e7;
+  --voice-surface: #ffffff;
+  --voice-surface-raised: #f5f7f9;
+  --voice-surface-soft: #edf1f5;
+  --voice-border: #d9e0e7;
+  background: #eef1f4 !important;
+}
+
+main.voice-agent-theme.dashboard-home-theme .agent-stack-panel,
+main.voice-agent-theme.dashboard-home-theme .agent-runtime-card,
+main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
+  border-color: #d9e0e7 !important;
+  background-color: #ffffff !important;
+}
+
+/* Use distinct colors to make the three voice pipeline stages easy to scan. */
+.voice-agent-theme .voice-pipeline-node:nth-of-type(1) { --pipeline-accent: #0f9b8e; --pipeline-tint: #e3f6f2; }
+.voice-agent-theme .voice-pipeline-node:nth-of-type(2) { --pipeline-accent: #8057c7; --pipeline-tint: #f0eafa; }
+.voice-agent-theme .voice-pipeline-node:nth-of-type(3) { --pipeline-accent: #d28a24; --pipeline-tint: #fbf1df; }
+.voice-agent-theme .voice-pipeline-node > span.absolute {
+  background-color: var(--pipeline-accent) !important;
+}
+.voice-agent-theme .voice-pipeline-node > span:first-child > span:first-child > span:first-child {
+  background-color: var(--pipeline-tint) !important;
+  color: var(--pipeline-accent) !important;
+}
+.voice-agent-theme .voice-pipeline-node > span:first-child > span:last-child {
+  border-color: color-mix(in srgb, var(--pipeline-accent) 24%, transparent) !important;
+}
+.voice-agent-theme .voice-pipeline-node > span:first-child > span:last-child:hover {
+  border-color: var(--pipeline-accent) !important;
+  background-color: var(--pipeline-tint) !important;
+  color: var(--pipeline-accent) !important;
+}
+.voice-agent-theme .voice-pipeline-node[aria-pressed="true"] {
+  border-color: var(--pipeline-accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pipeline-accent) 16%, transparent) !important;
+}
+
+/* Dark mode uses layered charcoal-blue surfaces instead of near-black panels. */
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme {
+  --dashboard-surface: #1a2430 !important;
+  --dashboard-border: #344252 !important;
+  --voice-surface: #1a2430 !important;
+  --voice-surface-raised: #222e3b !important;
+  --voice-surface-soft: #293746 !important;
+  --voice-border: #344252 !important;
+  background: #121a24 !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(.agent-stack-panel, .agent-runtime-card, .agent-editor-shell) {
+  border-color: #344252 !important;
+  background-color: #1a2430 !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .dashboard-page-header {
+  border-color: #344252 !important;
+  background-color: #1a2430 !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node {
+  border-color: #344252 !important;
+  background-color: #222e3b !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node[aria-pressed="true"] {
+  border-color: var(--pipeline-accent) !important;
+  background-color: #293746 !important;
+}
+:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node > span:first-child > span:first-child > span:first-child {
+  background-color: color-mix(in srgb, var(--pipeline-accent) 20%, #222e3b) !important;
+  color: color-mix(in srgb, var(--pipeline-accent) 62%, white) !important;
+}
+
+/* Keep highlighted text readable in dark mode, including editor textareas. */
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme ::selection {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #3768a8 !important;
+}
