@@ -4000,10 +4000,10 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
   background-color: #ffffff !important;
 }
 
-/* Use distinct colors to make the three voice pipeline stages easy to scan. */
-.voice-agent-theme .voice-pipeline-node:nth-of-type(1) { --pipeline-accent: #0f9b8e; --pipeline-tint: #e3f6f2; }
-.voice-agent-theme .voice-pipeline-node:nth-of-type(2) { --pipeline-accent: #8057c7; --pipeline-tint: #f0eafa; }
-.voice-agent-theme .voice-pipeline-node:nth-of-type(3) { --pipeline-accent: #d28a24; --pipeline-tint: #fbf1df; }
+/* Each button sits inside its own display:contents wrapper. */
+.voice-agent-theme .voice-pipeline-flow > .contents:nth-child(1) .voice-pipeline-node { --pipeline-accent: #0f9b8e; --pipeline-tint: #e3f6f2; }
+.voice-agent-theme .voice-pipeline-flow > .contents:nth-child(2) .voice-pipeline-node { --pipeline-accent: #8057c7; --pipeline-tint: #f0eafa; }
+.voice-agent-theme .voice-pipeline-flow > .contents:nth-child(3) .voice-pipeline-node { --pipeline-accent: #d28a24; --pipeline-tint: #fbf1df; }
 .voice-agent-theme .voice-pipeline-node > span.absolute {
   background-color: var(--pipeline-accent) !important;
 }
@@ -4024,50 +4024,49 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--pipeline-accent) 16%, transparent) !important;
 }
 
-/* Dark mode uses layered charcoal-blue surfaces instead of near-black panels. */
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme {
-  --dashboard-surface: #1a2430 !important;
-  --dashboard-border: #344252 !important;
-  --voice-surface: #1a2430 !important;
-  --voice-surface-raised: #222e3b !important;
-  --voice-surface-soft: #293746 !important;
-  --voice-border: #344252 !important;
-  background: #121a24 !important;
-}
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(.agent-stack-panel, .agent-runtime-card, .agent-editor-shell) {
-  border-color: #344252 !important;
-  background-color: #1a2430 !important;
-}
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .dashboard-page-header {
-  border-color: #344252 !important;
-  background-color: #1a2430 !important;
-}
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node {
-  border-color: #344252 !important;
-  background-color: #222e3b !important;
-}
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node[aria-pressed="true"] {
-  border-color: var(--pipeline-accent) !important;
-  background-color: #293746 !important;
-}
-:is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node > span:first-child > span:first-child > span:first-child {
-  background-color: color-mix(in srgb, var(--pipeline-accent) 20%, #222e3b) !important;
-  color: color-mix(in srgb, var(--pipeline-accent) 62%, white) !important;
-}
-
-/* Keep highlighted text readable in dark mode, including editor textareas. */
-:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme ::selection {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #3768a8 !important;
-}
-
-/* The prompt editor is a native textarea, so style its selection directly.
-   Keep this in the base layer to override the dashboard's dark selection rule. */
+/* Base-layer important rules override the dashboard's earlier dark palette. */
 @layer base {
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme {
+    --dashboard-surface: #1d2936 !important;
+    --dashboard-border: #364555 !important;
+    --voice-surface: #1d2936 !important;
+    --voice-surface-raised: #243140 !important;
+    --voice-surface-soft: #2b3948 !important;
+    --voice-border: #364555 !important;
+    background-color: #151e29 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(.agent-stack-panel, .agent-runtime-card, .agent-editor-shell, .agent-prompt-editor, .dashboard-page-header) {
+    border-color: #364555 !important;
+    background-color: #1d2936 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(textarea, input, select) {
+    background-color: #202d3b !important;
+    border-color: #405164 !important;
+    color: #f4f7fb !important;
+    -webkit-text-fill-color: #f4f7fb !important;
+    caret-color: #ffffff !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node {
+    border-color: #364555 !important;
+    background-color: #243140 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node[aria-pressed="true"] {
+    border-color: var(--pipeline-accent) !important;
+    background-color: #2b3948 !important;
+  }
+
+  :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme .voice-pipeline-node > span:first-child > span:first-child > span:first-child {
+    background-color: color-mix(in srgb, var(--pipeline-accent) 22%, #243140) !important;
+    color: color-mix(in srgb, var(--pipeline-accent) 62%, white) !important;
+  }
+
   :is(html[data-dashboard-theme="dark"], html.dark) main.voice-agent-theme.dashboard-home-theme :is(textarea, input)::selection {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
-    background-color: #2563eb !important;
+    background-color: #3768a8 !important;
   }
 }
