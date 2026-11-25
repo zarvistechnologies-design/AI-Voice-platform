@@ -7457,7 +7457,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       title="Send when caller requests WhatsApp details"
                                       detail="Run this webhook during the call when the caller asks for details on WhatsApp or accepts your offer."
                                       enabled={tool.triggerOnCallerIntent === "whatsapp_details"}
-                                      onChange={(enabled) => updateTool(index, { triggerOnCallerIntent: enabled ? "whatsapp_details" : "" })}
+                                      onChange={(enabled) => updateTool(index, { triggerOnCallerIntent: enabled ? "whatsapp_details" : "", ...(enabled ? { runAfterCall: false } : {}) })}
                                     />
                                     <ToggleRow
                                       title="Wait for filler"
