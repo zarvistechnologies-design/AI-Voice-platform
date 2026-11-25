@@ -47,6 +47,9 @@ function LiveWaveCoreCanvas() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let rafId = 0;
     let startTime = performance.now();
+    let visible = false;
+    let lastFrameAt = 0;
+    const frameInterval = 1000 / 30;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const size = 280;
@@ -61,6 +64,12 @@ function LiveWaveCoreCanvas() {
     const centerY = size * 0.5;
 
     const drawFrame = (now: number) => {
+      if (!visible || document.hidden) return;
+      if (!reducedMotion && now - lastFrameAt < frameInterval) {
+        rafId = window.requestAnimationFrame(drawFrame);
+        return;
+      }
+      lastFrameAt = now;
       const t = (now - startTime) * 0.0014;
       ctx.clearRect(0, 0, size, size);
 
@@ -119,13 +128,31 @@ function LiveWaveCoreCanvas() {
 
       ctx.restore();
 
-      if (!reducedMotion) {
+      if (visible && !reducedMotion && !document.hidden) {
         rafId = window.requestAnimationFrame(drawFrame);
       }
     };
 
-    rafId = window.requestAnimationFrame(drawFrame);
-    return () => window.cancelAnimationFrame(rafId);
+    const syncAnimation = () => {
+      window.cancelAnimationFrame(rafId);
+      if (visible && !document.hidden) {
+        startTime = performance.now();
+        lastFrameAt = 0;
+        rafId = window.requestAnimationFrame(drawFrame);
+      }
+    };
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      syncAnimation();
+    });
+    visibilityObserver.observe(canvas);
+    document.addEventListener("visibilitychange", syncAnimation);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      visibilityObserver.disconnect();
+      document.removeEventListener("visibilitychange", syncAnimation);
+    };
   }, []);
 
   return <canvas ref={canvasRef} className="agentic-core-canvas" aria-hidden="true" />;

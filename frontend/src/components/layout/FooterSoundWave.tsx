@@ -15,6 +15,8 @@ export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "
     let height = 0;
     let visible = false;
     let frame = 0;
+    let lastFrameAt = 0;
+    const frameInterval = 1000 / 30;
 
     const draw = (seconds: number) => {
       if (!width || !height) return;
@@ -30,12 +32,14 @@ export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "
       context.lineCap = "round";
 
       const amplitude = Math.min(height * 0.4, 105);
-      const step = Math.max(2, width / 260);
+      // The wave is decorative. Keep the path count modest so it stays cheap
+      // on lower-powered devices while preserving the same visual treatment.
+      const step = Math.max(3, width / 180);
       const time = seconds * 0.66;
 
       for (let layer = 0; layer < 2; layer += 1) {
-        for (let strand = 0; strand < 36; strand += 1) {
-          const offset = (strand - 17.5) / 17.5;
+        for (let strand = 0; strand < 20; strand += 1) {
+          const offset = (strand - 9.5) / 9.5;
           context.beginPath();
           context.lineWidth = strand % 9 === 0 ? 1.1 : 0.7;
           context.globalAlpha = strand % 9 === 0 ? 0.42 : 0.19;
@@ -78,13 +82,17 @@ export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "
     };
 
     const animate = (now: number) => {
-      draw(now / 1000);
+      if (!document.hidden && now - lastFrameAt >= frameInterval) {
+        draw(now / 1000);
+        lastFrameAt = now;
+      }
       frame = window.requestAnimationFrame(animate);
     };
 
     const syncAnimation = () => {
       window.cancelAnimationFrame(frame);
-      if (visible && !motionPreference.matches) {
+      if (visible && !document.hidden && !motionPreference.matches) {
+        lastFrameAt = 0;
         frame = window.requestAnimationFrame(animate);
       } else {
         draw(0);
@@ -99,6 +107,7 @@ export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "
     resizeObserver.observe(canvas);
     visibilityObserver.observe(canvas);
     motionPreference.addEventListener("change", syncAnimation);
+    document.addEventListener("visibilitychange", syncAnimation);
     resize();
 
     return () => {
@@ -106,6 +115,7 @@ export function FooterSoundWave({ variant = "footer" }: { variant?: "footer" | "
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       motionPreference.removeEventListener("change", syncAnimation);
+      document.removeEventListener("visibilitychange", syncAnimation);
     };
   }, [variant]);
 
