@@ -10,6 +10,8 @@ export type BillingPlan = {
   monthlyPrice: number | null;
   currency?: string;
   interval?: string;
+  billingType?: "subscription" | "permanent";
+  priceAmount?: number;
   includedMinutes?: number;
   includedCredits?: number;
   usagePricing?: {

@@ -255,12 +255,14 @@ export function BillingShell() {
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <span className="app-label text-[#71717a]">Subscription & Plan</span>
+                  <span className="app-label text-[#71717a]">Plan & Billing</span>
                   <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">
                     {data.currentPlan?.name ?? (data.subscription?.plan ? data.subscription.plan.replaceAll("_", " ") : "Active Plan")}
                   </h2>
                   <p className="mt-1 text-xs text-[#71717a]">
-                    Your workspace is provided and managed directly by <strong className="text-[#171717]">{data.whiteLabel.productName}</strong>.
+                    {data.currentPlan?.billingType === "permanent"
+                      ? `One-time ${money(data.currentPlan.priceAmount ?? 0, data.currentPlan.currency ?? walletCurrency)} package with permanent access.`
+                      : `${data.currentPlan?.interval === "year" ? "Yearly" : "Monthly"} subscription${data.currentPlan?.priceAmount !== undefined ? ` · ${money(data.currentPlan.priceAmount, data.currentPlan.currency ?? walletCurrency)}` : ""}.`} Your workspace is provided and managed directly by <strong className="text-[#171717]">{data.whiteLabel.productName}</strong>.
                   </p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-xs font-medium text-[#171717]">

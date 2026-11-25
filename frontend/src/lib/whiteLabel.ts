@@ -115,7 +115,7 @@ export type WhiteLabelPlan = {
   description: string;
   status: "draft" | "published" | "archived";
   isPublic: boolean;
-  price: { currency: "USD" | "INR"; recurringAmountMinor: number; interval: "month" | "year"; setupFeeMinor: number; trialDays: number; taxBehavior: string };
+  price: { currency: "USD" | "INR"; billingType: "subscription" | "permanent"; recurringAmountMinor: number; interval: "month" | "year"; setupFeeMinor: number; trialDays: number; taxBehavior: string };
   usagePricing: { mode: "cost_markup" | "fixed_per_minute" | "included_only"; markupBps: number; perMinuteAmountMinor: number; minimumCallAmountMinor: number; overageEnabled: boolean };
   allowances: { includedCredits: number; includedMinutes: number };
   limits: { agents: number; members: number; phoneNumbers: number; concurrentCalls: number; monthlyMinutes: number; knowledgeSources: number; apiKeys: number };
@@ -133,7 +133,8 @@ export type WhiteLabelCustomer = {
   externalCustomerId?: string;
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
-  subscription?: { _id?: string; planId?: string; status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
+  subscription?: { _id?: string; planId?: string; status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; billingType?: "subscription" | "permanent"; recurringAmountMinor?: number; interval?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
+  wallet?: { balanceCredits: number; currency: string } | null;
   createdAt: string;
 };
 
