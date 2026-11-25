@@ -211,9 +211,9 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
   }
 
   return (
-    <div className="whatsapp-forms space-y-4">
+    <div className="whatsapp-forms space-y-5">
       {/* Control Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5">
+      <div className="whatsapp-meta-toolbar flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#dfe1e8] bg-white p-3 shadow-[0_8px_24px_rgba(37,99,235,0.07)] dark:border-[#303038] dark:bg-[#141418]">
         <div className="relative min-w-[240px] flex-1 max-w-sm">
           <svg
             className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#a1a1aa]"
@@ -229,14 +229,14 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search forms by title or keyword..."
-            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12.5px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
+            className="whatsapp-search-field h-9 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12.5px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
           />
         </div>
 
         <button
           type="button"
           onClick={() => setShowCreateModal(true)}
-          className="inline-flex h-9 items-center gap-1.5 rounded-md bg-[#171717] px-3.5 text-[12px] font-medium text-white transition hover:bg-black"
+          className="inline-flex h-9 items-center gap-1.5 rounded-md border border-[#1d4ed8] bg-[#2563eb] px-3.5 text-[12px] font-medium text-white transition hover:bg-[#1d4ed8]"
         >
           <span>+ Create Meta Form</span>
         </button>
@@ -253,7 +253,7 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white divide-y divide-[#eaeaea]">
+          <div className="grid gap-2 rounded-xl border border-[#eaeaea] bg-[#fafafa] p-2 dark:border-[#303038] dark:bg-[#111114]">
             {filteredForms.length === 0 ? (
               <div className="p-10 text-center">
                 <h4 className="text-[13px] font-semibold text-[#171717]">No Meta Forms Found</h4>
@@ -274,9 +274,20 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                 return (
                   <div
                     key={form._id}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedFormId(form._id)}
-                    className={`flex items-center justify-between gap-3 px-4 py-3 cursor-pointer transition ${
-                      isSelected ? "bg-[#fafafa]" : "hover:bg-[#fafafa]"
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedFormId(form._id);
+                      }
+                    }}
+                    className={`flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left cursor-pointer transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 ${
+                      isSelected
+                        ? "border-[#2563eb] bg-[#eff6ff] shadow-[0_8px_22px_rgba(37,99,235,0.14)] dark:bg-[#172554]"
+                        : "border-[#eaeaea] bg-white hover:border-[#bfdbfe] hover:bg-[#f8fbff] dark:border-[#303038] dark:bg-[#18181b] dark:hover:border-[#3b82f6] dark:hover:bg-[#1b1b20]"
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -425,7 +436,7 @@ export function WhatsAppMetaFormsView({ forms, onRefresh }: WhatsAppMetaFormsVie
                       value={submissionsSearch}
                       onChange={(e) => setSubmissionsSearch(e.target.value)}
                       placeholder="Filter leads..."
-                      className="h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
+                      className="whatsapp-search-field h-8 flex-1 rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none"
                     />
                     <button
                       type="button"

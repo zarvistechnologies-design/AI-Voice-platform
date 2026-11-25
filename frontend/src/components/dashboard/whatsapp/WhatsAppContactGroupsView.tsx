@@ -147,16 +147,16 @@ export function WhatsAppContactGroupsView({
   }
 
   return (
-    <div className="whatsapp-contacts space-y-4">
-      {/* Compact Top Toolbar */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="whatsapp-contacts space-y-5">
+      {/* Search and actions stay together in their own toolbar panel. */}
+      <div className="whatsapp-contacts-toolbar flex flex-col gap-3 rounded-xl border border-[#eaeaea] bg-white p-3 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800 dark:bg-[#121215]">
         <div className="relative flex-1 max-w-md">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search contacts by name, phone, email..."
-            className="h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none"
+            className="whatsapp-search-field h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none dark:bg-zinc-900 dark:text-white"
           />
         </div>
 

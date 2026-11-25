@@ -48,6 +48,7 @@ export async function requestBrandConfig() {
     const response = await fetch(`${api}/api/public/brand?hostname=${encodeURIComponent(hostname)}`, {
       next: { revalidate: 30 },
       headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(3500),
     });
     if (!response.ok) return unavailableBrand(hostname);
     const data = (await response.json()) as { brand?: BrandConfig };

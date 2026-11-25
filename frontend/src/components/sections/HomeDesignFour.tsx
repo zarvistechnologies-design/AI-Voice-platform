@@ -177,12 +177,12 @@ export function HomeDesignFour() {
           </div>
         </section>
 
-        <IndustryShowcaseSection />
         <IntegrationsShowcaseSection />
         <PrivacyAssuranceSection />
         <EnterpriseScaleSection />
         <PlatformComparisonSection />
         <GlobalVoicesMapSection />
+        <IndustryShowcaseSection />
         <HomeFaqSection />
       </main>
 

@@ -1,6 +1,5 @@
+import { API_URL as API_BASE } from "@/lib/apiBase";
 import { getAuthHeaders, getSession } from "@/lib/auth";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export type WhatsAppTemplateButton = {
   type: "QUICK_REPLY" | "URL" | "PHONE_NUMBER";

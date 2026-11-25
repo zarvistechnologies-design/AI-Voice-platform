@@ -241,9 +241,9 @@ export function WhatsAppLiveChatView({
   return (
     <div className="whatsapp-live-chat">
       {/* Main 3-Column Monochrome Inbox */}
-      <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-[#eaeaea] bg-white lg:grid-cols-12 min-h-[600px] dark:border-zinc-800 dark:bg-[#121215]">
+      <div className="whatsapp-live-chat-grid grid w-full min-w-0 grid-cols-1 overflow-hidden rounded-lg border border-[#eaeaea] bg-white min-h-[600px] dark:border-zinc-800 dark:bg-[#121215]">
         {/* Left Column: Conversations List */}
-        <div className="border-r border-[#eaeaea] lg:col-span-4 flex flex-col bg-white dark:border-zinc-800 dark:bg-[#121215]">
+        <div className="whatsapp-live-chat-list min-w-0 border-r border-[#eaeaea] flex flex-col bg-white dark:border-zinc-800 dark:bg-[#121215]">
           {/* Top Search & Filter Bar */}
           <div className="border-b border-[#eaeaea] p-3 space-y-2 bg-white dark:border-zinc-800 dark:bg-[#121215]">
             <div className="relative">
@@ -261,7 +261,7 @@ export function WhatsAppLiveChatView({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search chats by name or phone..."
-                className="h-8 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
+                className="whatsapp-search-field h-8 w-full rounded-md border border-[#eaeaea] bg-white pl-8 pr-3 text-[12px] text-[#171717] placeholder-[#a1a1aa] focus:border-[#171717] focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-white dark:placeholder-zinc-500 dark:focus:border-zinc-600"
               />
             </div>
 
@@ -308,7 +308,7 @@ export function WhatsAppLiveChatView({
                         : "hover:bg-[#f5f6f6] dark:hover:bg-zinc-800/40"
                     }`}
                   >
-                    <div className="relative size-8 shrink-0 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center dark:border-emerald-600/30 dark:bg-emerald-950/70 dark:text-emerald-400">
+                    <div className="whatsapp-contact-avatar relative size-8 shrink-0 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center dark:border-emerald-500/60 dark:bg-emerald-700 dark:text-white">
                       {conv.contactName.slice(0, 2).toUpperCase()}
                       <span className="absolute bottom-0 right-0 size-2 rounded-full border border-white dark:border-zinc-900 bg-[#25D366]" />
                     </div>
@@ -357,13 +357,13 @@ export function WhatsAppLiveChatView({
         </div>
 
         {/* Middle Column: Real WhatsApp Inbox Chat Window */}
-        <div className="flex flex-col lg:col-span-5 border-r border-[#eaeaea] bg-[#efeae2] dark:border-zinc-800 dark:bg-[#0b141a]">
+        <div className="whatsapp-live-chat-thread min-w-0 flex flex-col border-r border-[#eaeaea] bg-[#efeae2] dark:border-zinc-800 dark:bg-[#0b141a]">
           {selectedConversation ? (
             <>
               {/* Top Chat Bar */}
               <div className="flex items-center justify-between border-b border-[#e2e5e8] bg-[#f0f2f5] px-4 py-2.5 dark:border-zinc-800 dark:bg-[#121215]">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="size-8 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center dark:border-emerald-600/30 dark:bg-emerald-950/70 dark:text-emerald-400">
+                  <div className="whatsapp-contact-avatar size-8 rounded-full border border-[#00a884]/25 bg-[#d9fdd3] text-[#008069] font-semibold text-[11px] grid place-items-center dark:border-emerald-500/60 dark:bg-emerald-700 dark:text-white">
                     {selectedConversation.contactName.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
@@ -408,9 +408,9 @@ export function WhatsAppLiveChatView({
                     return (
                       <div
                         key={msg._id}
-                        className={`flex flex-col max-w-[82%] rounded-lg px-3 py-2 text-[12.5px] leading-relaxed shadow-2xs ${
+                        className={`whatsapp-message-bubble flex flex-col max-w-[82%] rounded-lg px-3 py-2 text-[12.5px] leading-relaxed shadow-2xs ${
                           isOutbound
-                            ? "self-end rounded-tr-none bg-[#d9fdd3] text-[#111b21] dark:bg-[#005c4b] dark:text-white"
+                            ? "whatsapp-message-outbound self-end rounded-tr-none bg-[#d9fdd3] text-[#111b21] dark:bg-[#0b7357] dark:text-white"
                             : "self-start rounded-tl-none bg-white text-[#111b21] dark:border dark:border-zinc-800 dark:bg-[#202c33] dark:text-zinc-100"
                         }`}
                       >
@@ -556,11 +556,11 @@ export function WhatsAppLiveChatView({
         </div>
 
         {/* Right Column: Contact Profile & Actions */}
-        <div className="lg:col-span-3 p-4 bg-white flex flex-col space-y-4 dark:border-zinc-800 dark:bg-[#121215]">
+        <div className="whatsapp-live-chat-profile min-w-0 p-4 bg-white flex flex-col space-y-4 dark:border-zinc-800 dark:bg-[#121215]">
           {selectedConversation ? (
             <>
               <div className="text-center pb-3.5 border-b border-[#eaeaea] dark:border-zinc-800">
-                <div className="mx-auto size-12 rounded-full border border-[#eaeaea] bg-[#f4f4f5] text-[#171717] font-semibold text-[14px] grid place-items-center dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
+                <div className="whatsapp-contact-avatar mx-auto size-12 rounded-full border border-[#eaeaea] bg-[#f4f4f5] text-[#171717] font-semibold text-[14px] grid place-items-center dark:border-emerald-500/60 dark:bg-emerald-700 dark:text-white">
                   {selectedConversation.contactName.slice(0, 2).toUpperCase()}
                 </div>
                 <h4 className="mt-2.5 text-[13.5px] font-semibold text-[#171717] dark:text-white">

@@ -298,7 +298,7 @@ function DeveloperOverview({
   const completedItems = setupItems.filter((item) => item.done).length;
 
   return (
-    <div className="grid gap-5">
+    <div className="developer-overview grid gap-5">
       <section className="developer-panel grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="relative overflow-hidden p-6 sm:p-7 lg:p-8">
           <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#171717]/[0.07] blur-3xl" />
@@ -392,7 +392,7 @@ function DeveloperOverview({
           </div>
         </div>
 
-        <div className={panelClass}>
+        <div className={`${panelClass} developer-activity-panel`}>
           <div className="flex items-center justify-between border-b border-[#e1e9e6] px-5 py-4 sm:px-6">
             <div>
               <h3 className="text-base font-semibold text-[#18302a]">Recent activity</h3>
@@ -402,13 +402,13 @@ function DeveloperOverview({
           </div>
           <div className="divide-y divide-[#edf1f0]">
             {deliveries.slice(0, 3).map((delivery) => (
-              <button className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition hover:bg-[#f8faf9] sm:px-6" key={delivery._id} type="button" onClick={() => onNavigate("activity")}>
+              <button className="developer-activity-row flex w-full items-center gap-3 px-5 py-3.5 text-left transition hover:bg-[#f8faf9] sm:px-6" key={delivery._id} type="button" onClick={() => onNavigate("activity")}>
                 <span className={`size-2 shrink-0 rounded-full ${delivery.status === "delivered" ? "bg-[#171717]" : delivery.status === "failed" ? "bg-rose-500" : "bg-amber-500"}`} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-[#29413b]">{deliveryEventLabel(delivery.event)}</span>
                   <span className="mt-0.5 block text-[11px] text-[#8a9995]">{formatDate(delivery.createdAt)}</span>
                 </span>
-                <span className={`rounded-full px-2 py-1 text-[10px] font-bold ring-1 ${deliveryTone(delivery.status)}`}>{delivery.responseStatus || delivery.status}</span>
+                <span className={`developer-activity-status rounded-full px-2 py-1 text-[10px] font-bold ring-1 ${deliveryTone(delivery.status)}`} data-status={delivery.status}>{delivery.responseStatus || delivery.status}</span>
               </button>
             ))}
             {!deliveries.length ? (

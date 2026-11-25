@@ -736,7 +736,7 @@ export function WhatsAppAgentsView({
         </div>
 
         {/* Multi-Agent Roster Cards */}
-        <div className="mt-4 border-t border-[#f1f5f9] pt-4">
+        <div className="mt-4 pt-4">
           {loadingAgents ? (
             <div className="py-4 text-[12.5px] text-[#6b7280]">Loading WhatsApp AI agents...</div>
           ) : (
@@ -796,7 +796,7 @@ export function WhatsAppAgentsView({
                       )}
                     </div>
 
-                    <div className="whatsapp-agent-muted mt-2.5 flex w-full items-center justify-between gap-2 border-t border-[#e5e7eb]/70 pt-2 text-[11px] text-[#6b7280]">
+                    <div className="whatsapp-agent-muted mt-2.5 flex w-full items-center justify-between gap-2 pt-1 text-[11px] text-[#6b7280]">
                       <span className="truncate font-mono">
                         {agent.displayPhoneNumber || "All WhatsApp Lines"}
                       </span>
@@ -840,7 +840,7 @@ export function WhatsAppAgentsView({
         {/* Left: Selected Agent Editor & Admin Bulk Dispatch */}
         <div className="rounded-xl border border-[#e5e7eb] bg-white">
           {/* Editor Sub-Navigation & Save Bar */}
-          <div className="flex flex-col gap-3 border-b border-[#f1f5f9] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="inline-flex w-fit flex-wrap rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-1">
               {(
                 [
@@ -1462,7 +1462,7 @@ export function WhatsAppAgentsView({
                   </div>
                 </div>
 
-                <div className="border-t border-[#f1f5f9] pt-4 space-y-4">
+                <div className="pt-4 space-y-4">
                   <div>
                     <div className="inline-flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-2.5 py-0.5 text-[11px] font-semibold text-[#1d4ed8]">
                       🔒 Admin-Only Security Allowlist
@@ -1584,7 +1584,7 @@ export function WhatsAppAgentsView({
 
         {/* Right: Sticky Live AI WhatsApp Phone Simulator */}
         <aside className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-sm xl:sticky xl:top-4">
-          <div className="flex items-center justify-between border-b border-[#e5e7eb] bg-[#111827] px-4 py-3 text-white">
+          <div className="flex items-center justify-between bg-[#111827] px-4 py-3 text-white">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-[#2563eb] text-[12px] font-semibold text-white">
                 {((simActiveAgent?.name || draftName) || "WA").slice(0, 2).toUpperCase()}
@@ -1661,7 +1661,7 @@ export function WhatsAppAgentsView({
             )}
           </div>
 
-          <div className="border-t border-[#f1f5f9] bg-white px-3.5 pt-2.5 pb-1.5">
+          <div className="bg-white px-3.5 pt-2.5 pb-1.5">
             <div className="flex flex-wrap gap-1.5">
               {[
                 { label: "Pricing", text: "What are your plans and pricing?" },
