@@ -376,7 +376,7 @@ return (
               <a className="contact-info-card" href="https://maps.google.com/?q=Manyata+Tech+Park+Bengaluru" target="_blank" rel="noreferrer">
                 <span><Icon name="location" /></span><strong>Head Office</strong><small>Bengaluru, India</small>
               </a>
-              <a className="contact-info-card" href="tel:+917892518414">
+              <a className="contact-info-card" href="tel:+918423655336">
                 <span><Icon name="phone" /></span><strong>Call Center</strong><small>+91 78925 18414</small>
               </a>
               <a className="contact-info-card" href={`mailto:${salesEmail}`}>

@@ -391,6 +391,9 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
   const [newFlowName, setNewFlowName] = useState("");
   const [newFlowDesc, setNewFlowDesc] = useState("");
   const [newFlowKeyword, setNewFlowKeyword] = useState("START");
+  const [newFlowPhoneNumberId, setNewFlowPhoneNumberId] = useState(
+    () => accounts.find((account) => account.isPrimary)?.phoneNumberId || accounts[0]?.phoneNumberId || "",
+  );
   const [presetIndex, setPresetIndex] = useState<number | null>(null);
 
   function handleSaveNodeEdits() {
@@ -509,7 +512,7 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
           newFlowDesc.trim() || preset?.description || "Automated WhatsApp conversation flow",
         triggerType: "keyword",
         triggerKeyword: newFlowKeyword.trim().toUpperCase() || "START",
-      phoneNumberId: "",
+        phoneNumberId: newFlowPhoneNumberId,
         status: "active",
         nodes: preset?.nodes || [
           {
@@ -535,6 +538,9 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
         setShowCreateFlowModal(false);
         setNewFlowName("");
         setNewFlowDesc("");
+        setNewFlowPhoneNumberId(
+          accounts.find((account) => account.isPrimary)?.phoneNumberId || accounts[0]?.phoneNumberId || "",
+        );
         setPresetIndex(null);
         onRefresh();
       }
@@ -689,7 +695,12 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
 
           <button
             type="button"
-            onClick={() => setShowCreateFlowModal(true)}
+            onClick={() => {
+              setNewFlowPhoneNumberId(
+                accounts.find((account) => account.isPrimary)?.phoneNumberId || accounts[0]?.phoneNumberId || "",
+              );
+              setShowCreateFlowModal(true);
+            }}
             className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-2.5 text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
           >
             + New Flow
@@ -1239,6 +1250,29 @@ export function WhatsAppFlowMakerView({ flows, accounts, onRefresh }: WhatsAppFl
                   placeholder="e.g. BOOK, START, HELP"
                   className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[12.5px] uppercase text-[#171717] focus:border-[#171717] focus:outline-none"
                 />
+              </div>
+
+              <div>
+                <label htmlFor="new-flow-phone-number" className="block text-[11.5px] font-medium text-[#171717]">
+                  Connect to WhatsApp Number
+                </label>
+                <select
+                  id="new-flow-phone-number"
+                  value={newFlowPhoneNumberId}
+                  onChange={(event) => setNewFlowPhoneNumberId(event.target.value)}
+                  className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] text-[#171717]"
+                >
+                  <option value="">All connected numbers</option>
+                  {accounts.map((account) => (
+                    <option key={account.phoneNumberId} value={account.phoneNumberId}>
+                      {(account.label || account.verifiedName || "WhatsApp") + " · " + account.displayPhoneNumber}
+                      {account.isPrimary ? " (Primary)" : ""}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-[10.5px] text-[#71717a]">
+                  Incoming messages on this number will trigger this flow.
+                </p>
               </div>
 
               <div className="flex justify-end gap-2 border-t border-[#eaeaea] pt-3">
