@@ -2844,6 +2844,7 @@ function createEmptyToolDraft(): AgentTool {
     enabled: true,
     parameters: [],
     runAfterCall: false,
+    triggerOnCallerIntent: "",
     executeAfterMessage: false,
     excludeSessionId: true,
     messages: [],
@@ -2926,6 +2927,7 @@ function normalizeTool(tool: AgentTool): AgentTool {
       required: parameter.required === true,
     })),
     runAfterCall: tool.runAfterCall === true,
+    triggerOnCallerIntent: tool.triggerOnCallerIntent === "whatsapp_details" ? "whatsapp_details" : "",
     executeAfterMessage: tool.executeAfterMessage === true,
     excludeSessionId: tool.excludeSessionId !== false,
     messages: (tool.messages ?? [])
@@ -7450,6 +7452,12 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       onChange={(runAfterCall) =>
                                         updateTool(index, { runAfterCall })
                                       }
+                                    />
+                                    <ToggleRow
+                                      title="Send when caller requests WhatsApp details"
+                                      detail="Run this webhook during the call when the caller asks for details on WhatsApp or accepts your offer."
+                                      enabled={tool.triggerOnCallerIntent === "whatsapp_details"}
+                                      onChange={(enabled) => updateTool(index, { triggerOnCallerIntent: enabled ? "whatsapp_details" : "" })}
                                     />
                                     <ToggleRow
                                       title="Wait for filler"
