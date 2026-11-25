@@ -46,7 +46,7 @@ export function BillingShell() {
 
   const load = useCallback(async () => {
     try {
-      const summary = await billingApi.summary();
+      const summary = await billingApi.summary(true);
       setData(summary);
       setGstin(summary.billingProfile?.gstin ?? "");
       setBillingAddress(summary.billingProfile?.address ?? "");
@@ -226,6 +226,30 @@ export function BillingShell() {
 
         <div className="grid w-full gap-4 px-4 py-4 sm:px-5 lg:px-6">
           {notice ? <div className="rounded-md border border-[#eaeaea] bg-white px-3 py-2 text-xs font-medium text-[#171717]">{notice}</div> : null}
+
+          {data?.whiteLabel ? (
+            <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
+              <div className="border-b border-[#eaeaea] px-5 py-4">
+                <span className="app-label text-[#71717a]">Wallet & usage pricing</span>
+                <p className="mt-1 text-xs text-[#71717a]">Your assigned plan allowance, current wallet balance, and call charges.</p>
+              </div>
+              <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(wallet?.balanceCredits ?? 0, walletCurrency)}</dd></div>
+                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits assigned by plan</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{money(data.currentPlan?.includedCredits ?? 0, data.currentPlan?.currency ?? walletCurrency)}</dd></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.currentPlan?.includedMinutes ?? 0).toLocaleString()}</dd><p className="mt-1 text-[11px] text-[#71717a]">{Math.round(data.usage?.minutes ?? 0)} minutes used</p></div>
+                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Calls handled</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.usage?.calls ?? 0}</dd></div>
+              </dl>
+              <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
+                <strong className="text-[#171717]">Call pricing: </strong>
+                {data.currentPlan?.usagePricing?.mode === "fixed_per_minute"
+                  ? `${money((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per minute after included minutes.`
+                  : data.currentPlan?.usagePricing?.mode === "included_only"
+                    ? "Calls use the included minutes; no overage charge is configured."
+                    : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup after included minutes. The final charge varies by the AI models used.`}
+                {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${money(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}.` : ""}
+              </div>
+            </section>
+          ) : null}
 
           {data?.whiteLabel?.managedByPartner ? (
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">

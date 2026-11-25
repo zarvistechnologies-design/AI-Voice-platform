@@ -10,6 +10,14 @@ export type BillingPlan = {
   monthlyPrice: number | null;
   currency?: string;
   interval?: string;
+  includedMinutes?: number;
+  includedCredits?: number;
+  usagePricing?: {
+    mode: "cost_markup" | "fixed_per_minute" | "included_only";
+    markupBps: number;
+    perMinuteAmountMinor: number;
+    minimumCallAmountMinor: number;
+  };
   limits: {
     agents: number | null;
     members: number | null;
@@ -197,7 +205,10 @@ async function downloadInvoice(invoiceId: string) {
 }
 
 export const billingApi = {
-  summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
+  summary: (fresh = false) => {
+    if (fresh) invalidateApiCache("billing");
+    return cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary"));
+  },
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
   topUp: (amountInr: number) =>
     request<RazorpayCheckoutPayload>("/top-up", {
@@ -217,11 +228,14 @@ export const billingApi = {
       method: "POST",
       body: JSON.stringify({}),
     }),
-  verifyWhiteLabelCheckout: (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
-    request<{ success: boolean; invoice: BillingSummary["currentInvoice"] }>("/white-label/verify", {
+  verifyWhiteLabelCheckout: async (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    const verified = await request<{ success: boolean; invoice: BillingSummary["currentInvoice"] }>("/white-label/verify", {
       method: "POST",
       body: JSON.stringify(result),
-    }),
+    });
+    invalidateApiCache("billing");
+    return verified;
+  },
   updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
     const result = await request<{ wallet: CreditWallet }>("/auto-reload", {
       method: "PUT",

@@ -90,7 +90,7 @@ export type WhiteLabelBrand = {
   };
   support: { email: string; phone: string; websiteUrl: string; helpCenterUrl: string; statusPageUrl: string };
   legal: { termsUrl: string; privacyUrl: string; cookiePolicyUrl: string; legalBusinessName: string; businessAddress: string };
-  email: { fromName: string; fromAddress: string; replyTo: string; resendApiKey?: string; sendingDomainStatus: string };
+  email: { fromName: string; fromAddress: string; replyTo: string; hasResendApiKey?: boolean; sendingDomainStatus: string };
 };
 
 export type WhiteLabelDomain = {
@@ -133,7 +133,7 @@ export type WhiteLabelCustomer = {
   externalCustomerId?: string;
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
-  subscription?: { status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string } };
+  subscription?: { _id?: string; planId?: string; status: string; planKey: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
   createdAt: string;
 };
 
@@ -279,6 +279,8 @@ export const partnerWhiteLabelApi = {
   customers: () => request<{ customers: WhiteLabelCustomer[]; pagination: { total: number } }>("/api/partner/white-label/customers?limit=100"),
   provisionCustomer: (body: unknown) => request<{ organization: WhiteLabelCustomer; emailDeliveryStatus: string; activationUrl?: string }>("/api/partner/white-label/customers", { method: "POST", body }),
   updateCustomerStatus: (orgId: string, status: "active" | "suspended", reason: string) => request<{ organization: WhiteLabelCustomer }>(`/api/partner/white-label/customers/${orgId}/status`, { method: "PATCH", body: { status, reason } }),
+  updateCustomerPlan: (orgId: string, planId: string, reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"]; creditGrant?: { amountCredits: number; balanceAfterCredits: number } }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body: { planId, reason } }),
+  grantCustomerCredits: (orgId: string, amountCredits: number, reason: string) => request<{ amountCredits: number; balanceAfterCredits: number; currency: string }>(`/api/partner/white-label/customers/${orgId}/credits`, { method: "POST", body: { amountCredits, reason } }),
   deleteCustomer: (orgId: string) => request<void>(`/api/partner/white-label/customers/${orgId}`, { method: "DELETE" }),
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
 };
