@@ -57,11 +57,19 @@ const platformMetadata: Metadata = {
   },
 };
 
+function safeMetadataBase(hostname: string) {
+  try {
+    return new URL(`https://${hostname || "www.vozon.ai"}`);
+  } catch {
+    return new URL("https://www.vozon.ai");
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const brand = await requestBrandConfig();
   if (brand.source === "platform") return platformMetadata;
   return {
-    metadataBase: new URL(`https://${brand.hostname}`),
+    metadataBase: safeMetadataBase(brand.hostname),
     title: { default: `${brand.productName} | AI Voice Platform`, template: `%s | ${brand.productName}` },
     description: "Build multilingual AI phone agents for inbound and outbound calls, lead qualification, appointment booking, customer support, and workflow automation.",
     icons: (brand.iconUrl || brand.logoDarkUrl || brand.logoUrl)

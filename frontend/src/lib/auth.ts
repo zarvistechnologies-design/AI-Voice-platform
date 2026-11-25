@@ -115,11 +115,19 @@ function authServerUnavailableError() {
   return new Error("Could not reach the backend API. Make sure the backend is running on http://localhost:5000.");
 }
 
+function withRequestTimeout(signal?: AbortSignal | null, timeoutMs = 15_000) {
+  if (signal) return signal;
+  return typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function"
+    ? AbortSignal.timeout(timeoutMs)
+    : undefined;
+}
+
 async function requestAuth(path: string, init: RequestInit) {
   let response: Response;
   try {
     response = await fetch(`${API_URL}${path}`, {
       ...init,
+      signal: withRequestTimeout(init.signal),
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -251,6 +259,7 @@ async function validateSessionWithServer(session: AuthSession) {
   let response: Response;
   try {
     response = await fetch(`${API_URL}/api/auth/me`, {
+      signal: withRequestTimeout(undefined),
       credentials: "include",
       headers: getAuthHeaders(),
     });
