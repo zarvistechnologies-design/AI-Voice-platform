@@ -10,7 +10,9 @@ const BrandContext = createContext<BrandConfig>(defaultBrand);
 
 export function BrandProvider({ brand, children }: { brand: BrandConfig; children: ReactNode }) {
   const session = useSyncExternalStore(subscribeToSession, getSession, getServerSession);
-  const [remoteBrand, setRemoteBrand] = useState<BrandConfig | null>(null);
+  const [remoteBrandState, setRemoteBrandState] = useState<{ organizationId: string; brand: BrandConfig } | null>(null);
+  const organizationId = session?.organization?.id ?? "";
+  const remoteBrand = remoteBrandState?.organizationId === organizationId ? remoteBrandState.brand : null;
 
   const isWhiteLabelPartner = Boolean(session?.organization?.whiteLabelOwnerAccountId);
   const isWhiteLabelCustomer = Boolean(session?.organization?.whiteLabelAccountId);
@@ -22,19 +24,19 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
   useEffect(() => {
     function handleBrandUpdate(event: Event) {
       const customEvent = event as CustomEvent<BrandConfig>;
-      if (customEvent.detail) {
-        setRemoteBrand(customEvent.detail);
+      if (customEvent.detail && organizationId) {
+        setRemoteBrandState({ organizationId, brand: customEvent.detail });
       }
     }
     window.addEventListener("brand-updated", handleBrandUpdate);
     return () => window.removeEventListener("brand-updated", handleBrandUpdate);
-  }, []);
+  }, [organizationId]);
 
   // Fetch current organization brand if authenticated as partner or customer
   useEffect(() => {
     // On Vozon's platform host, keep Vozon's brand even when a partner account
     // signs in. Resolve the account's brand only on its white-label host.
-    if (!isWhiteLabelAccount || !isWhiteLabelHost || remoteBrand || !session?.organization?.id) return;
+    if (!isWhiteLabelAccount || !isWhiteLabelHost || remoteBrand || !organizationId) return;
 
     let cancelled = false;
     async function loadBrand() {
@@ -50,7 +52,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
         if (!res.ok) return;
         const data = (await res.json()) as { brand?: BrandConfig };
         if (!cancelled && data?.brand) {
-          setRemoteBrand(data.brand);
+          setRemoteBrandState({ organizationId, brand: data.brand });
         }
       } catch {
         // Keep fallback
@@ -60,7 +62,7 @@ export function BrandProvider({ brand, children }: { brand: BrandConfig; childre
     return () => {
       cancelled = true;
     };
-  }, [isWhiteLabelAccount, isWhiteLabelHost, session?.organization?.id, session?.token, remoteBrand]);
+  }, [isWhiteLabelAccount, isWhiteLabelHost, organizationId, session?.token, remoteBrand]);
 
   const effectiveBrand = useMemo<BrandConfig>(() => {
     if (isWhiteLabelAccount && !isWhiteLabelHost) return brand;

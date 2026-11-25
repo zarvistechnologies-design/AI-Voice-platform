@@ -11,6 +11,13 @@ export type BillingPlan = {
   currency?: string;
   interval?: string;
   includedMinutes?: number;
+  includedCredits?: number;
+  usagePricing?: {
+    mode: "cost_markup" | "fixed_per_minute" | "included_only";
+    markupBps: number;
+    perMinuteAmountMinor: number;
+    minimumCallAmountMinor: number;
+  };
   limits: {
     agents: number | null;
     members: number | null;
