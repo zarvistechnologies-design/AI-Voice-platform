@@ -67,7 +67,7 @@ export function SiteFooter() {
             <a aria-label="LinkedIn" href="https://linkedin.com/company/vozon-ai-india/" rel="noreferrer" target="_blank">in</a>
             <a aria-label="Instagram" href="https://www.instagram.com/vozonai"target="_blank"rel="noreferrer">
             <svg width="24"height="24"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"><rect x="2.5"y="2.5"width="19"height="19"rx="5.5"stroke="currentColor"strokeWidth="2.5"/><circle cx="12"cy="12"r="4.25"stroke="currentColor"strokeWidth="2.5"/><circle cx="17.5"cy="6.5"r="1.25"fill="currentColor" /></svg></a>
-            <a aria-label="Call +91 78925 18414" href="tel:+917892518414">&#9742;</a>
+            <a aria-label="Call +91 84236 55336" href="tel:+918423655336">&#9742;</a>
             <a aria-label="Email hello@vozon.ai" href="mailto:hello@vozon.ai">&#9993;</a>
           </div>
         </div>
@@ -78,7 +78,7 @@ export function SiteFooter() {
           <div>
             <b>Contact US</b>
             <a href="mailto:hello@vozon.ai">hello@vozon.ai</a>
-            <a className="design-four-footer-phone" href="tel:+918423655336">+91 78925 18414</a>
+            <a className="design-four-footer-phone" href="tel:+918423655336">+91 84236 55336</a>
             <Link href="/contact#office-locations">Our Office Locations</Link>
             <Link className="design-four-footer-demo" href="/contact">Book a free demo</Link>
           </div>
