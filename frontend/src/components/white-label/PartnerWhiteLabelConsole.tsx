@@ -65,7 +65,7 @@ function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomer
     {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="mx-5 mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
     <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
       {[
-        ...(includedMinutes > 0 ? [["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`]] : []),
+        ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`],
         ["Available wallet", credits(billing.wallet.balanceCredits)],
         ...(includedCredits > 0 ? [["Plan wallet allowance", credits(includedCredits)]] : []),
         ["Call deductions this month", credits(billing.usage.chargedCredits)],
