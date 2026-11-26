@@ -115,7 +115,7 @@ export type WhiteLabelPlan = {
   description: string;
   status: "draft" | "published" | "archived";
   isPublic: boolean;
-  price: { currency: "USD" | "INR"; recurringAmountMinor: number; interval: "month" | "year"; setupFeeMinor: number; trialDays: number; taxBehavior: string };
+  price: { currency: "USD" | "INR"; recurringAmountMinor: number; billingType: "subscription" | "permanent"; interval: "month" | "year"; setupFeeMinor: number; trialDays: number; taxBehavior: string };
   usagePricing: { mode: "cost_markup" | "fixed_per_minute" | "included_only"; markupBps: number; perMinuteAmountMinor: number; minimumCallAmountMinor: number; overageEnabled: boolean };
   allowances: { includedCredits: number; includedMinutes: number };
   limits: { agents: number; members: number; phoneNumbers: number; concurrentCalls: number; monthlyMinutes: number; knowledgeSources: number; apiKeys: number };
@@ -134,7 +134,7 @@ export type WhiteLabelCustomer = {
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
   wallet?: { balanceCredits: number; currency: string } | null;
-  subscription?: { _id?: string; status: string; planId?: string; planKey: string; planNameSnapshot?: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
+  subscription?: { _id?: string; status: string; planId?: string; planKey: string; planNameSnapshot?: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; billingType?: "subscription" | "permanent"; interval?: string; setupFeeMinor?: number; trialDays?: number; taxBehavior?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
   createdAt: string;
 };
 
@@ -146,7 +146,7 @@ export type PartnerCustomerBilling = {
     status: string;
     currentPeriodStart?: string;
     currentPeriodEnd?: string;
-    price?: { currency?: string; recurringAmountMinor?: number; interval?: string };
+    price?: { currency?: string; recurringAmountMinor?: number; billingType?: "subscription" | "permanent"; interval?: string; setupFeeMinor?: number; trialDays?: number; taxBehavior?: string };
     allowances?: { includedCredits?: number; includedMinutes?: number };
     usagePricing?: { mode?: string; markupBps?: number; perMinuteAmountMinor?: number };
   };
@@ -313,7 +313,7 @@ export const partnerWhiteLabelApi = {
   updateCustomerStatus: (orgId: string, status: "active" | "suspended", reason: string) => request<{ organization: WhiteLabelCustomer }>(`/api/partner/white-label/customers/${orgId}/status`, { method: "PATCH", body: { status, reason } }),
   deleteCustomer: (orgId: string) => request<void>(`/api/partner/white-label/customers/${orgId}`, { method: "DELETE" }),
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
-  updateCustomerPlan: (orgId: string, planId: string, reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"]; creditGrant?: { amountCredits: number; balanceAfterCredits: number } }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body: { planId, reason } }),
+  updateCustomerPlan: (orgId: string, planId: string, reason: string, migrateWalletCurrency = false) => request<{ subscription: WhiteLabelCustomer["subscription"]; creditGrant?: { amountCredits: number; balanceAfterCredits: number }; walletMigration?: { fromCurrency: string; toCurrency: string; fxRate: number; balanceBefore: number; balanceAfter: number } }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body: { planId, reason, migrateWalletCurrency } }),
   grantCustomerCredits: (orgId: string, amountCredits: number, reason: string) => request<{ amountCredits: number; balanceAfterCredits: number; currency: string }>(`/api/partner/white-label/customers/${orgId}/credits`, { method: "POST", body: { amountCredits, reason } }),
   customerBilling: (orgId: string) => request<PartnerCustomerBilling>(`/api/partner/white-label/customers/${orgId}/billing`),
 };

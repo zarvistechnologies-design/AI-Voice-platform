@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where([data-dashboard-theme="dark"], [data-dashboard-theme="dark"] *, .dark, .dark *));
 
+:is(html[data-dashboard-theme="dark"], html.dark) .partner-white-label-console table tbody tr:hover {
+  background-color: #24262c;
+}
+
 @utility bg-zinc-850 {
   background-color: #18181b;
 }

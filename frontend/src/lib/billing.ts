@@ -8,6 +8,8 @@ export type BillingPlan = {
   id: string;
   name: string;
   monthlyPrice: number | null;
+  priceAmount?: number;
+  billingType?: "subscription" | "permanent";
   currency?: string;
   interval?: string;
   includedMinutes?: number;
@@ -101,7 +103,7 @@ export type BillingSummary = {
     status: "active" | "trialing" | "past_due" | "cancelled" | "incomplete" | "paused";
     currentPeriodEnd?: string;
     cancelAtPeriodEnd?: boolean;
-    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string };
+    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; billingType?: "subscription" | "permanent"; interval?: string; setupFeeMinor?: number; trialDays?: number; taxBehavior?: string };
   };
   currentPlan: BillingPlan;
   plans: BillingPlan[];

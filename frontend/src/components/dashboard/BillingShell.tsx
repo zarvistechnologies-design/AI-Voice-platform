@@ -69,7 +69,7 @@ export function BillingShell() {
     void validateStoredSession();
     const credits = new URLSearchParams(window.location.search).get("credits");
     const timer = window.setTimeout(async () => {
-      await load();
+      await load(true);
       if (credits === "success") {
         setNotice("Payment return received. Check the wallet balance and invoice to confirm your credits were added.");
       }
@@ -90,6 +90,14 @@ export function BillingShell() {
   const balance = wallet?.balanceCredits ?? 0;
   const whiteLabelIncludedMinutes = data?.currentPlan?.includedMinutes ?? 0;
   const whiteLabelIncludedCredits = data?.currentPlan?.includedCredits ?? 0;
+  const whiteLabelPlanPrice = data?.currentPlan
+    ? creditMoney(data.currentPlan.priceAmount ?? (data.subscription?.priceSnapshot?.recurringAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)
+    : "";
+  const whiteLabelPlanInterval = data?.currentPlan?.billingType === "permanent"
+    ? "one-time"
+    : `/ ${data?.currentPlan?.interval ?? "month"}`;
+  const whiteLabelSetupFee = Number(data?.subscription?.priceSnapshot?.setupFeeMinor ?? 0);
+  const whiteLabelTrialDays = Number(data?.subscription?.priceSnapshot?.trialDays ?? 0);
   const whiteLabelPaymentDue = Boolean(
     data?.whiteLabel && !data.whiteLabel.managedByPartner
     && data.currentInvoice
@@ -272,12 +280,13 @@ export function BillingShell() {
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="border-b border-[#eaeaea] px-5 py-4">
                 <span className="app-label text-[#71717a]">Your plan usage</span>
+                <p className="mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.name ?? "Active plan"} · {whiteLabelPlanPrice} {whiteLabelPlanInterval}{whiteLabelSetupFee > 0 ? ` · Setup fee ${creditMoney(whiteLabelSetupFee / 100, data.subscription?.priceSnapshot?.currency ?? walletCurrency)}` : ""}{whiteLabelTrialDays > 0 ? ` · ${whiteLabelTrialDays}-day trial` : ""}</p>
                 <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first. Any billable usage then comes from your wallet." : "This plan has no included minutes. Calls use wallet credits according to the plan's pricing."} Amounts are shown in {walletCurrency}.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
                 <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes remaining</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} min</dd><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesUsed ?? 0).toLocaleString()} of ${whiteLabelIncludedMinutes.toLocaleString()} min used this period` : "No included minutes on this plan"}</p></div>
                 <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Actual spendable balance after credits and calls</p></div>
-                {whiteLabelIncludedCredits > 0 ? <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Granted under your plan; check history for the actual grant</p></div> : null}
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Configured allowance; the wallet balance shows spendable credits</p></div>
                 <div className="p-4"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">See each call in the history below</p></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
@@ -324,7 +333,7 @@ export function BillingShell() {
                   </p>
                   {data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? (
                     <p className="mt-1 text-xs font-medium text-[#52525b]">
-                      {creditMoney(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency ?? walletCurrency)} / {data.subscription.priceSnapshot.interval ?? "month"}
+                      {whiteLabelPlanPrice} {whiteLabelPlanInterval}{whiteLabelSetupFee > 0 ? ` · Setup fee ${creditMoney(whiteLabelSetupFee / 100, data.subscription.priceSnapshot.currency ?? walletCurrency)}` : ""}{whiteLabelTrialDays > 0 ? ` · ${whiteLabelTrialDays}-day trial` : ""}
                     </p>
                   ) : null}
                 </div>
@@ -334,7 +343,15 @@ export function BillingShell() {
                 </span>
               </div>
 
-              <div className="mt-5 grid gap-3 border-t border-[#eaeaea] pt-5 sm:grid-cols-3">
+              <div className="mt-5 grid gap-3 border-t border-[#eaeaea] pt-5 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
+                  <p className="text-[11px] font-medium text-[#71717a]">Included minutes per period</p>
+                  <p className="mt-0.5 text-lg font-bold text-[#171717]">{whiteLabelIncludedMinutes.toLocaleString()} min</p>
+                </div>
+                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
+                  <p className="text-[11px] font-medium text-[#71717a]">Plan wallet credit allowance</p>
+                  <p className="mt-0.5 text-lg font-bold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</p>
+                </div>
                 <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
                   <p className="text-[11px] font-medium text-[#71717a]">Calls Handled</p>
                   <p className="mt-0.5 text-lg font-bold text-[#171717]">
@@ -370,9 +387,9 @@ export function BillingShell() {
                   <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</h2>
                   <p className="mt-1 text-xs text-[#71717a]">Plan provided by {data.whiteLabel.productName}.</p>
                   <dl className="mt-4 grid gap-3 border-t border-[#eaeaea] pt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? `${money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / ${data.subscription.priceSnapshot.interval ?? "month"}` : "Managed by provider"}</dd></div>
+                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? `${whiteLabelPlanPrice} ${whiteLabelPlanInterval}` : "Managed by provider"}</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{whiteLabelIncludedMinutes.toLocaleString()} min</dd></div>
-                    {whiteLabelIncludedCredits > 0 ? <div><dt className="text-[11px] text-[#71717a]">Wallet credit allowance</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd></div> : null}
+                    <div><dt className="text-[11px] text-[#71717a]">Wallet credit allowance</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Monthly minute limit</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.limits?.monthlyMinutes?.toLocaleString() ?? "—"} min</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Status</dt><dd className="m-0 mt-1 text-sm font-semibold capitalize text-[#171717]">{data.subscription?.status?.replaceAll("_", " ") ?? "Active"}</dd></div>
                   </dl>
