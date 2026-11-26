@@ -118,6 +118,7 @@ export type BillingSummary = {
     sttSeconds: number;
     ttsCharacters: number;
   };
+  periodUsage?: { minutesUsed: number; minutesRemaining: number };
   invoices: {
     _id: string;
     invoiceNumber: string;

@@ -152,6 +152,7 @@ export type PartnerCustomerBilling = {
   };
   wallet: { balanceCredits: number; currency: string };
   usage: { calls: number; minutes: number; chargedCredits: number };
+  periodUsage: { minutesUsed: number; minutesRemaining: number };
   models: WhiteLabelModelCatalog;
   transactions: Array<{
     _id: string;

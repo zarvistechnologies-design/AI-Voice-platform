@@ -62,8 +62,9 @@ function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomer
     <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
     <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
       {[
+        ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`],
         ["Available wallet", credits(billing.wallet.balanceCredits)],
-        ["Plan allowance", credits(billing.subscription.allowances?.includedCredits ?? 0)],
+        ["Plan wallet allowance", (billing.subscription.allowances?.includedCredits ?? 0) > 0 ? credits(billing.subscription.allowances?.includedCredits ?? 0) : "None"],
         ["Call deductions this month", credits(billing.usage.chargedCredits)],
         ["Calls / minutes this month", `${billing.usage.calls} / ${billing.usage.minutes.toFixed(2)}`],
       ].map(([label, value]) => <div className="rounded-lg border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}><p className="text-xs text-[#627870]">{label}</p><strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong></div>)}

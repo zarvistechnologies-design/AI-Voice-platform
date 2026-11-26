@@ -269,13 +269,13 @@ export function BillingShell() {
           {data?.whiteLabel ? (
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="border-b border-[#eaeaea] px-5 py-4">
-                <span className="app-label text-[#71717a]">Wallet & usage pricing</span>
-                <p className="mt-1 text-xs text-[#71717a]">Your spendable balance, plan allowance, and call charges in {walletCurrency}.</p>
+                <span className="app-label text-[#71717a]">Your plan usage</span>
+                <p className="mt-1 text-xs text-[#71717a]">Included minutes are available before usage charges. Wallet credits pay for calls after the included minutes are used.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available credits</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Actual wallet balance after grants and usage</p></div>
-                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.currentPlan?.includedCredits ?? 0, data.currentPlan?.currency ?? walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Added when the partner grants it or payment clears</p></div>
-                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes per period</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.currentPlan?.includedMinutes ?? 0).toLocaleString()}</dd></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes remaining</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.periodUsage?.minutesRemaining ?? data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min</dd><p className="mt-1 text-[11px] text-[#71717a]">{(data.periodUsage?.minutesUsed ?? 0).toLocaleString()} of {(data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min used this period</p></div>
+                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Used for charges after included minutes</p></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.currentPlan?.includedCredits ?? 0) > 0 ? creditMoney(data.currentPlan.includedCredits!, data.currentPlan.currency ?? walletCurrency) : "None"}</dd><p className="mt-1 text-[11px] text-[#71717a]">Separate from included minutes</p></div>
                 <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">See each call in the history below</p></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
