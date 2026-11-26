@@ -78,6 +78,21 @@ export function BillingShell() {
     return () => window.clearTimeout(timer);
   }, [load, router, session]);
 
+  useEffect(() => {
+    if (!session) return;
+    const refreshOnFocus = () => {
+      if (document.visibilityState === "visible") {
+        void load(true);
+      }
+    };
+    window.addEventListener("focus", refreshOnFocus);
+    document.addEventListener("visibilitychange", refreshOnFocus);
+    return () => {
+      window.removeEventListener("focus", refreshOnFocus);
+      document.removeEventListener("visibilitychange", refreshOnFocus);
+    };
+  }, [load, session]);
+
   const wallet = data?.wallet;
   const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
   const walletCurrency = wallet?.currency?.toUpperCase() || "USD";
