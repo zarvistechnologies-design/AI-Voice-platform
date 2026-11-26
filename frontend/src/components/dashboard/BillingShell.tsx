@@ -44,7 +44,6 @@ export function BillingShell() {
   const [showBillingDetails, setShowBillingDetails] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
-  const [displayCurrency, setDisplayCurrency] = useState<"AUTO" | "INR" | "USD">("AUTO");
 
   const load = useCallback(async (force = false) => {
     try {
@@ -82,20 +81,12 @@ export function BillingShell() {
   const wallet = data?.wallet;
   const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
   const walletCurrency = wallet?.currency?.toUpperCase() || "USD";
-  const activeCurrency = displayCurrency === "AUTO" ? (data?.whiteLabel ? walletCurrency : "INR") : displayCurrency;
-  const convertCurrency = useCallback((value: number, sourceCurrency = walletCurrency, targetCurrency = activeCurrency) => {
-    const src = sourceCurrency.toUpperCase();
-    const dst = targetCurrency.toUpperCase();
-    if (src === dst) return value;
-    if (src === "USD" && dst === "INR") return value * inrPerUsd;
-    if (src === "INR" && dst === "USD") return value / inrPerUsd;
-    return value;
-  }, [activeCurrency, inrPerUsd, walletCurrency]);
+  const activeCurrency = data?.whiteLabel ? walletCurrency : "INR";
   const toInr = useCallback((value: number, sourceCurrency = walletCurrency) => (
     sourceCurrency.toUpperCase() === "INR" ? value : value * inrPerUsd
   ), [inrPerUsd, walletCurrency]);
   const creditMoney = (value: number, sourceCurrency = walletCurrency) => data?.whiteLabel
-    ? money(convertCurrency(value, sourceCurrency, activeCurrency), activeCurrency)
+    ? money(value, sourceCurrency)
     : money(toInr(value, sourceCurrency), "INR");
   const balance = wallet?.balanceCredits ?? 0;
   const whiteLabelIncludedMinutes = data?.currentPlan?.includedMinutes ?? 0;
@@ -269,23 +260,7 @@ export function BillingShell() {
           title="Billing"
           description={data?.whiteLabel ? `Subscription and usage details for ${data.whiteLabel.productName}.` : "Manage rupee credits, usage, payments, and invoices."}
           actions={
-            <div className="flex items-center gap-2">
-              {data?.whiteLabel ? (
-                <div className="inline-flex rounded-md border border-[#eaeaea] bg-white p-0.5 text-[11px] font-medium">
-                  {(["INR", "USD"] as const).map((curr) => (
-                    <button
-                      key={curr}
-                      type="button"
-                      onClick={() => setDisplayCurrency(curr)}
-                      className={`rounded px-2 py-1 transition ${activeCurrency === curr ? "bg-[#171717] text-white" : "text-[#71717a] hover:text-[#171717]"}`}
-                    >
-                      {curr === "INR" ? "INR (₹)" : "USD ($)"}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-              <button className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]" type="button" onClick={() => void load(true)} disabled={Boolean(busy)}>Refresh</button>
-            </div>
+            <button className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]" type="button" onClick={() => void load(true)} disabled={Boolean(busy)}>Refresh</button>
           }
         />
 
