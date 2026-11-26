@@ -86,8 +86,10 @@ export function DashboardWorkspaceBar() {
   useEffect(() => {
     if (!session) return;
     let cancelled = false;
-    void billingApi
-      .summary()
+    const refreshCredit = (force = false) => {
+      if (document.visibilityState !== "visible") return;
+      void billingApi
+      .summary(force)
       .then((summary) => {
         if (!cancelled)
           setCredit({
@@ -103,8 +105,17 @@ export function DashboardWorkspaceBar() {
           });
       })
       .catch(() => undefined);
+    };
+    refreshCredit();
+    const timer = window.setInterval(() => refreshCredit(true), 30_000);
+    window.addEventListener("focus", refreshCreditOnFocus);
+    document.addEventListener("visibilitychange", refreshCreditOnFocus);
+    function refreshCreditOnFocus() { refreshCredit(true); }
     return () => {
       cancelled = true;
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshCreditOnFocus);
+      document.removeEventListener("visibilitychange", refreshCreditOnFocus);
     };
   }, [session]);
 

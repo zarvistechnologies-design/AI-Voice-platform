@@ -25,6 +25,10 @@ function money(value: number, currency = "INR") {
   }).format(value);
 }
 
+function creditUnits(value: number) {
+  return `${new Intl.NumberFormat("en-IN", { maximumFractionDigits: 4 }).format(value)} credits`;
+}
+
 function dateTime(value?: string) {
   if (!value) return "Never";
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
@@ -297,7 +301,9 @@ export function BillingShell() {
         <DashboardPageHeader
           eyebrow={data?.whiteLabel ? "Account & Usage" : "Pay per use"}
           title="Billing"
-          description={data?.whiteLabel ? `Subscription and usage details for ${data.whiteLabel.productName}.` : "Manage rupee credits, usage, payments, and invoices."}
+          description={data?.whiteLabel
+            ? `Billing for ${session.organization?.name ?? "this workspace"} · ${data.whiteLabel.productName}.`
+            : `Pay per use billing for ${session.organization?.name ?? "this workspace"}.`}
           actions={
             <button className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]" type="button" onClick={() => void load(true)} disabled={Boolean(busy)}>Refresh</button>
           }
@@ -312,11 +318,11 @@ export function BillingShell() {
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="border-b border-[#eaeaea] px-5 py-4">
                 <span className="app-label text-[#71717a]">Plan, credits &amp; deductions</span>
-                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first; once used, each call deducts from your wallet." : "Every call deducts directly from your granted wallet credits based on usage."} Amounts are shown in {activeCurrency}.</p>
+                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first; once used, each call deducts from your wallet." : "Calls deduct credits based on billable duration after usage is finalized."} One credit equals {money(1, activeCurrency)} on this plan.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan bought</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</dd><p className="mt-1 text-[11px] text-[#71717a]">{creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod} · {whiteLabelIncludedMinutes.toLocaleString()} included min · {creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)} included wallet credits</p><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} included min remaining` : "Calls deduct from wallet credits"}</p></div>
-                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits granted</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(lifetime, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Plan allowance: {creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</p></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan bought</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</dd><p className="mt-1 text-[11px] text-[#71717a]">{creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod} · {whiteLabelIncludedMinutes.toLocaleString()} included min · {creditUnits(whiteLabelIncludedCredits)} included wallet credits</p><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} included min remaining` : "Calls deduct from wallet credits"}</p></div>
+                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits granted</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditUnits(lifetime)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Plan allowance: {creditUnits(whiteLabelIncludedCredits)}</p></div>
                 <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Spendable balance remaining</p></div>
                 <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">{data.usage?.calls ?? 0} calls · {Math.round(data.usage?.minutes ?? 0)} min used</p></div>
               </dl>
