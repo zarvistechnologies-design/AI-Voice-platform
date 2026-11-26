@@ -627,7 +627,7 @@ export function OrganizationSettingsShell() {
           ) : null}
 
           <section className="grid min-w-0 gap-6 xl:grid-cols-[286px_minmax(0,1fr)]">
-            <aside className="grid min-w-0 content-start gap-4 xl:sticky xl:top-6 xl:self-start">
+            <aside className="grid min-w-0 content-start gap-4 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:self-start xl:overflow-y-auto">
               <article className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
                 <div className="border-b border-[#edf2f5] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">

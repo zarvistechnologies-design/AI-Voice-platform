@@ -616,7 +616,7 @@ export function ProfileShell() {
           ) : null}
 
           <section className="grid min-w-0 gap-6 xl:grid-cols-[238px_minmax(0,1fr)]">
-            <aside className="min-w-0 xl:sticky xl:top-6 xl:self-start">
+            <aside className="min-w-0 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:self-start xl:overflow-y-auto">
               <div className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
                 <div className="border-b border-[#edf2f5] px-4 py-4">
                   <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
