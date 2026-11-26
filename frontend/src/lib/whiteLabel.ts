@@ -150,6 +150,7 @@ export type PartnerCustomerBilling = {
     allowances?: { includedCredits?: number; includedMinutes?: number };
     usagePricing?: { mode?: string; markupBps?: number; perMinuteAmountMinor?: number };
   };
+  planRecord: { status: string; currency?: string } | null;
   wallet: { balanceCredits: number; currency: string };
   usage: { calls: number; minutes: number; chargedCredits: number };
   periodUsage: { minutesUsed: number; minutesRemaining: number };

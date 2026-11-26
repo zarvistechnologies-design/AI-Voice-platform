@@ -20,8 +20,8 @@ function money(value: number, currency = "INR") {
   return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
     style: "currency",
     currency,
-    minimumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
-    maximumFractionDigits: Math.abs(value) < 1 ? 4 : 2,
+    minimumFractionDigits: value !== 0 && Math.abs(value) < 1 ? 4 : 2,
+    maximumFractionDigits: value !== 0 && Math.abs(value) < 1 ? 4 : 2,
   }).format(value);
 }
 
@@ -88,6 +88,8 @@ export function BillingShell() {
     ? money(value, sourceCurrency)
     : money(toInr(value, sourceCurrency), "INR");
   const balance = wallet?.balanceCredits ?? 0;
+  const whiteLabelIncludedMinutes = data?.currentPlan?.includedMinutes ?? 0;
+  const whiteLabelIncludedCredits = data?.currentPlan?.includedCredits ?? 0;
   const whiteLabelPaymentDue = Boolean(
     data?.whiteLabel && !data.whiteLabel.managedByPartner
     && data.currentInvoice
@@ -270,21 +272,21 @@ export function BillingShell() {
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="border-b border-[#eaeaea] px-5 py-4">
                 <span className="app-label text-[#71717a]">Your plan usage</span>
-                <p className="mt-1 text-xs text-[#71717a]">Included minutes are available before usage charges. Wallet credits pay for calls after the included minutes are used.</p>
+                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first. Any billable usage then comes from your wallet." : "Your calls are charged to the wallet according to this plan's usage pricing."} Amounts are shown in {walletCurrency}.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes remaining</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.periodUsage?.minutesRemaining ?? data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min</dd><p className="mt-1 text-[11px] text-[#71717a]">{(data.periodUsage?.minutesUsed ?? 0).toLocaleString()} of {(data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min used this period</p></div>
-                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Used for charges after included minutes</p></div>
-                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.currentPlan?.includedCredits ?? 0) > 0 ? creditMoney(data.currentPlan.includedCredits!, data.currentPlan.currency ?? walletCurrency) : "None"}</dd><p className="mt-1 text-[11px] text-[#71717a]">Separate from included minutes</p></div>
-                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">See each call in the history below</p></div>
+                {whiteLabelIncludedMinutes > 0 ? <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes remaining</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} min</dd><p className="mt-1 text-[11px] text-[#71717a]">{(data.periodUsage?.minutesUsed ?? 0).toLocaleString()} of {whiteLabelIncludedMinutes.toLocaleString()} min used this period</p></div> : null}
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Actual spendable balance after credits and calls</p></div>
+                {whiteLabelIncludedCredits > 0 ? <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Granted under your plan; check history for the actual grant</p></div> : null}
+                <div className="p-4"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">See each call in the history below</p></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
                 <strong className="text-[#171717]">Call pricing: </strong>
                 {data.currentPlan?.usagePricing?.mode === "fixed_per_minute"
-                  ? `${creditMoney((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per minute after included minutes.`
+                  ? `${creditMoney((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per billable minute${whiteLabelIncludedMinutes > 0 ? " after included minutes" : ""}.`
                   : data.currentPlan?.usagePricing?.mode === "included_only"
-                    ? "Calls use the included minutes; no overage charge is configured."
-                    : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup after included minutes. The final charge varies by the AI models used.`}
+                    ? whiteLabelIncludedMinutes > 0 ? "Calls use the included minutes; no overage charge is configured." : "No per-minute charge is configured on this plan."
+                    : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup${whiteLabelIncludedMinutes > 0 ? " after included minutes" : ""}. The final charge varies by the AI models used.`}
                 {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${creditMoney(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}.` : ""}
               </div>
             </section>
@@ -369,7 +371,8 @@ export function BillingShell() {
                   <p className="mt-1 text-xs text-[#71717a]">Plan provided by {data.whiteLabel.productName}.</p>
                   <dl className="mt-4 grid gap-3 border-t border-[#eaeaea] pt-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? `${money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / ${data.subscription.priceSnapshot.interval ?? "month"}` : "Managed by provider"}</dd></div>
-                    <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{(data.currentPlan?.includedMinutes ?? 0).toLocaleString()} min</dd></div>
+                    {whiteLabelIncludedMinutes > 0 ? <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{whiteLabelIncludedMinutes.toLocaleString()} min</dd></div> : null}
+                    {whiteLabelIncludedCredits > 0 ? <div><dt className="text-[11px] text-[#71717a]">Wallet credit allowance</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd></div> : null}
                     <div><dt className="text-[11px] text-[#71717a]">Monthly minute limit</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.limits?.monthlyMinutes?.toLocaleString() ?? "—"} min</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Status</dt><dd className="m-0 mt-1 text-sm font-semibold capitalize text-[#171717]">{data.subscription?.status?.replaceAll("_", " ") ?? "Active"}</dd></div>
                   </dl>

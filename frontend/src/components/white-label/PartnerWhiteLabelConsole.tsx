@@ -58,13 +58,16 @@ function SectionTitle({ title, description, action }: { title: string; descripti
 function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomerBilling; onClose: () => void }) {
   const currency = billing.wallet.currency;
   const credits = (value: number) => money(value * 100, currency);
+  const includedMinutes = billing.subscription.allowances?.includedMinutes ?? 0;
+  const includedCredits = billing.subscription.allowances?.includedCredits ?? 0;
   return <Card>
     <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
+    {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="mx-5 mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
     <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
       {[
-        ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`],
+        ...(includedMinutes > 0 ? [["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`]] : []),
         ["Available wallet", credits(billing.wallet.balanceCredits)],
-        ["Plan wallet allowance", (billing.subscription.allowances?.includedCredits ?? 0) > 0 ? credits(billing.subscription.allowances?.includedCredits ?? 0) : "None"],
+        ...(includedCredits > 0 ? [["Plan wallet allowance", credits(includedCredits)]] : []),
         ["Call deductions this month", credits(billing.usage.chargedCredits)],
         ["Calls / minutes this month", `${billing.usage.calls} / ${billing.usage.minutes.toFixed(2)}`],
       ].map(([label, value]) => <div className="rounded-lg border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}><p className="text-xs text-[#627870]">{label}</p><strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong></div>)}
@@ -72,7 +75,7 @@ function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomer
     <div className="grid gap-5 px-5 pb-5 xl:grid-cols-2">
       <div className="rounded-lg border border-[#dce5e2] p-4">
         <h3 className="text-sm font-bold text-[#1d342e]">Subscription and pricing</h3>
-        <p className="mt-2 text-xs text-[#52645f]">{money(billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.interval ?? "period"} · {billing.subscription.allowances?.includedMinutes ?? 0} included minutes</p>
+        <p className="mt-2 text-xs text-[#52645f]">{money(billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.interval ?? "period"}{includedMinutes > 0 ? ` · ${includedMinutes} included minutes` : ""}{includedCredits > 0 ? ` · ${credits(includedCredits)} wallet credit allowance` : ""}</p>
         <p className="mt-1 text-xs text-[#52645f]">Usage pricing: {billing.subscription.usagePricing?.mode?.replaceAll("_", " ") ?? "Not configured"}</p>
         <p className="mt-1 text-xs text-[#52645f]">Current period: {date(billing.subscription.currentPeriodStart)} to {date(billing.subscription.currentPeriodEnd)}</p>
         <h4 className="mt-4 text-xs font-bold text-[#1d342e]">Models available to this customer</h4>
