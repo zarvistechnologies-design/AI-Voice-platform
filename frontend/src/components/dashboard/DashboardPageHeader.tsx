@@ -162,9 +162,7 @@ export function DashboardWorkspaceBar() {
               </svg>
             </span>
             <span>
-              {credit?.includedMinutesRemaining !== null && credit?.includedMinutesRemaining !== undefined && credit.includedMinutesRemaining > 0
-                ? `${credit.includedMinutesRemaining.toFixed(1)} min left`
-                : creditLabel(credit?.balance ?? null, credit?.currency)}
+              {creditLabel(credit?.balance ?? null, credit?.currency)}
             </span>
           </Link>
 
