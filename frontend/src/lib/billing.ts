@@ -214,7 +214,7 @@ async function downloadInvoice(invoiceId: string) {
 
 export const billingApi = {
   summary: (force = false) => force
-    ? request<BillingSummary>("/summary")
+    ? request<BillingSummary>("/summary", { cache: "no-store" })
     : cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
   topUp: (amountInr: number) =>

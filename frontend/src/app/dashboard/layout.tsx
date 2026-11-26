@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { DashboardNavigationFeedback } from "@/components/dashboard/DashboardNavigationFeedback";
+import { DashboardAuthBoundary } from "@/components/dashboard/DashboardAuthBoundary";
 import { DashboardQueryProvider } from "@/components/dashboard/DashboardQueryProvider";
 import { BusinessDetailsGate } from "@/components/auth/BusinessDetailsGate";
 
@@ -33,7 +34,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <DashboardQueryProvider>
       <div className="dashboard-home-theme min-h-screen bg-[#f7f9f8] text-[#1b1b22]">
         <DashboardNavigationFeedback />
-        <BusinessDetailsGate>{children}</BusinessDetailsGate>
+        <DashboardAuthBoundary>
+          <BusinessDetailsGate>{children}</BusinessDetailsGate>
+        </DashboardAuthBoundary>
       </div>
     </DashboardQueryProvider>
   );

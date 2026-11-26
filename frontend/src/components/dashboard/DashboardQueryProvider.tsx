@@ -5,6 +5,7 @@ import { useEffect, type ReactNode } from "react";
 
 import { getSession, subscribeToSession } from "@/lib/auth";
 import { getDashboardQueryClient } from "@/lib/dashboardQueryClient";
+import { WhiteLabelWorkspaceSync } from "./WhiteLabelWorkspaceSync";
 
 function sessionCacheScope() {
   const session = getSession();
@@ -27,6 +28,7 @@ export function DashboardQueryProvider({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <WhiteLabelWorkspaceSync />
       {children}
     </QueryClientProvider>
   );

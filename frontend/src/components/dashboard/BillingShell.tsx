@@ -44,6 +44,7 @@ export function BillingShell() {
   const [showBillingDetails, setShowBillingDetails] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
+  const isWhiteLabel = Boolean(data?.whiteLabel);
 
   const load = useCallback(async (force = false) => {
     try {
@@ -92,6 +93,25 @@ export function BillingShell() {
       document.removeEventListener("visibilitychange", refreshOnFocus);
     };
   }, [load, session]);
+
+  useEffect(() => {
+    if (!session || !isWhiteLabel) return;
+    let active = true;
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      void billingApi.summary(true).then((summary) => {
+        if (!active) return;
+        setData(summary);
+        setBillingCheckedAt(Date.now());
+      }).catch(() => {
+        // Keep the last known billing data; the normal refresh shows errors.
+      });
+    }, 30_000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [session, isWhiteLabel]);
 
   const wallet = data?.wallet;
   const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
