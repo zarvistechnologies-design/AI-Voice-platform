@@ -8,6 +8,8 @@ export type BillingPlan = {
   id: string;
   name: string;
   monthlyPrice: number | null;
+  priceAmount?: number;
+  billingType?: "subscription" | "permanent";
   currency?: string;
   interval?: string;
   includedMinutes?: number;

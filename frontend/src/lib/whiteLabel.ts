@@ -229,6 +229,7 @@ type RequestOptions = Omit<RequestInit, "body"> & { body?: unknown };
 async function request<T>(path: string, options: RequestOptions = {}) {
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    cache: "no-store",
     credentials: "include",
     headers: {
       Accept: "application/json",
