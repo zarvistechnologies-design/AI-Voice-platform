@@ -480,7 +480,7 @@ export function OrganizationSettingsShell() {
 
   return (
     <main
-      className={`dashboard-home-theme workspace-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
+      className={`dashboard-home-theme workspace-settings-page grid min-h-screen w-full min-w-0 overflow-x-clip bg-white text-[#111827] xl:h-dvh xl:overflow-hidden ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
@@ -498,7 +498,7 @@ export function OrganizationSettingsShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0">
+      <section className="min-w-0 xl:min-h-0 xl:overflow-y-auto xl:overscroll-contain">
         <DashboardPageHeader
           eyebrow="Workspace administration"
           title="Team & workspace"
