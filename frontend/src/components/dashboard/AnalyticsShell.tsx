@@ -703,7 +703,7 @@ export function AnalyticsShell() {
   const s = data.summary;
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] text-[#171717] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] text-[#171717] ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Dashboard"

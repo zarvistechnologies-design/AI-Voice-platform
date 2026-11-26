@@ -4217,6 +4217,22 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
   background: inherit !important;
 }
 
+/* Account pages use quiet dividers so section edges do not turn white in dark mode. */
+:is(html[data-dashboard-theme="dark"], html.dark) .dashboard-home-theme:is(.workspace-settings-page, .profile-settings-page) :is([class~="border-b"], [class~="border-t"], [class~="divide-y"] > :not(:last-child)),
+:is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace .developer-activity-panel :is([class~="border-b"], [class~="border-t"], [class~="divide-y"] > :not(:last-child)) {
+  border-color: #303036 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .profile-settings-page .profile-current-session {
+  border-left: 3px solid #3b82f6 !important;
+  background-color: #172033 !important;
+}
+
+:is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace .developer-activity-panel .developer-activity-row:hover,
+:is(html[data-dashboard-theme="dark"], html.dark) .developer-workspace .developer-activity-panel .developer-activity-row:focus-visible {
+  background-color: #20232b !important;
+}
+
 .whatsapp-workspace .whatsapp-search-field {
   border-color: #d4d4d8;
 }

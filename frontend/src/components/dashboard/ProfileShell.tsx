@@ -452,11 +452,11 @@ export function ProfileShell() {
       ? "border-rose-200 bg-rose-50 text-rose-900"
       : notice?.tone === "success"
         ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-        : "border-[#b8c8c3] bg-[#edf7f4] text-[#343b78]";
+        : "border-[#eaeaea] bg-white text-[#171717]";
 
   return (
     <main
-      className={`dashboard-home-theme profile-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${showUserSidebar
+      className={`dashboard-home-theme profile-settings-page grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] text-[#171717] xl:h-dvh xl:overflow-hidden ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
         }`}
@@ -473,7 +473,7 @@ export function ProfileShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0">
+      <section className="min-w-0 xl:min-h-0 xl:overflow-y-auto xl:overscroll-contain">
         <DashboardPageHeader
           eyebrow="Account center"
           title="Profile & security"
@@ -489,7 +489,7 @@ export function ProfileShell() {
           }
         />
 
-        <div className="grid w-full gap-5 px-5 py-5 sm:px-6 lg:px-7">
+        <div className="grid w-full gap-4 px-4 py-4 sm:px-5 lg:px-6">
           <section className="rounded-xl border border-[#eaeaea] bg-white p-5 sm:p-6">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_180px] lg:items-center">
               <div className="min-w-0">
@@ -616,9 +616,9 @@ export function ProfileShell() {
           ) : null}
 
           <section className="grid min-w-0 gap-6 xl:grid-cols-[238px_minmax(0,1fr)]">
-            <aside className="min-w-0 xl:sticky xl:top-6 xl:self-start">
-              <div className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-                <div className="border-b border-[#edf2f5] px-4 py-4">
+            <aside className="min-w-0 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:self-start xl:overflow-y-auto">
+              <div className="overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs">
+                <div className="border-b border-[#eaeaea] px-4 py-4">
                   <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-400">
                     On this page
                   </p>
@@ -655,7 +655,7 @@ export function ProfileShell() {
 
             <div className="grid min-w-0 gap-5">
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="profile"
               >
                 <SectionHeading
@@ -672,7 +672,7 @@ export function ProfileShell() {
                 />
                 <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_280px]">
                   <dl className="grid min-w-0 gap-3 sm:grid-cols-2">
-                    <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                    <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                       <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                         Full name
                       </dt>
@@ -680,7 +680,7 @@ export function ProfileShell() {
                         {session.name}
                       </dd>
                     </div>
-                    <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                    <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                       <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                         Email address
                       </dt>
@@ -688,7 +688,7 @@ export function ProfileShell() {
                         {session.email}
                       </dd>
                     </div>
-                    <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                    <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                       <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                         Current workspace
                       </dt>
@@ -696,7 +696,7 @@ export function ProfileShell() {
                         {session.organization?.name ?? "Personal workspace"}
                       </dd>
                     </div>
-                    <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                    <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                       <dt className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                         Signed in since
                       </dt>
@@ -741,7 +741,7 @@ export function ProfileShell() {
               </article>
 
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="two-factor"
               >
                 <SectionHeading
@@ -777,7 +777,7 @@ export function ProfileShell() {
                         )}
                       </div>
 
-                      <div className="grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
+                      <div className="grid gap-4 rounded-2xl border border-[#eaeaea] bg-[#f7fbfa] p-4 sm:p-5 lg:grid-cols-[minmax(0,1fr)_260px]">
                         <div className="min-w-0">
                           <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#087f75]">
                             Manual setup key
@@ -969,7 +969,7 @@ export function ProfileShell() {
               </article>
 
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="password"
               >
                 <SectionHeading
@@ -1081,7 +1081,7 @@ export function ProfileShell() {
               </article>
 
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="sessions"
               >
                 <SectionHeading
@@ -1108,7 +1108,7 @@ export function ProfileShell() {
                   }
                   title="Active sessions"
                 />
-                <div className="divide-y divide-[#edf2f5]">
+                <div className="divide-y divide-[#eaeaea]">
                   {sessionsLoading && !sessions.length ? (
                     <div className="grid gap-3 p-5 sm:p-6">
                       {[0, 1].map((item) => (
@@ -1121,7 +1121,7 @@ export function ProfileShell() {
                   ) : sessions.length ? (
                     sessions.map((item) => (
                       <div
-                        className={`grid min-w-0 gap-4 p-5 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-center sm:px-6 ${item.current ? "bg-emerald-50/40" : "bg-white"}`}
+                        className={`grid min-w-0 gap-4 p-5 sm:grid-cols-[44px_minmax(0,1fr)_auto] sm:items-center sm:px-6 ${item.current ? "profile-current-session bg-[#eff6ff] dark:bg-[#172033]" : "bg-white dark:bg-[#121215]"}`}
                         key={item._id}
                       >
                         <span

@@ -54,15 +54,15 @@ type DeveloperView = "overview" | "keys" | "webhooks" | "activity";
 type InspectorView = "request" | "response" | "webhook";
 
 const panelClass =
-  "developer-panel overflow-hidden rounded-2xl border border-[#dde7e3] bg-white shadow-[0_10px_30px_rgba(28,64,55,0.055)]";
+  "developer-panel overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs";
 const controlClass =
-  "h-11 rounded-xl border border-[#eaeaea] bg-white px-3.5 text-sm font-medium text-[#20342e] outline-none transition placeholder:text-[#9aa8a4] focus:border-black focus:ring-3 focus:ring-black/10";
+  "h-10 rounded-lg border border-[#eaeaea] bg-white px-3 text-sm font-medium text-[#171717] outline-none transition placeholder:text-[#a1a1aa] focus:border-[#171717] focus:ring-2 focus:ring-black/5";
 const primaryButtonClass =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#171717] px-4 text-sm font-semibold text-white shadow-xs transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#171717] px-3.5 text-xs font-semibold text-white shadow-xs transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50";
 const secondaryButtonClass =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#eaeaea] bg-white px-3.5 text-sm font-semibold text-[#40534e] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]";
+  "inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#eaeaea] bg-white px-3.5 text-xs font-semibold text-[#171717] transition hover:border-[#d4d4d8] hover:bg-[#fafafa]";
 const dangerButtonClass =
-  "inline-flex h-10 items-center justify-center rounded-xl border border-[#ffd3d9] bg-white px-3.5 text-sm font-semibold text-[#d64b62] transition hover:bg-[#fff4f5]";
+  "inline-flex h-9 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50";
 const endpointRows = [
   ["GET", "/api/v1/agents"],
   ["GET", "/api/v1/calls"],
@@ -298,8 +298,8 @@ function DeveloperOverview({
   const completedItems = setupItems.filter((item) => item.done).length;
 
   return (
-    <div className="developer-overview grid gap-5">
-      <section className="developer-panel grid overflow-hidden rounded-3xl border border-[#d8e5e0] bg-white shadow-[0_14px_38px_rgba(25,67,57,0.06)] xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
+    <div className="developer-overview grid gap-4">
+      <section className="developer-panel grid overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
         <div className="relative overflow-hidden p-6 sm:p-7 lg:p-8">
           <span className="pointer-events-none absolute -right-24 -top-32 size-80 rounded-full bg-[#171717]/[0.07] blur-3xl" />
           <div className="relative">
@@ -325,7 +325,7 @@ function DeveloperOverview({
                 ["Live webhooks", enabledWebhooks, `${totalWebhooks} configured`],
                 ["Events delivered", deliveredCount, `${deliveries.length} attempts`],
               ].map(([label, value, detail]) => (
-                <div className="developer-stat rounded-2xl border border-[#e2ebe8] bg-[#f8faf9] p-4" key={label}>
+                <div className="developer-stat rounded-2xl border border-[#eaeaea] bg-[#f8faf9] p-4" key={label}>
                   <span className="text-xs font-semibold text-[#71817d]">{label}</span>
                   <div className="mt-2 flex items-end gap-2">
                     <strong className="text-2xl font-semibold tracking-tight text-[#18302a]">{value}</strong>
@@ -337,7 +337,7 @@ function DeveloperOverview({
           </div>
         </div>
 
-        <div className="developer-step-panel border-t border-[#e1e9e6] bg-[#fbfcfc] p-6 sm:p-7 xl:border-l xl:border-t-0">
+        <div className="developer-step-panel border-t border-[#eaeaea] bg-[#fbfcfc] p-6 sm:p-7 xl:border-l xl:border-t-0">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.13em] text-[#77908a]">Getting started</p>
@@ -371,7 +371,7 @@ function DeveloperOverview({
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(330px,0.75fr)]">
         <div className={panelClass}>
-          <div className="flex flex-col gap-4 border-b border-[#e1e9e6] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-4 border-b border-[#eaeaea] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div>
               <h3 className="text-base font-semibold text-[#18302a]">Production base URL</h3>
               <p className="mt-1 text-xs text-[#80908c]">Use this URL for every API v1 request.</p>
@@ -393,7 +393,7 @@ function DeveloperOverview({
         </div>
 
         <div className={`${panelClass} developer-activity-panel`}>
-          <div className="flex items-center justify-between border-b border-[#e1e9e6] px-5 py-4 sm:px-6">
+          <div className="flex items-center justify-between border-b border-[#eaeaea] px-5 py-4 sm:px-6">
             <div>
               <h3 className="text-base font-semibold text-[#18302a]">Recent activity</h3>
               <p className="mt-1 text-xs text-[#80908c]">Latest webhook deliveries</p>
@@ -424,7 +424,7 @@ function DeveloperOverview({
       </section>
 
       <section className={panelClass}>
-        <div className="flex flex-col gap-3 border-b border-[#e1e9e6] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div className="flex flex-col gap-3 border-b border-[#eaeaea] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div>
             <h3 className="text-base font-semibold text-[#18302a]">Available endpoints</h3>
             <p className="mt-1 text-xs text-[#80908c]">Stable REST routes available under /api/v1</p>
@@ -703,7 +703,7 @@ export function DeveloperShell() {
                 href="/docs/api"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center justify-center rounded-xl border border-[#eaeaea] bg-white px-3.5 text-xs font-semibold text-[#294740] transition hover:border-[#b8ccc5] hover:bg-[#f6f9f8]"
+                className={secondaryButtonClass}
               >
                 API documentation <span aria-hidden="true">↗</span>
               </Link>
@@ -718,9 +718,9 @@ export function DeveloperShell() {
           }
         />
 
-        <div className="mx-auto w-full max-w-[1500px] px-4 py-5 sm:px-5 lg:px-7 lg:py-7">
+        <div className="grid w-full gap-4 px-4 py-4 sm:px-5 lg:px-6">
           <nav
-            className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-xl border border-[#eaeaea] bg-[#fafafa] p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             aria-label="Developer workspace sections"
           >
             {(
@@ -732,18 +732,18 @@ export function DeveloperShell() {
               ] as const
             ).map(([value, label, detail]) => (
               <button
-                className={`relative flex h-10 shrink-0 items-center gap-2.5 rounded-lg px-3 text-sm font-semibold transition ${activeView === value
-                    ? "bg-[#2563eb] text-white shadow-sm hover:bg-[#1d4ed8]"
-                    : "text-[#687b76] hover:bg-[#eff6ff] hover:text-[#1d4ed8]"
+                className={`relative flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-xs font-semibold transition ${activeView === value
+                    ? "bg-[#171717] text-white shadow-xs"
+                    : "text-[#71717a] hover:bg-white hover:text-[#171717]"
                   }`}
                 key={value}
                 type="button"
                 onClick={() => setActiveView(value)}
               >
                 <span>{label}</span>
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${activeView === value
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${activeView === value
                     ? "bg-white/15 text-white"
-                    : "bg-[#eaf0ee] text-[#71817d]"
+                    : "bg-[#eaeaea] text-[#52525b]"
                   }`}>
                   {detail}
                 </span>
@@ -751,7 +751,7 @@ export function DeveloperShell() {
             ))}
           </nav>
 
-          <div className="mt-6 min-w-0">
+          <div className="min-w-0">
             <div className="min-w-0">
               {activeView === "overview" ? (
                 <>
@@ -776,7 +776,7 @@ export function DeveloperShell() {
 
               {activeView === "keys" ? (
                 <section className={panelClass}>
-                  <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
+                  <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-5">
                     <div>
                       <h2 className="text-xl font-semibold text-[#14231f]">
                         API keys
@@ -816,7 +816,7 @@ export function DeveloperShell() {
                     </div>
                   ) : null}
                   {keyComposerOpen ? (
-                    <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                    <div className="border-b border-[#eaeaea] bg-[#f8fafc] p-5">
                       <div className="mb-5 flex items-start justify-between gap-4">
                         <div>
                           <h3 className="text-sm font-semibold text-[#20342e]">Create a new API key</h3>
@@ -876,7 +876,7 @@ export function DeveloperShell() {
                   ) : null}
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[760px] text-left text-sm">
-                      <thead className="border-b border-[#dce3ea] bg-white text-[10px] font-black uppercase text-[#84938f]">
+                      <thead className="border-b border-[#eaeaea] bg-white text-[10px] font-black uppercase text-[#84938f]">
                         <tr>
                           {[
                             "Name",
@@ -892,7 +892,7 @@ export function DeveloperShell() {
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#e8edf2]">
+                      <tbody className="divide-y divide-[#eaeaea]">
                         {apiKeys.map((apiKey) => (
                           <tr className="hover:bg-[#fafbfc]" key={apiKey._id}>
                             <td className="px-4 py-3 font-semibold text-[#20342e]">
@@ -940,7 +940,7 @@ export function DeveloperShell() {
 
               {activeView === "webhooks" ? (
                 <section className={panelClass}>
-                  <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
+                  <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-5">
                     <div>
                       <h2 className="text-xl font-semibold text-[#14231f]">
                         Webhooks
@@ -980,7 +980,7 @@ export function DeveloperShell() {
                     </div>
                   ) : null}
                   {webhookComposerOpen ? (
-                    <div className="border-b border-[#dce3ea] bg-[#f8fafc] p-5">
+                    <div className="border-b border-[#eaeaea] bg-[#f8fafc] p-5">
                       <div className="mb-5 flex items-start justify-between gap-4">
                         <div>
                           <h3 className="text-sm font-semibold text-[#20342e]">Add a webhook endpoint</h3>
@@ -1049,7 +1049,7 @@ export function DeveloperShell() {
                       </div>
                     </div>
                   ) : null}
-                  <div className="divide-y divide-[#e8edf2]">
+                  <div className="divide-y divide-[#eaeaea]">
                     {webhooks.map((webhook) => (
                       <article
                         className="p-4 hover:bg-[#fafbfc]"
@@ -1114,7 +1114,7 @@ export function DeveloperShell() {
 
               {activeView === "activity" ? (
                 <section className={panelClass}>
-                  <div className="flex items-center justify-between gap-4 border-b border-[#dce3ea] px-5 py-5">
+                  <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-5">
                     <div>
                       <h2 className="text-xl font-semibold text-[#14231f]">
                         Event activity
@@ -1127,7 +1127,7 @@ export function DeveloperShell() {
                       {deliveredCount} delivered
                     </span>
                   </div>
-                  <div className="divide-y divide-[#e8edf2]">
+                  <div className="divide-y divide-[#eaeaea]">
                     {deliveries.map((delivery) => (
                       <div
                         className="grid gap-3 px-5 py-4 hover:bg-[#fafbfc] sm:grid-cols-[minmax(0,1fr)_130px_100px] sm:items-center"

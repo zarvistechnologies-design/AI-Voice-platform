@@ -427,7 +427,7 @@ export function CallLogsShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-white text-slate-950 ${
+      className={`dashboard-home-theme grid min-h-screen bg-[#f7f9f8] text-[#171717] ${
         showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"

@@ -442,7 +442,7 @@ export function KnowledgeBaseShell() {
 
   return (
     <main
-      className={`dashboard-home-theme grid min-h-screen bg-white text-[#111827] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
+      className={`dashboard-home-theme grid min-h-screen bg-[#f7f9f8] text-[#171717] lg:h-screen lg:overflow-hidden ${showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}
     >
       <DashboardSidebar
         activeLabel="Knowledge Base"

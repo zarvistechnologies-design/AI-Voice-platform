@@ -23,12 +23,12 @@ export type DashboardPageHeaderProps = {
   workspaceBarOnly?: boolean;
 };
 
-function creditLabel(balance: number | null) {
+function creditLabel(balance: number | null, currency = "INR") {
   if (balance === null) return "Credits";
   try {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
       style: "currency",
-      currency: "INR",
+      currency,
       maximumFractionDigits: balance % 1 === 0 ? 0 : 2,
     }).format(balance);
   } catch {
@@ -45,6 +45,8 @@ export function DashboardWorkspaceBar() {
   );
   const [credit, setCredit] = useState<{
     balance: number;
+    currency: string;
+    includedMinutesRemaining: number | null;
   } | null>(null);
   const [darkMode, setDarkMode] = useState(true);
 
@@ -52,9 +54,10 @@ export function DashboardWorkspaceBar() {
     try {
       const saved = localStorage.getItem("vozon_dashboard_theme");
       const isDark = saved !== "light";
-      setDarkMode(isDark);
+      const timer = window.setTimeout(() => setDarkMode(isDark), 0);
       document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
       document.documentElement.classList.toggle("dark", isDark);
+      return () => window.clearTimeout(timer);
     } catch {
       /* localStorage may be unavailable */
     }
@@ -88,9 +91,15 @@ export function DashboardWorkspaceBar() {
       .then((summary) => {
         if (!cancelled)
           setCredit({
-            balance: summary.wallet.currency.toUpperCase() === "INR"
+            balance: summary.whiteLabel
+              ? summary.wallet.balanceCredits
+              : summary.wallet.currency.toUpperCase() === "INR"
               ? summary.wallet.balanceCredits
               : summary.wallet.balanceCredits * (summary.inrPerUsd ?? 96.5),
+            currency: summary.whiteLabel ? summary.wallet.currency.toUpperCase() : "INR",
+            includedMinutesRemaining: summary.whiteLabel && (summary.currentPlan?.includedMinutes ?? 0) > 0
+              ? summary.periodUsage?.minutesRemaining ?? null
+              : null,
           });
       })
       .catch(() => undefined);
@@ -135,7 +144,9 @@ export function DashboardWorkspaceBar() {
           <Link
             className="group inline-flex shrink-0 items-center gap-1.5 rounded-md border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[12px] font-medium tabular-nums text-[#171717] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-700 dark:hover:bg-zinc-800"
             href="/dashboard/billing"
-            title="Open billing"
+            title={credit?.includedMinutesRemaining !== null && credit?.includedMinutesRemaining !== undefined && credit.includedMinutesRemaining > 0
+              ? `${credit.includedMinutesRemaining.toFixed(2)} included minutes remaining; wallet ${creditLabel(credit.balance, credit.currency)}. Open billing.`
+              : "Open billing"}
           >
             <span
               className="grid size-3.5 place-items-center text-zinc-600 dark:text-zinc-300"
@@ -151,7 +162,9 @@ export function DashboardWorkspaceBar() {
               </svg>
             </span>
             <span>
-              {creditLabel(credit?.balance ?? null)}
+              {credit?.includedMinutesRemaining !== null && credit?.includedMinutesRemaining !== undefined && credit.includedMinutesRemaining > 0
+                ? `${credit.includedMinutesRemaining.toFixed(1)} min left`
+                : creditLabel(credit?.balance ?? null, credit?.currency)}
             </span>
           </Link>
 
