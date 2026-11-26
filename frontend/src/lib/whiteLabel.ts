@@ -314,7 +314,7 @@ export const partnerWhiteLabelApi = {
   deleteCustomer: (orgId: string) => request<void>(`/api/partner/white-label/customers/${orgId}`, { method: "DELETE" }),
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
   updateCustomerPlan: (orgId: string, planId: string, reason: string, migrateWalletCurrency = false) => request<{ subscription: WhiteLabelCustomer["subscription"]; creditGrant?: { amountCredits: number; balanceAfterCredits: number }; walletMigration?: { fromCurrency: string; toCurrency: string; fxRate: number; balanceBefore: number; balanceAfter: number } }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body: { planId, reason, migrateWalletCurrency } }),
-  grantCustomerCredits: (orgId: string, amountCredits: number, reason: string) => request<{ amountCredits: number; balanceAfterCredits: number; currency: string }>(`/api/partner/white-label/customers/${orgId}/credits`, { method: "POST", body: { amountCredits, reason } }),
+  grantCustomerCredits: (orgId: string, amountCredits: number, reason: string, currency?: "USD" | "INR") => request<{ amountCredits: number; balanceAfterCredits: number; currency: string }>(`/api/partner/white-label/customers/${orgId}/credits`, { method: "POST", body: { amountCredits, reason, currency } }),
   customerBilling: (orgId: string) => request<PartnerCustomerBilling>(`/api/partner/white-label/customers/${orgId}/billing`),
 };
 

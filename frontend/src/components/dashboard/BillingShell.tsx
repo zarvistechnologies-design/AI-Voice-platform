@@ -44,6 +44,7 @@ export function BillingShell() {
   const [showBillingDetails, setShowBillingDetails] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(getDashboardSidebarInitialState);
   const [successData, setSuccessData] = useState<PaymentSuccessData | null>(null);
+  const [displayCurrency, setDisplayCurrency] = useState<"AUTO" | "INR" | "USD">("AUTO");
 
   const load = useCallback(async (force = false) => {
     try {
@@ -79,13 +80,22 @@ export function BillingShell() {
   }, [load, router, session]);
 
   const wallet = data?.wallet;
-  const inrPerUsd = data?.inrPerUsd ?? 0;
+  const inrPerUsd = data?.inrPerUsd && data.inrPerUsd > 0 ? data.inrPerUsd : 96.5;
   const walletCurrency = wallet?.currency?.toUpperCase() || "USD";
+  const activeCurrency = displayCurrency === "AUTO" ? (data?.whiteLabel ? walletCurrency : "INR") : displayCurrency;
+  const convertCurrency = useCallback((value: number, sourceCurrency = walletCurrency, targetCurrency = activeCurrency) => {
+    const src = sourceCurrency.toUpperCase();
+    const dst = targetCurrency.toUpperCase();
+    if (src === dst) return value;
+    if (src === "USD" && dst === "INR") return value * inrPerUsd;
+    if (src === "INR" && dst === "USD") return value / inrPerUsd;
+    return value;
+  }, [activeCurrency, inrPerUsd, walletCurrency]);
   const toInr = useCallback((value: number, sourceCurrency = walletCurrency) => (
     sourceCurrency.toUpperCase() === "INR" ? value : value * inrPerUsd
   ), [inrPerUsd, walletCurrency]);
   const creditMoney = (value: number, sourceCurrency = walletCurrency) => data?.whiteLabel
-    ? money(value, sourceCurrency)
+    ? money(convertCurrency(value, sourceCurrency, activeCurrency), activeCurrency)
     : money(toInr(value, sourceCurrency), "INR");
   const balance = wallet?.balanceCredits ?? 0;
   const whiteLabelIncludedMinutes = data?.currentPlan?.includedMinutes ?? 0;
@@ -259,7 +269,23 @@ export function BillingShell() {
           title="Billing"
           description={data?.whiteLabel ? `Subscription and usage details for ${data.whiteLabel.productName}.` : "Manage rupee credits, usage, payments, and invoices."}
           actions={
-            <button className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]" type="button" onClick={() => void load(true)} disabled={Boolean(busy)}>Refresh</button>
+            <div className="flex items-center gap-2">
+              {data?.whiteLabel ? (
+                <div className="inline-flex rounded-md border border-[#eaeaea] bg-white p-0.5 text-[11px] font-medium">
+                  {(["INR", "USD"] as const).map((curr) => (
+                    <button
+                      key={curr}
+                      type="button"
+                      onClick={() => setDisplayCurrency(curr)}
+                      className={`rounded px-2 py-1 transition ${activeCurrency === curr ? "bg-[#171717] text-white" : "text-[#71717a] hover:text-[#171717]"}`}
+                    >
+                      {curr === "INR" ? "INR (₹)" : "USD ($)"}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <button className="inline-flex h-8 items-center rounded-md border border-[#eaeaea] bg-white px-3 text-[12px] font-medium text-[#171717] hover:bg-[#f4f4f5]" type="button" onClick={() => void load(true)} disabled={Boolean(busy)}>Refresh</button>
+            </div>
           }
         />
 
@@ -271,14 +297,14 @@ export function BillingShell() {
           {data?.whiteLabel ? (
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="border-b border-[#eaeaea] px-5 py-4">
-                <span className="app-label text-[#71717a]">Your plan usage</span>
-                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first. Any billable usage then comes from your wallet." : "This plan has no included minutes. Calls use wallet credits according to the plan's pricing."} Amounts are shown in {walletCurrency}.</p>
+                <span className="app-label text-[#71717a]">Plan, credits &amp; deductions</span>
+                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first; once used, each call deducts from your wallet." : "Every call deducts directly from your granted wallet credits based on usage."} Amounts are shown in {activeCurrency}.</p>
               </div>
               <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Included minutes remaining</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} min</dd><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesUsed ?? 0).toLocaleString()} of ${whiteLabelIncludedMinutes.toLocaleString()} min used this period` : "No included minutes on this plan"}</p></div>
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Actual spendable balance after credits and calls</p></div>
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan wallet credit allowance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Credits included with this plan</p></div>
-                <div className="p-4"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">See each call in the history below</p></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan bought</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</dd><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} of ${whiteLabelIncludedMinutes.toLocaleString()} included min left` : "Pay-per-call from wallet credits"}</p></div>
+                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits granted</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(lifetime, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Plan allowance: {creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</p></div>
+                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Spendable balance remaining</p></div>
+                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">{data.usage?.calls ?? 0} calls · {Math.round(data.usage?.minutes ?? 0)} min used</p></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
                 <strong className="text-[#171717]">Call pricing: </strong>
