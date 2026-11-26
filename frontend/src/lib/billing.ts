@@ -12,6 +12,7 @@ export type BillingPlan = {
   interval?: string;
   includedMinutes?: number;
   includedCredits?: number;
+  models?: Record<"stt" | "llm" | "tts", Array<{ key: string; label: string; provider: string; model: string; kind: "realtime" | "pipeline" }>>;
   usagePricing?: {
     mode: "cost_markup" | "fixed_per_minute" | "included_only";
     markupBps: number;
@@ -53,7 +54,7 @@ export type BillingTransaction = {
   description: string;
   callId: string;
   balanceAfterCredits: number;
-  breakdown: {
+  breakdown?: {
     llm: number;
     stt: number;
     tts: number;
@@ -205,7 +206,9 @@ async function downloadInvoice(invoiceId: string) {
 }
 
 export const billingApi = {
-  summary: () => cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
+  summary: (force = false) => force
+    ? request<BillingSummary>("/summary")
+    : cachedApiRequest("billing", "/summary", 15_000, () => request<BillingSummary>("/summary")),
   transactions: (limit = 50) => request<{ transactions: BillingTransaction[] }>("/transactions?limit=" + limit),
   topUp: (amountInr: number) =>
     request<RazorpayCheckoutPayload>("/top-up", {
@@ -220,16 +223,22 @@ export const billingApi = {
     invalidateApiCache("billing");
     return verified;
   },
-  whiteLabelCheckout: () =>
-    request<(RazorpayCheckoutPayload & { settled: false }) | { settled: true; invoice: BillingSummary["currentInvoice"] }>("/white-label/checkout", {
+  whiteLabelCheckout: async () => {
+    const checkout = await request<(RazorpayCheckoutPayload & { settled: false }) | { settled: true; invoice: BillingSummary["currentInvoice"] }>("/white-label/checkout", {
       method: "POST",
       body: JSON.stringify({}),
-    }),
-  verifyWhiteLabelCheckout: (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) =>
-    request<{ success: boolean; invoice: BillingSummary["currentInvoice"] }>("/white-label/verify", {
+    });
+    if (checkout.settled) invalidateApiCache("billing");
+    return checkout;
+  },
+  verifyWhiteLabelCheckout: async (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    const verified = await request<{ success: boolean; invoice: BillingSummary["currentInvoice"] }>("/white-label/verify", {
       method: "POST",
       body: JSON.stringify(result),
-    }),
+    });
+    invalidateApiCache("billing");
+    return verified;
+  },
   updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
     const result = await request<{ wallet: CreditWallet }>("/auto-reload", {
       method: "PUT",

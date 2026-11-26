@@ -133,8 +133,38 @@ export type WhiteLabelCustomer = {
   externalCustomerId?: string;
   ownerUserId?: { _id: string; name: string; email: string; emailVerified: boolean; lastLoginAt?: string };
   whiteLabelBrandId?: { _id: string; key: string; branding?: { productName?: string } };
+  wallet?: { balanceCredits: number; currency: string } | null;
   subscription?: { _id?: string; status: string; planId?: string; planKey: string; planNameSnapshot?: string; planVersion: number; currentPeriodEnd?: string; priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string }; allowancesSnapshot?: { includedCredits?: number; includedMinutes?: number } };
   createdAt: string;
+};
+
+export type PartnerCustomerBilling = {
+  customer: { id: string; name: string };
+  subscription: {
+    planName: string;
+    planVersion: number;
+    status: string;
+    currentPeriodStart?: string;
+    currentPeriodEnd?: string;
+    price?: { currency?: string; recurringAmountMinor?: number; interval?: string };
+    allowances?: { includedCredits?: number; includedMinutes?: number };
+    usagePricing?: { mode?: string; markupBps?: number; perMinuteAmountMinor?: number };
+  };
+  wallet: { balanceCredits: number; currency: string };
+  usage: { calls: number; minutes: number; chargedCredits: number };
+  models: WhiteLabelModelCatalog;
+  transactions: Array<{
+    _id: string;
+    type: string;
+    category: string;
+    amountCredits: number;
+    currency: string;
+    description: string;
+    callId: string;
+    balanceAfterCredits: number;
+    createdAt: string;
+  }>;
+  invoices: Array<{ _id: string; invoiceNumber: string; status: string; totalMinor: number; currency: string; dueAt: string; paidAt?: string }>;
 };
 
 export type PartnerOverview = {
@@ -283,6 +313,7 @@ export const partnerWhiteLabelApi = {
   updateCustomerSubscription: (orgId: string, status: "active" | "past_due" | "paused" | "cancelled", reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"] }>(`/api/partner/white-label/customers/${orgId}/subscription`, { method: "PATCH", body: { status, reason } }),
   updateCustomerPlan: (orgId: string, planId: string, reason: string) => request<{ subscription: WhiteLabelCustomer["subscription"]; creditGrant?: { amountCredits: number; balanceAfterCredits: number } }>(`/api/partner/white-label/customers/${orgId}/plan`, { method: "PATCH", body: { planId, reason } }),
   grantCustomerCredits: (orgId: string, amountCredits: number, reason: string) => request<{ amountCredits: number; balanceAfterCredits: number; currency: string }>(`/api/partner/white-label/customers/${orgId}/credits`, { method: "POST", body: { amountCredits, reason } }),
+  customerBilling: (orgId: string) => request<PartnerCustomerBilling>(`/api/partner/white-label/customers/${orgId}/billing`),
 };
 
 export const platformWhiteLabelApi = {
