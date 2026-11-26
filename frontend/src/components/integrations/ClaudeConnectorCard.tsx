@@ -129,7 +129,7 @@ export function ClaudeConnectorCard() {
           </h2>
 
           <p className="mt-1 min-h-12 text-sm leading-6 text-slate-600">
-            Connect Claude Desktop or Claude.ai to query voice agents and call activity directly from Claude chat.
+            Connect Claude to review voice agents and calls, create agents and prompts, and build automation workflows in this workspace.
           </p>
 
           {isConnected ? (
