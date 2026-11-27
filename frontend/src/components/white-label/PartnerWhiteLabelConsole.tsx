@@ -25,10 +25,10 @@ import {
 type Tab = "launch" | "brand" | "domains" | "plans" | "customers" | "billing" | "contract";
 type Notice = { tone: "success" | "error" | "info" | "critical"; message: string } | null;
 
-const fieldClass = "min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
-const labelClass = "grid gap-2 text-xs font-semibold text-[#52645f]";
-const buttonClass = "inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
-const secondaryButtonClass = "inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
+const fieldClass = "wl-field min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
+const labelClass = "wl-label grid gap-2 text-xs font-semibold text-[#52645f]";
+const buttonClass = "wl-primary inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
+const secondaryButtonClass = "wl-secondary inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -45,15 +45,15 @@ function date(value?: string) {
 function Status({ value }: { value: string }) {
   const positive = value === "active" || value === "published" || value === "trialing";
   const negative = value === "failed" || value === "suspended" || value === "terminated" || value === "past_due";
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ring-1 ${positive ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : negative ? "bg-rose-50 text-rose-700 ring-rose-200" : "bg-amber-50 text-amber-700 ring-amber-200"}`}>{value.replaceAll("_", " ")}</span>;
+  return <span data-tone={positive ? "positive" : negative ? "negative" : "warning"} className={`wl-status inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] ring-1 ${positive ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : negative ? "bg-rose-50 text-rose-700 ring-rose-200" : "bg-amber-50 text-amber-700 ring-amber-200"}`}>{value.replaceAll("_", " ")}</span>;
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <article className={`rounded-xl border border-[#dde6e3] bg-white shadow-[0_8px_24px_rgba(28,55,47,0.06)] ${className}`}>{children}</article>;
+  return <article className={`wl-card rounded-xl border border-[#dde6e3] bg-white shadow-[0_8px_24px_rgba(28,55,47,0.06)] ${className}`}>{children}</article>;
 }
 
 function SectionTitle({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
-  return <div className="flex flex-col gap-3 border-b border-[#e7edeb] p-5 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-lg font-bold text-[#1d342e]">{title}</h2><p className="mt-1 text-sm leading-6 text-[#71817d]">{description}</p></div>{action}</div>;
+  return <div className="wl-section-heading flex flex-col gap-3 border-b border-[#e7edeb] p-5 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-lg font-bold text-[#1d342e]">{title}</h2><p className="mt-1 text-sm leading-6 text-[#71817d]">{description}</p></div>{action}</div>;
 }
 
 function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomerBilling; onClose: () => void }) {
@@ -717,9 +717,9 @@ export function PartnerWhiteLabelConsole() {
       <DashboardPageHeader workspaceBarOnly />
       <div className="partner-white-label-content mx-auto grid max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
       <header className="partner-white-label-hero overflow-hidden rounded-2xl border p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex gap-2"><Status value={overview.account.status} /><Status value={overview.account.billingStatus} /></div></div>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex flex-wrap gap-2"><span className="wl-hero-state">Account <Status value={overview.account.status} /></span><span className="wl-hero-state">Billing <Status value={overview.account.billingStatus} /></span></div></div>
       </header>
-      {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
+      {notice ? <div className={`wl-notice rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
       <nav className="partner-white-label-tabs flex gap-1 overflow-x-auto rounded-xl border p-1.5" aria-label="White-label administration">{tabs.map((item) => <button aria-pressed={tab === item.id} className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "partner-white-label-tab-active bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
 
       {tab === "launch" ? <div className="grid gap-5 xl:grid-cols-[1fr_0.7fr]">
