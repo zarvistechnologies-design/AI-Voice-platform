@@ -59,6 +59,8 @@ export function WhatsAppModal({
     waba_id?: string;
     phone_number_id?: string;
     business_id?: string;
+    event?: string;
+    isCoexistence?: boolean;
   }>({});
 
   // Test message state
@@ -85,7 +87,7 @@ export function WhatsAppModal({
         appId: metaAppId,
         autoLogAppEvents: true,
         xfbml: true,
-        version: "v21.0",
+        version: "v22.0",
       });
       setSdkStatus("ready");
     };
@@ -116,14 +118,22 @@ export function WhatsAppModal({
 
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-        if (data.type === "WA_EMBEDDED_SIGNUP") {
+        if (data?.type === "WA_EMBEDDED_SIGNUP") {
+          const signupEvent = typeof data.event === "string" ? data.event : "";
+          if (signupEvent === "CANCEL" || signupEvent === "ERROR") {
+            return;
+          }
           const info = data.data as {
             waba_id?: string;
             phone_number_id?: string;
             business_id?: string;
-          };
+          } | undefined;
           if (info) {
-            sessionInfoRef.current = info;
+            sessionInfoRef.current = {
+              ...info,
+              event: signupEvent || undefined,
+              isCoexistence: signupEvent === "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING",
+            };
           }
         }
       } catch {
@@ -143,6 +153,7 @@ export function WhatsAppModal({
     const wabaId = sessionInfoRef.current.waba_id;
     const phoneNumberId = sessionInfoRef.current.phone_number_id;
     const businessId = sessionInfoRef.current.business_id;
+    const detectedCoexistence = sessionInfoRef.current.isCoexistence ?? useCoexistence;
 
     try {
       setBusy(true);
@@ -151,6 +162,8 @@ export function WhatsAppModal({
         wabaId: wabaId || undefined,
         phoneNumberId: phoneNumberId || undefined,
         businessId: businessId || undefined,
+        isCoexistence: detectedCoexistence,
+        signupEvent: sessionInfoRef.current.event,
       });
       onSuccess(res.message || "WhatsApp Business connected successfully!");
     } catch (err) {
@@ -176,6 +189,7 @@ export function WhatsAppModal({
 
     const extras: Record<string, unknown> = {
       setup: {},
+      sessionInfoVersion: "3",
     };
     if (useCoexistence) {
       extras.featureType = "whatsapp_business_app_onboarding";
@@ -498,9 +512,16 @@ export function WhatsAppModal({
                   <strong className="text-sm font-semibold text-slate-900">
                     Connected Account Information
                   </strong>
-                  <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
-                    Active WABA
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {metadata.coexistence ? (
+                      <span className="rounded-full bg-teal-50 border border-teal-200 px-2 py-0.5 text-[10px] font-bold text-teal-700 uppercase">
+                        Coexistence
+                      </span>
+                    ) : null}
+                    <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
+                      Active WABA
+                    </span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div>

@@ -10,6 +10,82 @@ interface WhatsAppLiveChatViewProps {
   onRefresh: () => void;
 }
 
+function WhatsAppMediaAttachment({
+  mediaId,
+  mimeType,
+  phoneNumberId,
+}: {
+  mediaId: string;
+  mimeType?: string;
+  phoneNumberId?: string;
+}) {
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    let createdUrl = "";
+    setError(false);
+    whatsappApi
+      .fetchMediaBlobUrl(mediaId, phoneNumberId)
+      .then((url) => {
+        if (!active) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        createdUrl = url;
+        setBlobUrl(url);
+      })
+      .catch(() => {
+        if (active) setError(true);
+      });
+    return () => {
+      active = false;
+      if (createdUrl) URL.revokeObjectURL(createdUrl);
+    };
+  }, [mediaId, phoneNumberId]);
+
+  if (error) {
+    return (
+      <span className="mt-1.5 inline-block text-[11px] text-[#71717a] dark:text-zinc-400">
+        Attachment preview unavailable
+      </span>
+    );
+  }
+  if (!blobUrl) {
+    return (
+      <span className="mt-1.5 inline-block text-[11px] text-[#71717a] dark:text-zinc-400">
+        Loading attachment...
+      </span>
+    );
+  }
+
+  const mime = (mimeType || "").toLowerCase();
+  if (mime.startsWith("image/")) {
+    return (
+      <a href={blobUrl} target="_blank" rel="noreferrer" className="mt-1.5 block">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={blobUrl} alt="WhatsApp attachment" className="max-h-56 rounded-md border border-black/10 object-contain" />
+      </a>
+    );
+  }
+  if (mime.startsWith("audio/")) {
+    return <audio controls src={blobUrl} className="mt-1.5 max-w-full h-8" />;
+  }
+  if (mime.startsWith("video/")) {
+    return <video controls src={blobUrl} className="mt-1.5 max-h-56 rounded-md border border-black/10" />;
+  }
+  return (
+    <a
+      href={blobUrl}
+      download={`whatsapp-${mediaId}`}
+      className="mt-1.5 inline-flex items-center gap-1 rounded border border-black/15 bg-white/70 px-2 py-1 text-[11px] font-medium text-[#111b21] hover:bg-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+    >
+      Download attachment
+    </a>
+  );
+}
+
 export function WhatsAppLiveChatView({
   conversations,
   templates,
@@ -346,15 +422,27 @@ export function WhatsAppLiveChatView({
                         </span>
                       </div>
 
-                      <div className="mt-1.5 flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1 rounded border border-[#eaeaea] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-                          <span
-                            className={`size-1.5 rounded-full ${
-                              conv.mode === "ai" ? "bg-[#171717] dark:bg-emerald-400" : "bg-[#a1a1aa] dark:bg-zinc-500"
-                            }`}
-                          />
-                          {conv.mode === "ai" ? "AI Active" : "Human Takeover"}
-                        </span>
+                      <div className="mt-1.5 flex items-center justify-between gap-1.5">
+                        <div className="flex items-center gap-1 min-w-0">
+                          <span className="inline-flex items-center gap-1 rounded border border-[#eaeaea] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#52525b] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                            <span
+                              className={`size-1.5 rounded-full ${
+                                conv.mode === "ai" ? "bg-[#171717] dark:bg-emerald-400" : "bg-[#a1a1aa] dark:bg-zinc-500"
+                              }`}
+                            />
+                            {conv.mode === "ai" ? "AI Active" : "Human Takeover"}
+                          </span>
+                          {conv.tags?.includes("Coexistence-Mobile") && (
+                            <span className="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[9.5px] font-medium text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+                              Mobile App
+                            </span>
+                          )}
+                          {conv.recipientDisplayPhone && (
+                            <span className="truncate font-mono text-[9.5px] text-[#71717a] dark:text-zinc-400">
+                              via {conv.recipientDisplayPhone}
+                            </span>
+                          )}
+                        </div>
 
                         {conv.unreadCount > 0 && (
                           <span className="grid size-4 place-items-center rounded-full bg-[#25D366] text-[9px] font-semibold text-white">
@@ -386,6 +474,7 @@ export function WhatsAppLiveChatView({
                     </h3>
                     <span className="block text-[11px] font-mono text-[#667781] dark:text-zinc-400">
                       +{selectedConversation.contactPhone}
+                      {selectedConversation.recipientDisplayPhone ? ` · via ${selectedConversation.recipientDisplayPhone}` : ""}
                     </span>
                   </div>
                 </div>
@@ -428,8 +517,25 @@ export function WhatsAppLiveChatView({
                             : "self-start rounded-tl-none bg-white text-[#111b21] dark:border dark:border-zinc-800 dark:bg-[#202c33] dark:text-zinc-100"
                         }`}
                       >
-                        <div className="whitespace-pre-line">{msg.content}</div>
+                        <div className={`whitespace-pre-line ${msg.deletedAt ? "italic text-[#71717a] dark:text-zinc-400" : ""}`}>
+                          {msg.content}
+                        </div>
+                        {msg.mediaId && !msg.deletedAt && (
+                          <WhatsAppMediaAttachment
+                            mediaId={msg.mediaId}
+                            mimeType={msg.mediaMimeType}
+                            phoneNumberId={selectedConversation.recipientPhoneNumberId}
+                          />
+                        )}
                         <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-[#667781] dark:text-zinc-400">
+                          {isOutbound && msg.senderPhone?.includes("Mobile App") && (
+                            <span className="mr-1 rounded bg-black/5 px-1 py-0.2 text-[9px] font-medium text-[#008069] dark:bg-white/10 dark:text-emerald-300">
+                              Mobile
+                            </span>
+                          )}
+                          {msg.editedAt && !msg.deletedAt && (
+                            <span className="mr-1 text-[9.5px] italic">edited</span>
+                          )}
                           <span>
                             {new Date(msg.createdAt).toLocaleTimeString([], {
                               hour: "2-digit",

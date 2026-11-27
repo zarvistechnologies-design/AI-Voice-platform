@@ -164,8 +164,15 @@ export const integrationsApi = {
     phoneNumberId?: string;
     businessId?: string;
     accessToken?: string;
+    isCoexistence?: boolean;
+    signupEvent?: string;
   }) => {
-    const result = await request<{ ok: boolean; message: string; phoneDetails: Record<string, unknown> }>(
+    const result = await request<{
+      ok: boolean;
+      message: string;
+      phoneDetails: Record<string, unknown>;
+      coexistenceSync?: { contactsSyncRequested: boolean; historySyncRequested: boolean; errors: string[] };
+    }>(
       "/whatsapp/embedded-signup",
       {
         method: "POST",

@@ -140,6 +140,10 @@ export type WhatsAppMessage = {
   type: "text" | "template" | "image" | "document" | "interactive";
   content: string;
   status: "sent" | "delivered" | "read" | "failed";
+  mediaId?: string;
+  mediaMimeType?: string;
+  editedAt?: string | null;
+  deletedAt?: string | null;
   createdAt: string;
 };
 
@@ -239,6 +243,7 @@ export type WhatsAppAccountItem = {
   businessName?: string;
   label?: string;
   isPrimary: boolean;
+  coexistence?: boolean;
   lastVerifiedAt?: string;
 };
 
@@ -258,10 +263,13 @@ export type WhatsAppConnectionStatus = {
     businessName?: string;
     label?: string;
     isPrimary?: boolean;
+    coexistence?: boolean;
   };
   accounts?: WhatsAppAccountItem[];
   webhook?: {
     subscribed: boolean;
+    coexistenceSubscribed?: boolean;
+    missingCoexistenceFields?: string[];
     receiverReady: boolean;
     callbackUrl?: string;
   };
@@ -305,9 +313,26 @@ export const whatsappApi = {
     pin?: string;
     label?: string;
     setAsPrimary?: boolean;
-  }) => req<{ ok: boolean; message: string; phoneDetails: Record<string, unknown> }>("/api/integrations/whatsapp/embedded-signup", {
+    isCoexistence?: boolean;
+    signupEvent?: string;
+  }) => req<{
+    ok: boolean;
+    message: string;
+    phoneDetails: Record<string, unknown>;
+    coexistenceSync?: { contactsSyncRequested: boolean; historySyncRequested: boolean; errors: string[] };
+  }>("/api/integrations/whatsapp/embedded-signup", {
     method: "POST",
     body: JSON.stringify(payload),
+  }),
+  syncCoexistence: (phoneNumberId?: string) => req<{
+    ok: boolean;
+    phoneNumberId: string;
+    contactsSyncRequested: boolean;
+    historySyncRequested: boolean;
+    errors: string[];
+  }>("/api/integrations/whatsapp/coexistence/sync", {
+    method: "POST",
+    body: JSON.stringify(phoneNumberId ? { phoneNumberId } : {}),
   }),
   updateAccount: (phoneNumberId: string, payload: { label?: string; isPrimary?: boolean }) =>
     req<{ ok: boolean; message: string; accountId: string; metadata: Record<string, unknown> }>(
@@ -450,6 +475,24 @@ export const whatsappApi = {
     }),
 
   // Live Chat
+  fetchMediaBlobUrl: async (mediaId: string, phoneNumberId?: string): Promise<string> => {
+    const session = getSession();
+    const headers = new Headers();
+    if (session?.token) headers.set("Authorization", `Bearer ${session.token}`);
+    for (const [key, val] of Object.entries(getAuthHeaders())) {
+      if (val && !headers.has(key)) headers.set(key, val);
+    }
+    const qs = phoneNumberId ? `?phoneNumberId=${encodeURIComponent(phoneNumberId)}` : "";
+    const response = await fetch(`${API_BASE}/api/whatsapp/media/${encodeURIComponent(mediaId)}${qs}`, {
+      credentials: "include",
+      headers,
+    });
+    if (!response.ok) {
+      throw new Error(`Could not load attachment (${response.status})`);
+    }
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  },
   listConversations: () => req<{ ok: boolean; conversations: WhatsAppConversation[] }>("/api/whatsapp/conversations"),
   getMessages: (conversationId: string) => req<{ ok: boolean; messages: WhatsAppMessage[] }>(`/api/whatsapp/conversations/${conversationId}/messages`),
   sendChatMessage: (

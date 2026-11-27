@@ -436,18 +436,26 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
           )}
 
           {isConnected && connectionStatus?.webhook &&
-            (!connectionStatus.webhook.receiverReady || !connectionStatus.webhook.subscribed) && (
+            (!connectionStatus.webhook.receiverReady ||
+              !connectionStatus.webhook.subscribed ||
+              connectionStatus.webhook.coexistenceSubscribed === false) && (
               <div className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-[12px] text-amber-950 shadow-sm dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 items-start gap-2.5">
                   <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber-200 text-[11px] font-bold text-amber-900 dark:bg-amber-900/60 dark:text-amber-100">!</span>
                   <div className="min-w-0">
                     <strong className="block text-[12px] font-bold">
-                      {!connectionStatus.webhook.receiverReady ? "Inbound messages are blocked" : "Inbound webhook status could not be confirmed"}
+                      {!connectionStatus.webhook.receiverReady
+                        ? "Inbound messages are blocked"
+                        : !connectionStatus.webhook.subscribed
+                          ? "Inbound webhook status could not be confirmed"
+                          : "Coexistence webhook fields are not all subscribed"}
                     </strong>
                     <p className="mb-0 mt-1 leading-relaxed text-amber-900/90 dark:text-amber-100/80">
                       {!connectionStatus.webhook.receiverReady
                         ? "Set META_APP_SECRET on the backend and restart it so inbound webhook signatures can be verified."
-                        : <>Your WhatsApp account is still connected. This check only affects receiving incoming chats; outbound messages can continue to work. In Meta for Developers, open your app → WhatsApp → Configuration and confirm the <strong>messages</strong> webhook field is subscribed. Callback URL: <code className="break-all rounded bg-amber-100 px-1 dark:bg-amber-900/50">{connectionStatus.webhook.callbackUrl || "the backend WhatsApp webhook URL"}</code>. Use the same verification token configured on the backend.</>}
+                        : !connectionStatus.webhook.subscribed
+                          ? <>Your WhatsApp account is still connected. This check only affects receiving incoming chats; outbound messages can continue to work. In Meta for Developers, open your app → WhatsApp → Configuration and confirm the <strong>messages</strong> webhook field is subscribed. Callback URL: <code className="break-all rounded bg-amber-100 px-1 dark:bg-amber-900/50">{connectionStatus.webhook.callbackUrl || "the backend WhatsApp webhook URL"}</code>. Use the same verification token configured on the backend.</>
+                          : <>In Meta for Developers → WhatsApp → Configuration, subscribe the missing coexistence webhook fields (<code className="rounded bg-amber-100 px-1 dark:bg-amber-900/50">{(connectionStatus.webhook.missingCoexistenceFields || ["smb_message_echoes", "smb_app_state_sync", "history"]).join(", ")}</code>) so mobile app replies, contacts, and chat history stay in sync.</>}
                     </p>
                   </div>
                 </div>

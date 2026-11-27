@@ -33,18 +33,23 @@ export function WhatsAppEmbeddedSignupModal({
             codeVerificationStatus: metadata.codeVerificationStatus || "VERIFIED",
             label: metadata.label || "Primary Line",
             isPrimary: true,
+            coexistence: Boolean(metadata.coexistence),
           },
         ]
       : [];
 
   const [activeTab, setActiveTab] = useState<"embedded" | "manual" | "test">("embedded");
   const [showAddAnother, setShowAddAnother] = useState(!isConnected);
+  const [useCoexistence, setUseCoexistence] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [, setSdkStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [sdkStatus, setSdkStatus] = useState<"loading" | "ready" | "error">("loading");
 
   const metaAppId = process.env.NEXT_PUBLIC_META_APP_ID?.trim();
   const metaConfigId = process.env.NEXT_PUBLIC_META_CONFIG_ID?.trim();
   const hasValidMetaIds = /^\d+$/.test(metaAppId ?? "") && /^\d+$/.test(metaConfigId ?? "");
+  const canUseMetaSdk = typeof window === "undefined" ||
+    window.location.protocol === "https:" ||
+    ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
   // Manual credentials state
   const [numberLabel, setNumberLabel] = useState("");
@@ -67,11 +72,13 @@ export function WhatsAppEmbeddedSignupModal({
     waba_id?: string;
     phone_number_id?: string;
     business_id?: string;
+    event?: string;
+    isCoexistence?: boolean;
   }>({});
 
   // Initialize FB SDK
   useEffect(() => {
-    if (!hasValidMetaIds) {
+    if (!hasValidMetaIds || !canUseMetaSdk) {
       setSdkStatus("ready");
       return;
     }
@@ -85,13 +92,14 @@ export function WhatsAppEmbeddedSignupModal({
         appId: metaAppId,
         autoLogAppEvents: true,
         xfbml: true,
-        version: "v21.0",
+        version: "v22.0",
       });
       setSdkStatus("ready");
     };
 
     window.fbAsyncInit = initSdk;
     let script = document.getElementById("facebook-jssdk") as HTMLScriptElement | null;
+    const handleSdkError = () => setSdkStatus("error");
     if (window.FB) {
       initSdk();
     } else if (!script) {
@@ -102,6 +110,7 @@ export function WhatsAppEmbeddedSignupModal({
       script.defer = true;
       document.body.appendChild(script);
     }
+    script?.addEventListener("error", handleSdkError);
 
     const handleMessage = (event: MessageEvent) => {
       if (
@@ -114,13 +123,23 @@ export function WhatsAppEmbeddedSignupModal({
 
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-        if (data.type === "WA_EMBEDDED_SIGNUP") {
+        if (data?.type === "WA_EMBEDDED_SIGNUP") {
+          const signupEvent = typeof data.event === "string" ? data.event : "";
+          if (signupEvent === "CANCEL" || signupEvent === "ERROR") {
+            return;
+          }
           const info = data.data as {
             waba_id?: string;
             phone_number_id?: string;
             business_id?: string;
-          };
-          if (info) sessionInfoRef.current = info;
+          } | undefined;
+          if (info) {
+            sessionInfoRef.current = {
+              ...info,
+              event: signupEvent || undefined,
+              isCoexistence: signupEvent === "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING",
+            };
+          }
         }
       } catch {
         /* Ignore other messages */
@@ -129,22 +148,31 @@ export function WhatsAppEmbeddedSignupModal({
 
     window.addEventListener("message", handleMessage);
     return () => {
+      script?.removeEventListener("error", handleSdkError);
       window.removeEventListener("message", handleMessage);
     };
-  }, [metaAppId, hasValidMetaIds]);
+  }, [metaAppId, hasValidMetaIds, canUseMetaSdk]);
 
   async function handleLaunchMetaSignup() {
     if (!hasValidMetaIds) {
-      onError("Please configure META_APP_ID and META_CONFIG_ID in environment settings.");
+      onError("Please configure NEXT_PUBLIC_META_APP_ID and NEXT_PUBLIC_META_CONFIG_ID in the frontend environment.");
       return;
     }
-    if (!window.FB) {
-      onError("Facebook SDK is not loaded. Please allow popups or use manual setup.");
+    if (!canUseMetaSdk || sdkStatus !== "ready" || !window.FB) {
+      onError("Facebook SDK is not ready. Use HTTPS (or localhost) and allow popups, or use Manual Tokens.");
       return;
     }
 
     sessionInfoRef.current = {};
     setBusy(true);
+
+    const extras: Record<string, unknown> = {
+      setup: {},
+      sessionInfoVersion: "3",
+    };
+    if (useCoexistence) {
+      extras.featureType = "whatsapp_business_app_onboarding";
+    }
 
     try {
       window.FB.login(
@@ -161,11 +189,7 @@ export function WhatsAppEmbeddedSignupModal({
           config_id: metaConfigId,
           response_type: "code",
           override_default_response_type: true,
-          extras: {
-            setup: {},
-            featureType: "whatsapp_business_app_onboarding",
-            sessionInfoVersion: "3",
-          },
+          extras,
         },
       );
     } catch (err) {
@@ -176,18 +200,37 @@ export function WhatsAppEmbeddedSignupModal({
 
   async function processAuthCode(code: string) {
     try {
+      const detectedCoexistence = sessionInfoRef.current.isCoexistence ?? useCoexistence;
       const res = await whatsappApi.completeEmbeddedSignup({
         code,
         wabaId: sessionInfoRef.current.waba_id,
         phoneNumberId: sessionInfoRef.current.phone_number_id,
         businessId: sessionInfoRef.current.business_id,
-        pin: twoStepPin.trim() || undefined,
+        pin: detectedCoexistence ? undefined : twoStepPin.trim() || undefined,
         label: numberLabel.trim() || undefined,
+        isCoexistence: detectedCoexistence,
+        signupEvent: sessionInfoRef.current.event,
       });
       onSuccess(res.message || "WhatsApp Business connected successfully!");
       onClose();
     } catch (err) {
       onError(err instanceof Error ? err.message : "Failed to complete signup with backend");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleCoexistenceSync(phoneNumberId: string) {
+    setBusy(true);
+    try {
+      const res = await whatsappApi.syncCoexistence(phoneNumberId);
+      if (res.ok) {
+        onSuccess("Coexistence contact & 180-day chat history sync requested from Meta. Chats will arrive shortly via webhook.");
+      } else {
+        onError(res.errors?.join("; ") || "Coexistence sync request was rejected by Meta (available within 24h of onboarding).");
+      }
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "Coexistence sync failed");
     } finally {
       setBusy(false);
     }
@@ -346,6 +389,11 @@ export function WhatsAppEmbeddedSignupModal({
                           Default
                         </span>
                       )}
+                      {acc.coexistence && (
+                        <span className="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.2 text-[10px] font-semibold text-emerald-700">
+                          Coexistence
+                        </span>
+                      )}
                       <span className="inline-flex items-center gap-1 text-[10.5px] text-[#71717a]">
                         <span className="size-1.5 rounded-full bg-emerald-600" />
                         {acc.qualityRating || "GREEN"}
@@ -358,6 +406,17 @@ export function WhatsAppEmbeddedSignupModal({
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
+                    {acc.coexistence && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void handleCoexistenceSync(acc.accountId)}
+                        title="Sync mobile app contacts & 180-day chat history (within 24h of onboarding)"
+                        className="inline-flex h-7 items-center rounded-md border border-emerald-200 bg-emerald-50 px-2 text-[11px] font-medium text-emerald-700 hover:bg-emerald-100"
+                      >
+                        Sync History
+                      </button>
+                    )}
                     {!acc.isPrimary && (
                       <button
                         type="button"
@@ -439,6 +498,24 @@ export function WhatsAppEmbeddedSignupModal({
                   </p>
                 </div>
 
+                <div className="flex items-start gap-2.5 rounded-md border border-[#eaeaea] bg-[#fafafa] p-3 text-[12px]">
+                  <input
+                    id="embeddedCoexistenceToggle"
+                    type="checkbox"
+                    checked={useCoexistence}
+                    onChange={(e) => setUseCoexistence(e.target.checked)}
+                    className="mt-0.5 size-4 rounded border-[#d4d4d8] accent-[#2563eb] cursor-pointer"
+                  />
+                  <label htmlFor="embeddedCoexistenceToggle" className="cursor-pointer space-y-0.5 select-none">
+                    <span className="block font-medium text-[#171717]">
+                      WhatsApp Business App Coexistence
+                    </span>
+                    <span className="block text-[11.5px] leading-relaxed text-[#71717a]">
+                      Keep using the WhatsApp Business mobile app on your phone alongside Vozon Cloud API and sync mobile replies &amp; chat history. Leave unchecked for standard Cloud API signup.
+                    </span>
+                  </label>
+                </div>
+
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <label className="block text-[12px] font-medium text-[#171717]">
@@ -454,15 +531,16 @@ export function WhatsAppEmbeddedSignupModal({
                   </div>
                   <div>
                     <label className="block text-[12px] font-medium text-[#171717]">
-                      2-Step PIN <span className="font-normal text-[#71717a]">(Optional)</span>
+                      2-Step PIN <span className="font-normal text-[#71717a]">({useCoexistence ? "Managed by Mobile App" : "Optional"})</span>
                     </label>
                     <input
                       type="password"
                       maxLength={6}
+                      disabled={useCoexistence}
                       value={twoStepPin}
                       onChange={(e) => setTwoStepPin(e.target.value.replace(/\D/g, ""))}
-                      placeholder="6-digit PIN"
-                      className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none"
+                      placeholder={useCoexistence ? "Not used in Coexistence" : "6-digit PIN"}
+                      className="mt-1 h-9 w-full rounded-md border border-[#eaeaea] bg-white px-3 font-mono text-[13px] text-[#171717] placeholder:text-[#71717a] focus:border-[#171717] focus:outline-none disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]"
                     />
                   </div>
                 </div>
