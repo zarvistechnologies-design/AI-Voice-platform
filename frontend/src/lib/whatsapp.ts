@@ -263,6 +263,7 @@ export type WhatsAppConnectionStatus = {
   webhook?: {
     subscribed: boolean;
     receiverReady: boolean;
+    callbackUrl?: string;
   };
 };
 
@@ -294,7 +295,7 @@ async function req<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const whatsappApi = {
   // Connection / Embedded Signup (Multi-Number Supported)
-  getStatus: () => req<WhatsAppConnectionStatus>("/api/integrations/whatsapp/status"),
+  getStatus: (refresh = false) => req<WhatsAppConnectionStatus>(`/api/integrations/whatsapp/status${refresh ? "?refresh=true" : ""}`),
   completeEmbeddedSignup: (payload: {
     code?: string;
     wabaId?: string;
