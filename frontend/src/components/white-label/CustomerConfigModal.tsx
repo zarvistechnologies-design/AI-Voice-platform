@@ -24,7 +24,11 @@ type Props = {
   customerDetails: PartnerCustomerBilling | null;
   loadingDetails: boolean;
   onClose: () => void;
-  onSuccess: (message: string, extra?: { activationUrl?: string }) => Promise<void>;
+  onNavigateTab?: (tab: "brand" | "domains" | "plans") => void;
+  onSuccess: (
+    message: string,
+    extra?: { activationUrl?: string; emailDeliveryStatus?: string; existingAccount?: boolean; organizationName?: string },
+  ) => Promise<void>;
   onError: (message: string) => void;
 };
 
@@ -206,6 +210,7 @@ function CustomerConfigForm({
   submitting,
   setSubmitting,
   onClose,
+  onNavigateTab,
   onSuccess,
   onError,
 }: Omit<Props, "open" | "loadingDetails"> & {
@@ -255,6 +260,26 @@ function CustomerConfigForm({
   }
 
   const effectiveBillingMode = billingMode === "inherit" ? fallbackMode : billingMode;
+  const activeBrandDomain = useMemo(
+    () => overview.domains.some((item) => item.brandId === brandId && item.kind === "app" && item.status === "active"),
+    [overview.domains, brandId],
+  );
+  const addPrerequisites = mode === "add"
+    ? [
+        ...(overview.account.status !== "active"
+          ? [{ label: `Partner account must be active (currently ${overview.account.status}).`, tab: undefined }]
+          : []),
+        ...(!publishedBrands.length
+          ? [{ label: "Publish a brand in the Branding tab before adding clients.", tab: "brand" as const }]
+          : []),
+        ...(publishedBrands.length && !activeBrandDomain
+          ? [{ label: "Verify and activate an app domain for the selected brand in Domains.", tab: "domains" as const }]
+          : []),
+        ...(!publishedPlans.length
+          ? [{ label: "Create and publish at least one pricing plan in Pricing plans.", tab: "plans" as const }]
+          : []),
+      ]
+    : [];
   const currentWalletCurrency = String(
     customerDetails?.wallet.currency ?? customerRow?.wallet?.currency ?? customerRow?.subscription?.priceSnapshot?.currency ?? config.currency,
   ).toUpperCase();
@@ -264,6 +289,14 @@ function CustomerConfigForm({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setLocalError("");
+    if (addPrerequisites.length > 0) {
+      setLocalError(addPrerequisites[0].label);
+      return;
+    }
+    if (effectiveBillingMode === "retail" && overview.account.retailBilling?.transferMode === "full_amount" && nextPlanCurrency !== "INR") {
+      setLocalError("Razorpay Route full-amount settlement supports INR customer plans only. Choose an INR plan or switch billing mode.");
+      return;
+    }
     if (currencyWillChange && !migrateCurrencyConfirmed) {
       setLocalError(`Confirm converting the customer's wallet currency from ${currentWalletCurrency} to ${nextPlanCurrency} before saving.`);
       return;
@@ -328,7 +361,12 @@ function CustomerConfigForm({
         }
         await onSuccess(
           `Client "${organizationName.trim()}" added (${effectiveBillingMode} billing). Changes are live for their workspace immediately.`,
-          { activationUrl: result.activationUrl },
+          {
+            activationUrl: result.activationUrl,
+            emailDeliveryStatus: result.emailDeliveryStatus,
+            existingAccount: result.existingAccount,
+            organizationName: organizationName.trim(),
+          },
         );
       } else if (customerRow) {
         const orgId = documentId(customerRow);
@@ -374,6 +412,31 @@ function CustomerConfigForm({
 
   return (
     <form className="grid gap-5 p-6" onSubmit={(event) => void handleSubmit(event)}>
+      {addPrerequisites.length > 0 ? (
+        <div className="grid gap-2 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950" role="alert">
+          <strong className="text-sm">Complete setup before provisioning this client</strong>
+          <ul className="m-0 grid list-disc gap-1.5 pl-4">
+            {addPrerequisites.map((item) => (
+              <li className="flex flex-wrap items-center justify-between gap-2" key={item.label}>
+                <span>{item.label}</span>
+                {item.tab && onNavigateTab ? (
+                  <button
+                    className="rounded-md border border-amber-400 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-950 hover:bg-amber-100"
+                    onClick={() => {
+                      onClose();
+                      onNavigateTab(item.tab!);
+                    }}
+                    type="button"
+                  >
+                    Open {item.tab === "brand" ? "Branding" : item.tab === "domains" ? "Domains" : "Pricing plans"}
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       {localError ? (
         <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-medium text-rose-800" role="alert">
           {localError}
@@ -673,7 +736,7 @@ function CustomerConfigForm({
         <button className={secondaryBtn} disabled={submitting} onClick={onClose} type="button">
           Cancel
         </button>
-        <button className={primaryBtn} disabled={submitting || (mode === "add" && (!publishedPlans.length || !publishedBrands.length))} type="submit">
+        <button className={primaryBtn} disabled={submitting} type="submit">
           {submitting ? "Saving…" : mode === "add" ? "Add client & sync workspace" : "Save changes & sync client"}
         </button>
       </div>
@@ -690,6 +753,7 @@ export function CustomerConfigModal({
   customerDetails,
   loadingDetails,
   onClose,
+  onNavigateTab,
   onSuccess,
   onError,
 }: Props) {
@@ -747,6 +811,7 @@ export function CustomerConfigModal({
             mode={mode}
             onClose={onClose}
             onError={onError}
+            onNavigateTab={onNavigateTab}
             onSuccess={onSuccess}
             overview={overview}
             setSubmitting={setSubmitting}

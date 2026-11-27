@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { LoginForm } from "@/components/auth/LoginForm";
+import { useBrand } from "@/components/branding/BrandProvider";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import "@/components/auth/LoginPageTheme.css";
 
@@ -20,6 +21,10 @@ const benefits = [
 ];
 
 export default function LoginPage() {
+  const brand = useBrand();
+  const isWhiteLabel = brand.source === "white_label";
+  const websiteHref = isWhiteLabel ? brand.support.websiteUrl : "";
+
   return (
     <main className="login-page-theme min-h-[100svh] overflow-x-hidden bg-[#f8f9fb] text-[#111113] lg:h-[100svh] lg:overflow-y-hidden supports-[height:100dvh]:lg:h-[100dvh]">
       <div className="mx-auto grid min-h-[100svh] w-full min-w-0 max-w-[1440px] gap-4 p-3 sm:p-5 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,1.08fr)_minmax(420px,0.92fr)] lg:gap-5 lg:p-6">
@@ -86,9 +91,15 @@ export default function LoginPage() {
         <section className="relative flex min-h-[calc(100svh-1.5rem)] min-w-0 items-center justify-center overflow-y-auto rounded-2xl border border-slate-200 bg-white px-6 py-14 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:px-10 lg:min-h-0 lg:p-12">
           <div className="absolute inset-x-6 top-6 z-10 flex items-center justify-between sm:inset-x-8">
             <div className="landing-header-logo lg:hidden"><BrandLogo showWebsiteLogo /></div>
-            <Link className="ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:bg-slate-100 hover:text-slate-900" href="/">
-              <span aria-hidden="true">&larr;</span> Back home
-            </Link>
+            {!isWhiteLabel ? (
+              <Link className="ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:bg-slate-100 hover:text-slate-900" href="/">
+                <span aria-hidden="true">&larr;</span> Back home
+              </Link>
+            ) : websiteHref ? (
+              <a className="ml-auto inline-flex min-h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3.5 text-xs font-semibold text-slate-700 shadow-2xs transition hover:bg-slate-100 hover:text-slate-900" href={websiteHref} rel="noopener noreferrer" target="_blank">
+                Visit website <span aria-hidden="true">&rarr;</span>
+              </a>
+            ) : null}
           </div>
 
           <div className="mx-auto my-auto w-full min-w-0 max-w-[420px]">

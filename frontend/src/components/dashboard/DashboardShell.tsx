@@ -7374,7 +7374,9 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
                                       {tool.name}
                                     </strong>
                                     <span className="app-label rounded-full border border-[#b8c8c3] bg-white px-2 py-0.5 text-[#008c96]">
-                                      {isVozonManaged ? "Managed by Vozon" : "Managed by DigitalBot"}
+                                      {isVozonManaged
+                                        ? (session?.organization?.whiteLabelAccountId ? "Built-in integration" : "Managed by Vozon")
+                                        : "Managed by DigitalBot"}
                                     </span>
                                   </div>
                                   <span className="app-caption block">

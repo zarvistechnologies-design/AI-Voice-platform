@@ -18,6 +18,8 @@ export type AuthSession = {
     whiteLabelAccountId?: string;
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
+    whiteLabelFeatures?: Record<string, boolean>;
+    whiteLabelPlanName?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
     businessDetailsRequired?: boolean;
     brand?: BrandConfig;
@@ -50,6 +52,8 @@ type AuthResponse = {
     whiteLabelAccountId?: string;
     whiteLabelBrandId?: string;
     whiteLabelOwnerAccountId?: string;
+    whiteLabelFeatures?: Record<string, boolean>;
+    whiteLabelPlanName?: string;
     lifecycleStatus?: "active" | "suspended" | "archived";
     businessDetailsRequired?: boolean;
     brand?: BrandConfig;
@@ -166,6 +170,12 @@ function saveSession(session: AuthSession) {
   // session. Avoid an immediate duplicate /auth/me request on navigation.
   validatedSessionKey = validationKey(session);
   validatedSessionAt = Date.now();
+}
+
+export function completeAuthSession(authResponse: AuthResponse) {
+  const session = createSession(authResponse);
+  saveSession(session);
+  return session;
 }
 
 export async function loginWithPassword(email: string, password: string, twoFactorCode = "") {
@@ -315,6 +325,8 @@ async function validateSessionWithServer(session: AuthSession) {
     && session.organization?.whiteLabelAccountId === data.organization?.whiteLabelAccountId
     && session.organization?.whiteLabelBrandId === data.organization?.whiteLabelBrandId
     && session.organization?.whiteLabelOwnerAccountId === data.organization?.whiteLabelOwnerAccountId
+    && JSON.stringify(session.organization?.whiteLabelFeatures ?? null) === JSON.stringify(data.organization?.whiteLabelFeatures ?? null)
+    && session.organization?.whiteLabelPlanName === data.organization?.whiteLabelPlanName
     && session.organization?.lifecycleStatus === data.organization?.lifecycleStatus
     && session.organization?.businessDetailsRequired === data.organization?.businessDetailsRequired
     && session.whiteLabel?.accountId === data.whiteLabel?.accountId

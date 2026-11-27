@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { getSession } from "@/lib/auth";
 import { publicVoiceMessage, voiceApi, type CallRecord, type CostPricingDetail } from "@/lib/voice";
 
 function agentName(call: CallRecord) {
@@ -255,16 +256,19 @@ export function CallDetailDrawer({ call, inrPerUsd = 96.5, onClose }: { call: Ca
       ["STT", configuredStack(call.sttProvider, call.sttModel), sttUsage, cost?.pricing?.stt, cost?.stt ?? 0],
       ["TTS", configuredTtsStack(call), ttsUsage, cost?.pricing?.tts, cost?.tts ?? 0],
     ]) as readonly (readonly [string, string, string, CostPricingDetail | undefined, number])[];
-  const costItems = [
-    ...providerCostItems,
-    [
-      "Vozon platform",
-      "Vozon",
-      `${call.durationSeconds} sec`,
-      cost?.pricing?.platformFee,
-      cost?.platformFee ?? 0,
-    ] as const,
-  ];
+  const isWhiteLabelCustomer = Boolean(getSession()?.organization?.whiteLabelAccountId);
+  const costItems = isWhiteLabelCustomer
+    ? providerCostItems
+    : [
+        ...providerCostItems,
+        [
+          "Vozon platform",
+          "Vozon",
+          `${call.durationSeconds} sec`,
+          cost?.pricing?.platformFee,
+          cost?.platformFee ?? 0,
+        ] as const,
+      ];
 
   useEffect(() => {
     let active = true;

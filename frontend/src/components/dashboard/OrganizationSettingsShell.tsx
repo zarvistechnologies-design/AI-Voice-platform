@@ -276,6 +276,18 @@ export function OrganizationSettingsShell() {
     () => organizations.find((organization) => organization._id === activeId),
     [activeId, organizations],
   );
+  const isWhiteLabel = Boolean(
+    session?.organization?.whiteLabelAccountId || activeOrganization?.whiteLabelAccountId,
+  );
+  const teamAccessEnabled =
+    !isWhiteLabel ||
+    (session?.organization?.whiteLabelFeatures?.teamAccess ??
+      activeOrganization?.whiteLabelFeatures?.teamAccess) !== false;
+  const activePlanLabel = isWhiteLabel
+    ? activeOrganization?.whiteLabelPlanName ||
+      session?.organization?.whiteLabelPlanName ||
+      "Managed workspace"
+    : `${activeOrganization?.plan ?? "Free"} plan`;
   const canManage =
     activeOrganization?.role === "owner" ||
     activeOrganization?.role === "admin";
@@ -474,9 +486,11 @@ export function OrganizationSettingsShell() {
       : notice?.tone === "success"
         ? "border-emerald-200 bg-emerald-50 text-emerald-900"
         : "border-[#eaeaea] bg-white text-[#171717]";
-  const visibleSections = workspaceSections.filter(
-    (section) => !section.managerOnly || canManage,
-  );
+  const visibleSections = workspaceSections.filter((section) => {
+    if (section.managerOnly && !canManage) return false;
+    if (!teamAccessEnabled && (section.id === "team" || section.id === "invitations")) return false;
+    return true;
+  });
 
   return (
     <main
@@ -531,7 +545,7 @@ export function OrganizationSettingsShell() {
                       </h2>
                       {activeOrganization ? (
                         <span className="rounded-full bg-[#eff6ff] px-2.5 py-0.5 text-[11px] font-medium capitalize text-[#2563eb] ring-1 ring-[#dbeafe]">
-                          {activeOrganization.plan} plan
+                          {activePlanLabel}
                         </span>
                       ) : null}
                     </div>
@@ -696,45 +710,47 @@ export function OrganizationSettingsShell() {
                 </div>
               </article>
 
-              <form
-                className="grid gap-3 rounded-xl border border-[#eaeaea] bg-white p-4 shadow-xs"
-                onSubmit={createWorkspace}
-              >
-                <span className="grid size-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#bfdbfe]">
-                  <WorkspaceIcon className="size-4.5" name="plus" />
-                </span>
-                <div>
-                  <h2 className="m-0 text-sm font-bold text-slate-950">
-                    Create workspace
-                  </h2>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">
-                    Start a separate organization for another team or client.
-                  </p>
-                </div>
-                <label className="sr-only" htmlFor="new-workspace-name">
-                  Workspace name
-                </label>
-                <input
-                  autoComplete="organization"
-                  className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
-                  id="new-workspace-name"
-                  minLength={2}
-                  placeholder="Workspace name"
-                  required
-                  value={workspaceName}
-                  onChange={(event) => setWorkspaceName(event.target.value)}
-                />
-                <button
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={busy || workspaceName.trim().length < 2}
-                  type="submit"
+              {!isWhiteLabel ? (
+                <form
+                  className="grid gap-3 rounded-xl border border-[#eaeaea] bg-white p-4 shadow-xs"
+                  onSubmit={createWorkspace}
                 >
-                  <WorkspaceIcon className="size-4" name="plus" />
-                  {activeAction === "create-workspace"
-                    ? "Creating..."
-                    : "Create workspace"}
-                </button>
-              </form>
+                  <span className="grid size-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#bfdbfe]">
+                    <WorkspaceIcon className="size-4.5" name="plus" />
+                  </span>
+                  <div>
+                    <h2 className="m-0 text-sm font-bold text-slate-950">
+                      Create workspace
+                    </h2>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      Start a separate organization for another team or client.
+                    </p>
+                  </div>
+                  <label className="sr-only" htmlFor="new-workspace-name">
+                    Workspace name
+                  </label>
+                  <input
+                    autoComplete="organization"
+                    className="min-h-11 rounded-xl border border-slate-200 px-3 text-sm text-slate-950 outline-none transition focus:border-black focus:ring-3 focus:ring-black/10"
+                    id="new-workspace-name"
+                    minLength={2}
+                    placeholder="Workspace name"
+                    required
+                    value={workspaceName}
+                    onChange={(event) => setWorkspaceName(event.target.value)}
+                  />
+                  <button
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,99,235,0.2)] transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={busy || workspaceName.trim().length < 2}
+                    type="submit"
+                  >
+                    <WorkspaceIcon className="size-4" name="plus" />
+                    {activeAction === "create-workspace"
+                      ? "Creating..."
+                      : "Create workspace"}
+                  </button>
+                </form>
+              ) : null}
 
               <nav
                 aria-label="Workspace settings sections"
@@ -839,7 +855,7 @@ export function OrganizationSettingsShell() {
                           {activeOrganization?.slug ?? "Not available"}
                         </p>
                         <p className="mt-1 text-xs capitalize text-slate-500">
-                          {activeOrganization?.plan ?? "Free"} plan
+                          {activePlanLabel}
                         </p>
                       </div>
                     </div>
@@ -905,6 +921,8 @@ export function OrganizationSettingsShell() {
                 )}
               </article>
 
+              {teamAccessEnabled ? (
+                <>
               <article
                 className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="team"
@@ -1193,6 +1211,8 @@ export function OrganizationSettingsShell() {
                   </div>
                 )}
               </article>
+                </>
+              ) : null}
 
               {canManage ? (
                 <article

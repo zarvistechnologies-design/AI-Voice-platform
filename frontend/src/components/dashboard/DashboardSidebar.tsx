@@ -424,25 +424,25 @@ export function DashboardSidebar({
     optimisticPathname.startsWith("/dashboard/settings");
   const [settingsExpanded, setSettingsExpanded] = useState(isSettingsRoute);
 
-  useEffect(() => {
-    if (optimisticPathname.startsWith("/dashboard/whatsapp")) {
-      setWhatsAppExpanded(true);
-    }
-    if (
-      optimisticPathname === "/dashboard/profile" ||
-      optimisticPathname.startsWith("/dashboard/settings")
-    ) {
-      setSettingsExpanded(true);
-    }
-  }, [optimisticPathname]);
+  const wlFeatures = session?.organization?.whiteLabelFeatures;
 
   const effectiveSidebarGroups = useMemo(() => {
+    const featureAllowed = (href: string) => {
+      if (!isWhiteLabelCustomer || !wlFeatures) return true;
+      if (href === "/dashboard/analytics") return wlFeatures.advancedAnalytics !== false;
+      if (href === "/dashboard/campaign") return wlFeatures.campaigns !== false;
+      if (href === "/dashboard/knowledge") return wlFeatures.knowledgeBase !== false;
+      if (href === "/dashboard/integrations") return wlFeatures.integrations !== false;
+      if (href === "/dashboard/developers") return wlFeatures.developerApi !== false;
+      return true;
+    };
     return [
       ...sidebarGroups.map((group) => ({
         ...group,
         items: group.items.filter((item) =>
           !(hideCustomerAutomationAndWhatsApp && item.href === "/dashboard/automations")
-          && !(isWhiteLabelCustomer && item.href === "/dashboard/assistant"),
+          && !(isWhiteLabelCustomer && item.href === "/dashboard/assistant")
+          && featureAllowed(item.href),
         ),
       })),
       ...(showPlatformAdministration || isWhiteLabelPartner
@@ -478,7 +478,14 @@ export function DashboardSidebar({
         ]
         : []),
     ];
-  }, [hideCustomerAutomationAndWhatsApp, showPlatformAdministration, isWhiteLabelPartner, isWhiteLabelCustomer]);
+  }, [hideCustomerAutomationAndWhatsApp, showPlatformAdministration, isWhiteLabelPartner, isWhiteLabelCustomer, wlFeatures]);
+
+  const visibleAccountMenuItems = useMemo(
+    () => accountMenuItems.filter(
+      (subItem) => !(isWhiteLabelCustomer && wlFeatures?.teamAccess === false && subItem.href.includes("#team")),
+    ),
+    [isWhiteLabelCustomer, wlFeatures],
+  );
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => {
@@ -539,6 +546,10 @@ export function DashboardSidebar({
     )
       return false;
     if (targetPathname !== pathname) {
+      if (targetPathname.startsWith("/dashboard/whatsapp")) setWhatsAppExpanded(true);
+      if (targetPathname === "/dashboard/profile" || targetPathname.startsWith("/dashboard/settings")) {
+        setSettingsExpanded(true);
+      }
       startTransition(() => setOptimisticPathname(targetPathname));
       announceDashboardNavigation(href, pathname);
     }
@@ -758,7 +769,7 @@ export function DashboardSidebar({
 
                           {settingsExpanded && (
                             <div className="mt-0.5 ml-3.5 pl-3 border-l border-[#eaeaea] space-y-0.5">
-                              {accountMenuItems.map((subItem) => {
+                              {visibleAccountMenuItems.map((subItem) => {
                                 const itemPath = subItem.href.split("#", 1)[0];
                                 const isSubActive = optimisticPathname === itemPath;
                                 return (
