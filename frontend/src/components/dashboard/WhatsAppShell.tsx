@@ -362,7 +362,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
 
   return (
     <main
-      className={`dashboard-home-theme whatsapp-workspace grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] dark:bg-[#09090b] text-[#171717] dark:text-zinc-100 ${
+      className={`dashboard-home-theme whatsapp-workspace grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] dark:bg-[#09090b] text-[#171717] dark:text-zinc-100 ${
         showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
       }`}
     >

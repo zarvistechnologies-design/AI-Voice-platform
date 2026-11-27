@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Room, RoomEvent, Track, setLogLevel } from "livekit-client";
 
-import { voiceApi } from "@/lib/voice";
+import { publicVoiceMessage, voiceApi } from "@/lib/voice";
 
 setLogLevel("silent");
 
@@ -41,6 +41,7 @@ function recordingTrackId(track: MediaStreamTrack) {
 
 export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEnabled, onClose, onRegionChange }: Props) {
   const roomRef = useRef<Room | null>(null);
+  const microphoneStreamRef = useRef<MediaStream | null>(null);
   const audioElementsRef = useRef<HTMLMediaElement[]>([]);
   const dispatchTimerRef = useRef<number | null>(null);
   const webCallIdRef = useRef("");
@@ -61,6 +62,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
   const [busy, setBusy] = useState(false);
   const [remoteCount, setRemoteCount] = useState(0);
   const [audioCount, setAudioCount] = useState(0);
+  const [audioBlocked, setAudioBlocked] = useState(false);
 
   const stopDispatchPolling = useCallback(() => {
     if (dispatchTimerRef.current) {
@@ -229,13 +231,17 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
   const disconnect = useCallback(() => {
     stopDispatchPolling();
     const wasRecording = Boolean(mediaRecorderRef.current);
-    roomRef.current?.disconnect();
+    const room = roomRef.current;
     roomRef.current = null;
+    room?.disconnect();
+    microphoneStreamRef.current?.getTracks().forEach((track) => track.stop());
+    microphoneStreamRef.current = null;
     audioElementsRef.current.forEach((element) => element.remove());
     audioElementsRef.current = [];
     setActive(false);
     setRemoteCount(0);
     setAudioCount(0);
+    setAudioBlocked(false);
     setStatus(wasRecording ? "Call ended. Saving recording..." : "Call ended");
     void finishBrowserRecording();
   }, [finishBrowserRecording, stopDispatchPolling]);
@@ -286,6 +292,17 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
     const refreshParticipants = () => setRemoteCount(room.remoteParticipants.size);
     roomRef.current = room;
 
+    // Capture while the tap is still active. Mobile browsers may reject a
+    // microphone request made after the token fetch and room connection.
+    const microphonePromise = window.isSecureContext && navigator.mediaDevices?.getUserMedia
+      ? navigator.mediaDevices.getUserMedia({ audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        } })
+      : Promise.reject(new Error("Microphone access requires HTTPS. Open the site over HTTPS on your phone."));
+    const audioUnlockPromise = room.startAudio().catch(() => undefined);
+
     room.on(RoomEvent.TrackSubscribed, (track) => {
       if (track.kind !== Track.Kind.Audio) return;
       addTrackToBrowserRecording(track.mediaStreamTrack);
@@ -294,7 +311,7 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       document.body.appendChild(element);
       audioElementsRef.current.push(element);
       void element.play().catch(() => {
-        setStatus("Browser audio playback was blocked. End the call and start it again, then allow sound.");
+        setAudioBlocked(true);
       });
       subscribedAudioTracks += 1;
       setAudioCount(subscribedAudioTracks);
@@ -319,6 +336,9 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
       setStatus("AI agent left the call");
     });
     room.on(RoomEvent.Disconnected, () => {
+      if (roomRef.current !== room) return;
+      microphoneStreamRef.current?.getTracks().forEach((track) => track.stop());
+      microphoneStreamRef.current = null;
       setActive(false);
       setRemoteCount(0);
       setAudioCount(0);
@@ -327,18 +347,26 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
     });
 
     try {
-      // Browser audio permission must be unlocked during the button click, before network awaits.
-      await room.startAudio();
+      const microphoneStream = await microphonePromise;
+      if (roomRef.current !== room) {
+        microphoneStream.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      microphoneStreamRef.current = microphoneStream;
+      await audioUnlockPromise;
       const credentials = await voiceApi.webCallToken(agentId);
+      if (roomRef.current !== room) return;
       webCallIdRef.current = credentials.callId;
       setStatus("Connecting the AI agent for this call...");
       startDispatchPolling(credentials.roomName, credentials.dispatchId);
       await room.connect(credentials.serverUrl, credentials.participantToken);
+      if (roomRef.current !== room) {
+        room.disconnect();
+        return;
+      }
       if (room.serverInfo?.region) onRegionChange(room.serverInfo.region);
-      await room.localParticipant.setMicrophoneEnabled(true, {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
+      await room.localParticipant.publishTrack(microphoneStream.getAudioTracks()[0], {
+        source: Track.Source.Microphone,
       });
       await startBrowserRecording(room, credentials.callId);
       setActive(true);
@@ -349,9 +377,20 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
           setStatus("The AI agent is still connecting. Voice and knowledge will be available when it joins.");
         }
       }, 8000);
-    } catch {
+    } catch (error) {
       disconnect();
-      setStatus("Could not start the web call.");
+      const cause = error instanceof Error ? error : null;
+      setStatus(
+        cause?.name === "NotAllowedError" || cause?.name === "PermissionDeniedError"
+          ? "Microphone permission was denied. Allow microphone access in your phone browser and try again."
+          : cause?.name === "NotFoundError"
+            ? "No microphone was found on this device."
+            : cause?.name === "NotReadableError"
+              ? "The microphone is in use by another app. Close it and try again."
+              : cause?.message?.startsWith("Microphone access requires HTTPS")
+                ? cause.message
+                : publicVoiceMessage(cause, "Could not start the web call. Check your connection and try again."),
+      );
     } finally {
       setBusy(false);
     }
@@ -437,6 +476,19 @@ export function TestCallPanel({ agentId, agentName, knowledgeCount, recordingEna
               <p className="m-0 max-w-full break-words text-sm font-semibold leading-5 text-zinc-700" id="test-call-status" role="status" aria-live="polite" aria-atomic="true">
                 {status}
               </p>
+              {active && audioBlocked ? (
+                <button
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700"
+                  type="button"
+                  onClick={() => {
+                    void roomRef.current?.startAudio().then(() => setAudioBlocked(false)).catch(() => {
+                      setStatus("Sound is blocked. Allow audio playback in your browser and tap Enable sound again.");
+                    });
+                  }}
+                >
+                  Enable sound
+                </button>
+              ) : null}
               <div className="test-call-diagnostics flex flex-wrap justify-center gap-2 text-[10px] font-semibold tracking-normal text-zinc-600" role="group" aria-label="Call diagnostics">
                 <span className="rounded-full border border-zinc-200 bg-white px-3 py-1">{remoteCount} participant{remoteCount === 1 ? "" : "s"}</span>
                 <span className="rounded-full border border-zinc-200 bg-white px-3 py-1">{audioCount} audio track{audioCount === 1 ? "" : "s"}</span>

@@ -243,7 +243,7 @@ export function AgentsListShell() {
   const routedCount = agents.filter((a) => Boolean(a.phone)).length;
 
   return (
-    <main className={`agents-home-palette dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-[#fafafa] dark:bg-[#09090b] text-[#171717] dark:text-white ${
+    <main className={`agents-home-palette dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] dark:bg-[#09090b] text-[#171717] dark:text-white ${
       showUserSidebar ? "lg:grid-cols-[248px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"
     }`}>
       <DashboardSidebar

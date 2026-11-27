@@ -6049,7 +6049,7 @@ export function DashboardShell({ initialAgentId }: DashboardShellProps) {
 
   return (
     <main
-      className={`voice-agent-theme dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#14231f] ${showUserSidebar
+      className={`voice-agent-theme dashboard-home-theme grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] text-[#171717] ${showUserSidebar
         ? "lg:grid-cols-[248px_minmax(0,1fr)]"
         : "lg:grid-cols-[64px_minmax(0,1fr)]"
         }`}

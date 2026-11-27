@@ -73,8 +73,8 @@ export function ClaudeConsentPage() {
                 {scopes.includes("vozon:read") ? <>
                   <li className="flex gap-3 text-sm leading-6 text-[#34534a]"><span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#eaf7f1] text-[#0e806c]" aria-hidden="true">✓</span>Inspect voice agents, prompts, greetings, and active phone routing.</li>
                   <li className="flex gap-3 text-sm leading-6 text-[#34534a]"><span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#eaf7f1] text-[#0e806c]" aria-hidden="true">✓</span>Retrieve call summaries, verbatim transcripts, and diagnostics.</li>
-                  <li className="flex gap-3 text-sm leading-6 text-[#34534a]"><span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#eaf7f1] text-[#0e806c]" aria-hidden="true">✓</span>Create and configure voice agents directly through Claude conversations.</li>
                 </> : <li className="text-sm text-[#a1533c]">This request contains permissions Vozon does not recognize.</li>}
+                {scopes.includes("vozon:write") ? <li className="flex gap-3 text-sm leading-6 text-[#34534a]"><span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#eaf0ff] text-[#2563eb]" aria-hidden="true">✓</span>Create and update voice agents and their prompts; create, edit, and publish automation workflows. Published workflows may call or message contacts when triggered.</li> : null}
               </ul>
               <p className="mb-0 mt-5 rounded-xl bg-[#f7f9f8] px-4 py-3 text-xs leading-5 text-[#71817d]">You can revoke or disconnect Claude at any time under Vozon Integrations. Access is restricted to this workspace.</p>
             </> : null}

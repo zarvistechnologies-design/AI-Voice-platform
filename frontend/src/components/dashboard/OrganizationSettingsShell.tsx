@@ -69,11 +69,11 @@ const workspaceSections: Array<{
   icon: WorkspaceIconName;
   managerOnly?: boolean;
 }> = [
-  { id: "workspace", label: "Workspace settings", icon: "settings" },
-  { id: "team", label: "Team access", icon: "users" },
-  { id: "invitations", label: "Pending invitations", icon: "invite" },
-  { id: "audit", label: "Audit log", icon: "audit", managerOnly: true },
-];
+    { id: "workspace", label: "Workspace settings", icon: "settings" },
+    { id: "team", label: "Team access", icon: "users" },
+    { id: "invitations", label: "Pending invitations", icon: "invite" },
+    { id: "audit", label: "Audit log", icon: "audit", managerOnly: true },
+  ];
 
 function WorkspaceIcon({
   name,
@@ -226,7 +226,7 @@ function SectionHeading({
   status?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e7eef3] px-5 py-5 sm:px-6">
+    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#eaeaea] px-5 py-5 sm:px-6">
       <div className="flex min-w-0 items-start gap-3.5">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#dbeafe]">
           <WorkspaceIcon name={icon} />
@@ -472,19 +472,18 @@ export function OrganizationSettingsShell() {
     notice?.tone === "error"
       ? "border-rose-200 bg-rose-50 text-rose-900"
       : notice?.tone === "success"
-        ? "border border-[#eaeaea] bg-[#fafafa] text-[#171717]"
-        : "border-[#b8c8c3] bg-[#fafafa] text-[#343b78]";
+        ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+        : "border-[#eaeaea] bg-white text-[#171717]";
   const visibleSections = workspaceSections.filter(
     (section) => !section.managerOnly || canManage,
   );
 
   return (
     <main
-      className={`dashboard-home-theme workspace-settings-page grid min-h-screen w-full min-w-0 overflow-x-hidden bg-white text-[#111827] ${
-        showUserSidebar
+      className={`dashboard-home-theme workspace-settings-page grid min-h-screen w-full min-w-0 overflow-x-clip bg-[#f7f9f8] text-[#171717] xl:h-dvh xl:overflow-hidden ${showUserSidebar
           ? "lg:grid-cols-[248px_minmax(0,1fr)]"
           : "lg:grid-cols-[64px_minmax(0,1fr)]"
-      }`}
+        }`}
     >
       <DashboardSidebar
         activeLabel="Settings"
@@ -498,7 +497,7 @@ export function OrganizationSettingsShell() {
         setShowUserSidebar={setShowUserSidebar}
       />
 
-      <section className="min-w-0">
+      <section className="min-w-0 xl:min-h-0 xl:overflow-y-auto xl:overscroll-contain">
         <DashboardPageHeader
           eyebrow="Workspace administration"
           title="Team & workspace"
@@ -514,7 +513,7 @@ export function OrganizationSettingsShell() {
           }
         />
 
-        <div className="grid w-full gap-5 px-5 py-5 sm:px-6 lg:px-7">
+        <div className="grid w-full gap-4 px-4 py-4 sm:px-5 lg:px-6">
           <section className="rounded-xl border border-[#eaeaea] bg-white p-5 sm:p-6">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_230px] lg:items-center">
               <div className="min-w-0">
@@ -627,9 +626,9 @@ export function OrganizationSettingsShell() {
           ) : null}
 
           <section className="grid min-w-0 gap-6 xl:grid-cols-[286px_minmax(0,1fr)]">
-            <aside className="grid min-w-0 content-start gap-4 xl:sticky xl:top-6 xl:self-start">
-              <article className="overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
-                <div className="border-b border-[#edf2f5] px-4 py-4">
+            <aside className="grid min-w-0 content-start gap-4 xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:self-start xl:overflow-y-auto">
+              <article className="overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs">
+                <div className="border-b border-[#eaeaea] px-4 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className="m-0 text-sm font-bold text-slate-950">
@@ -647,48 +646,48 @@ export function OrganizationSettingsShell() {
                 <div className="grid max-h-[326px] gap-1.5 overflow-y-auto p-2.5">
                   {loading && !organizations.length
                     ? [0, 1].map((item) => (
-                        <div
-                          className="h-[66px] animate-pulse rounded-xl bg-slate-100"
-                          key={item}
-                        />
-                      ))
+                      <div
+                        className="h-[66px] animate-pulse rounded-xl bg-slate-100"
+                        key={item}
+                      />
+                    ))
                     : organizations.map((organization) => {
-                        const active = organization._id === activeId;
-                        return (
-                          <button
-                            aria-current={active ? "true" : undefined}
-                            className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-[#b9e5df] bg-[#f7f9f8]" : "border-transparent hover:border-slate-200 hover:bg-slate-50"}`}
-                            disabled={busy}
-                            key={organization._id}
-                            onClick={() =>
-                              void switchWorkspace(organization._id)
-                            }
-                            type="button"
+                      const active = organization._id === activeId;
+                      return (
+                        <button
+                          aria-current={active ? "true" : undefined}
+                          className={`grid w-full grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border p-2.5 text-left transition ${active ? "border-[#b9e5df] bg-[#f7f9f8]" : "border-transparent hover:border-slate-200 hover:bg-slate-50"}`}
+                          disabled={busy}
+                          key={organization._id}
+                          onClick={() =>
+                            void switchWorkspace(organization._id)
+                          }
+                          type="button"
+                        >
+                          <span
+                            className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#171717]" : "bg-slate-100 text-slate-700"}`}
                           >
-                            <span
-                              className={`grid size-10 place-items-center rounded-xl text-xs font-black ${active ? "bg-[#ffffff] text-[#171717]" : "bg-slate-100 text-slate-700"}`}
-                            >
-                              {initials(organization.name)}
+                            {initials(organization.name)}
+                          </span>
+                          <span className="min-w-0">
+                            <strong className="block truncate text-xs font-bold text-slate-900">
+                              {organization.name}
+                            </strong>
+                            <span className="mt-0.5 block truncate text-[10px] font-medium capitalize text-slate-500">
+                              {organization.role} / {organization.plan}
                             </span>
-                            <span className="min-w-0">
-                              <strong className="block truncate text-xs font-bold text-slate-900">
-                                {organization.name}
-                              </strong>
-                              <span className="mt-0.5 block truncate text-[10px] font-medium capitalize text-slate-500">
-                                {organization.role} / {organization.plan}
-                              </span>
+                          </span>
+                          {active ? (
+                            <span className="grid size-6 place-items-center rounded-full bg-[#2563eb] text-white">
+                              <WorkspaceIcon
+                                className="size-3.5"
+                                name="check"
+                              />
                             </span>
-                            {active ? (
-                              <span className="grid size-6 place-items-center rounded-full bg-[#2563eb] text-white">
-                                <WorkspaceIcon
-                                  className="size-3.5"
-                                  name="check"
-                                />
-                              </span>
-                            ) : null}
-                          </button>
-                        );
-                      })}
+                          ) : null}
+                        </button>
+                      );
+                    })}
                   {!loading && !organizations.length ? (
                     <p className="p-4 text-center text-xs text-slate-500">
                       No workspaces available.
@@ -698,7 +697,7 @@ export function OrganizationSettingsShell() {
               </article>
 
               <form
-                className="grid gap-3 rounded-2xl border border-[#e2eaf0] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="grid gap-3 rounded-xl border border-[#eaeaea] bg-white p-4 shadow-xs"
                 onSubmit={createWorkspace}
               >
                 <span className="grid size-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] ring-1 ring-[#bfdbfe]">
@@ -739,7 +738,7 @@ export function OrganizationSettingsShell() {
 
               <nav
                 aria-label="Workspace settings sections"
-                className="flex gap-1 overflow-x-auto rounded-2xl border border-[#e2eaf0] bg-white p-2.5 shadow-[0_14px_34px_rgba(15,23,42,0.06)] xl:grid"
+                className="flex gap-1 overflow-x-auto rounded-xl border border-[#eaeaea] bg-white p-2.5 shadow-xs xl:grid"
               >
                 {visibleSections.map((item) => (
                   <a
@@ -756,7 +755,7 @@ export function OrganizationSettingsShell() {
 
             <div className="grid min-w-0 content-start gap-5">
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="workspace"
               >
                 <SectionHeading
@@ -832,7 +831,7 @@ export function OrganizationSettingsShell() {
                           Number of days workspace data is retained.
                         </span>
                       </label>
-                      <div className="rounded-xl border border-[#dfe7e4] bg-[#f7fbfa] p-4">
+                      <div className="rounded-xl border border-[#eaeaea] bg-[#f7fbfa] p-4">
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#2563eb]">
                           Workspace identity
                         </span>
@@ -844,7 +843,7 @@ export function OrganizationSettingsShell() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col justify-between gap-3 rounded-xl border border-[#e7eef2] bg-[#f8fafb] p-4 sm:flex-row sm:items-center">
+                    <div className="flex flex-col justify-between gap-3 rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4 sm:flex-row sm:items-center">
                       <p className="m-0 max-w-xl text-xs leading-5 text-slate-500">
                         These settings apply only to the active workspace and do
                         not affect your other organizations.
@@ -863,7 +862,7 @@ export function OrganizationSettingsShell() {
                 ) : (
                   <div className="grid gap-4 p-5 sm:p-6">
                     <div className="grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                      <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                           Workspace
                         </span>
@@ -871,7 +870,7 @@ export function OrganizationSettingsShell() {
                           {activeOrganization?.name ?? "Not available"}
                         </strong>
                       </div>
-                      <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                      <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                           Timezone
                         </span>
@@ -879,7 +878,7 @@ export function OrganizationSettingsShell() {
                           {activeOrganization?.settings?.timezone ?? "UTC"}
                         </strong>
                       </div>
-                      <div className="rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4">
+                      <div className="rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4">
                         <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                           Retention
                         </span>
@@ -907,7 +906,7 @@ export function OrganizationSettingsShell() {
               </article>
 
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="team"
               >
                 <SectionHeading
@@ -922,7 +921,7 @@ export function OrganizationSettingsShell() {
                 />
                 {canManage ? (
                   <form
-                    className="m-5 grid gap-4 rounded-2xl border border-[#dfe7e4] bg-[#f7fbfa] p-4 sm:m-6 sm:p-5 lg:grid-cols-[minmax(0,1fr)_170px_auto] lg:items-end"
+                    className="m-5 grid gap-4 rounded-2xl border border-[#eaeaea] bg-[#f7fbfa] p-4 sm:m-6 sm:p-5 lg:grid-cols-[minmax(0,1fr)_170px_auto] lg:items-end"
                     onSubmit={inviteMember}
                   >
                     <div className="lg:col-span-3">
@@ -1010,13 +1009,13 @@ export function OrganizationSettingsShell() {
                     ) : null}
                   </form>
                 ) : (
-                  <div className="mx-5 mt-5 rounded-xl border border-[#e8eef2] bg-[#f8fafb] p-4 text-xs leading-5 text-slate-500 sm:mx-6 sm:mt-6">
+                  <div className="mx-5 mt-5 rounded-xl border border-[#eaeaea] bg-[#f8fafb] p-4 text-xs leading-5 text-slate-500 sm:mx-6 sm:mt-6">
                     You can view everyone in this workspace. An owner or admin
                     can invite people and change roles.
                   </div>
                 )}
 
-                <div className="border-t border-[#edf2f5]">
+                <div className="border-t border-[#eaeaea]">
                   {loading && !members.length ? (
                     <div className="grid gap-3 p-5 sm:p-6">
                       {[0, 1].map((item) => (
@@ -1033,7 +1032,7 @@ export function OrganizationSettingsShell() {
                         `remove-member-${member._id}` as const;
                       return (
                         <div
-                          className="grid min-w-0 gap-4 border-b border-[#edf2f5] p-5 last:border-b-0 sm:grid-cols-[46px_minmax(0,1fr)_170px_auto] sm:items-center sm:px-6"
+                          className="grid min-w-0 gap-4 border-b border-[#eaeaea] p-5 last:border-b-0 sm:grid-cols-[46px_minmax(0,1fr)_170px_auto] sm:items-center sm:px-6"
                           key={member._id}
                         >
                           <span className="grid size-11 place-items-center rounded-xl bg-slate-100 text-sm font-black text-slate-700">
@@ -1141,7 +1140,7 @@ export function OrganizationSettingsShell() {
               </article>
 
               <article
-                className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                 id="invitations"
               >
                 <SectionHeading
@@ -1155,7 +1154,7 @@ export function OrganizationSettingsShell() {
                   title="Pending invitations"
                 />
                 {pendingInvitations.length ? (
-                  <div className="divide-y divide-[#edf2f5]">
+                  <div className="divide-y divide-[#eaeaea]">
                     {pendingInvitations.map((invitation) => (
                       <div
                         className="grid min-w-0 gap-3 p-5 sm:grid-cols-[42px_minmax(0,1fr)_auto] sm:items-center sm:px-6"
@@ -1197,7 +1196,7 @@ export function OrganizationSettingsShell() {
 
               {canManage ? (
                 <article
-                  className="scroll-mt-6 overflow-hidden rounded-2xl border border-[#e2eaf0] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.06)]"
+                  className="scroll-mt-6 overflow-hidden rounded-xl border border-[#eaeaea] bg-white shadow-xs"
                   id="audit"
                 >
                   <SectionHeading
@@ -1211,7 +1210,7 @@ export function OrganizationSettingsShell() {
                     title="Audit log"
                   />
                   {auditLogs.length ? (
-                    <div className="divide-y divide-[#edf2f5]">
+                    <div className="divide-y divide-[#eaeaea]">
                       {auditLogs.map((entry) => (
                         <div
                           className="grid min-w-0 gap-3 p-5 sm:grid-cols-[42px_minmax(0,1fr)_180px] sm:items-center sm:px-6"
