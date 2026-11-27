@@ -27,10 +27,13 @@ import {
 type Tab = "launch" | "brand" | "domains" | "plans" | "customers" | "billing" | "contract";
 type Notice = { tone: "success" | "error" | "info" | "critical"; message: string } | null;
 
-const fieldClass = "wl-field min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
+const fieldClass = "wl-field min-h-9 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
 const labelClass = "wl-label grid gap-2 text-xs font-semibold text-[#52645f]";
-const buttonClass = "wl-primary inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
-const secondaryButtonClass = "wl-secondary inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
+const buttonClass = "wl-primary inline-flex min-h-8 items-center justify-center rounded-lg bg-[#126f62] px-3.5 text-xs font-bold !text-white shadow-xs transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const secondaryButtonClass = "wl-secondary inline-flex min-h-8 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-3 text-xs font-semibold text-[#40564f] shadow-xs transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactPrimaryButtonClass = "wl-primary inline-flex min-h-8 items-center justify-center rounded-md bg-[#126f62] px-2.5 text-xs font-semibold !text-white shadow-xs transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactSecondaryButtonClass = "wl-secondary inline-flex min-h-8 items-center justify-center rounded-md border border-[#d8e2df] bg-white px-2.5 text-xs font-semibold text-[#40564f] shadow-xs transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactDangerButtonClass = "inline-flex min-h-8 items-center justify-center rounded-md border border-rose-200 bg-white px-2.5 text-xs font-semibold text-rose-700 shadow-xs transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -58,128 +61,200 @@ function SectionTitle({ title, description, action }: { title: string; descripti
   return <div className="wl-section-heading flex flex-col gap-3 border-b border-[#e7edeb] p-5 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-lg font-bold text-[#1d342e]">{title}</h2><p className="mt-1 text-sm leading-6 text-[#71817d]">{description}</p></div>{action}</div>;
 }
 
-function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomerBilling; onClose: () => void }) {
-  const currency = billing.wallet.currency;
+function CustomerBillingModal({
+  open,
+  loading,
+  customerName,
+  billing,
+  onClose,
+  onEdit,
+}: {
+  open: boolean;
+  loading: boolean;
+  customerName: string;
+  billing: PartnerCustomerBilling | null;
+  onClose: () => void;
+  onEdit?: () => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open) {
+      if (!dialog.open) dialog.showModal();
+    } else if (dialog.open) {
+      dialog.close();
+    }
+  }, [open]);
+
+  const currency = billing?.wallet.currency || "USD";
   const credits = (value: number) => money(value * 100, currency);
-  const includedMinutes = billing.subscription.allowances?.includedMinutes ?? 0;
-  const includedCredits = billing.subscription.allowances?.includedCredits ?? 0;
-  const modeLabel = billing.subscription.effectiveBillingMode === "retail"
+  const includedMinutes = billing?.subscription.allowances?.includedMinutes ?? 0;
+  const includedCredits = billing?.subscription.allowances?.includedCredits ?? 0;
+  const modeLabel = billing?.subscription.effectiveBillingMode === "retail"
     ? "Retail checkout"
-    : billing.subscription.effectiveBillingMode === "recharge"
+    : billing?.subscription.effectiveBillingMode === "recharge"
       ? "Partner Razorpay recharge"
       : "Manual / offline credits";
-  return <Card>
-    <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")} · ${modeLabel}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
-    {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="mx-5 mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
-    <div className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4">
-      {[
-        ["Available wallet", credits(billing.wallet.balanceCredits), `Plan allowance ${credits(includedCredits)}`],
-        ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`, `${includedMinutes.toLocaleString()} min / cycle`],
-        ["Calls & usage this month", `${billing.usage.calls} calls`, `${billing.usage.minutes.toFixed(2)} min used`],
-        ["Call deductions (month)", credits(billing.usage.chargedCredits), `Billed in ${currency}`],
-      ].map(([label, value, hint]) => (
-        <div className="rounded-xl border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}>
-          <p className="text-xs font-medium text-[#627870]">{label}</p>
-          <strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong>
-          <span className="mt-0.5 block text-[11px] text-[#71817d]">{hint}</span>
+  const titleText = billing
+    ? `${billing.customer.name} billing`
+    : `${customerName || "Client"} billing`;
+
+  return (
+    <dialog
+      aria-labelledby="customer-billing-dialog-title"
+      className="m-auto w-[min(96vw,980px)] max-h-[90vh] overflow-y-auto rounded-2xl border border-[#d8e2df] bg-white p-0 text-left shadow-2xl"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      ref={dialogRef}
+    >
+      <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] bg-white px-6 py-4">
+        <div>
+          <span className="inline-flex rounded-full bg-[#eef7f5] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#118778]">
+            Client billing &amp; usage card
+          </span>
+          <h1 className="mt-1 text-lg font-bold text-[#1d342e]" id="customer-billing-dialog-title">
+            {titleText}
+          </h1>
+          {billing ? (
+            <p className="mt-0.5 text-xs text-[#647771]">
+              {billing.subscription.planName} v{billing.subscription.planVersion} · {billing.subscription.status.replaceAll("_", " ")} · {modeLabel}
+            </p>
+          ) : null}
         </div>
-      ))}
-    </div>
-    <div className="grid gap-5 px-5 pb-5 lg:grid-cols-2">
-      <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Subscription &amp; pricing</h3>
-        <dl className="mt-3 grid gap-2 text-xs text-[#52645f]">
-          <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
-            <dt className="text-[#71817d]">Plan &amp; billing mode</dt>
-            <dd className="font-semibold text-[#1d342e]">{billing.subscription.planName} v{billing.subscription.planVersion} · {modeLabel}</dd>
-          </div>
-          <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
-            <dt className="text-[#71817d]">Plan price</dt>
-            <dd className="font-semibold text-[#1d342e]">
-              {money(billing.subscription.price?.billingType === "permanent" ? billing.subscription.price?.setupFeeMinor ?? 0 : billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.billingType === "permanent" ? "one-time" : billing.subscription.price?.interval ?? "period"}
-              {billing.subscription.price?.setupFeeMinor ? ` · Setup ${money(billing.subscription.price.setupFeeMinor, billing.subscription.price.currency ?? currency)}` : ""}
-            </dd>
-          </div>
-          <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
-            <dt className="text-[#71817d]">Usage pricing</dt>
-            <dd className="font-semibold text-[#1d342e]">{billing.subscription.usagePricing?.mode?.replaceAll("_", " ") ?? "Not configured"}</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-[#71817d]">Current cycle</dt>
-            <dd className="text-right font-medium text-[#1d342e]">{date(billing.subscription.currentPeriodStart)} – {date(billing.subscription.currentPeriodEnd)}</dd>
-          </div>
-        </dl>
-        <details className="mt-4 rounded-lg border border-[#e7edeb] bg-[#f9fbfa] p-3 text-xs text-[#52645f]">
-          <summary className="cursor-pointer font-semibold text-[#1d342e]">
-            Configured AI models ({billing.models.stt.length} STT · {billing.models.llm.length} LLM · {billing.models.tts.length} TTS)
-          </summary>
-          <div className="mt-2 space-y-1.5">
-            {([ ["stt", "Speech recognition"], ["llm", "Intelligence"], ["tts", "Voice output"] ] as const).map(([category, title]) => (
-              <p key={category}><strong>{title}:</strong> {billing.models[category].map((item) => item.label).join(", ") || "None"}</p>
+        <div className="flex items-center gap-2">
+          {billing && onEdit ? (
+            <button className={compactPrimaryButtonClass} onClick={onEdit} type="button">
+              Edit client
+            </button>
+          ) : null}
+          <button autoFocus className={compactSecondaryButtonClass} onClick={onClose} type="button">
+            Close
+          </button>
+        </div>
+      </div>
+
+      {loading && !billing ? (
+        <div className="p-8 text-sm text-[#52645f]">Loading client billing details…</div>
+      ) : billing ? (
+        <div className="grid gap-5 p-6">
+          {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Available wallet", credits(billing.wallet.balanceCredits), `Plan allowance ${credits(includedCredits)}`],
+              ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`, `${includedMinutes.toLocaleString()} min / cycle`],
+              ["Calls & usage this month", `${billing.usage.calls} calls`, `${billing.usage.minutes.toFixed(2)} min used`],
+              ["Call deductions (month)", credits(billing.usage.chargedCredits), `Billed in ${currency}`],
+            ].map(([label, value, hint]) => (
+              <div className="rounded-xl border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}>
+                <p className="text-xs font-medium text-[#627870]">{label}</p>
+                <strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong>
+                <span className="mt-0.5 block text-[11px] text-[#71817d]">{hint}</span>
+              </div>
             ))}
           </div>
-        </details>
-      </div>
-      <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Quotas &amp; workspace features (synced to client)</h3>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {[
-            ["Agents", billing.subscription.limits?.agents ?? "—"],
-            ["Members", billing.subscription.limits?.members ?? "—"],
-            ["Phone numbers", billing.subscription.limits?.phoneNumbers ?? "—"],
-            ["Concurrent calls", billing.subscription.limits?.concurrentCalls ?? "—"],
-            ["Monthly min", billing.subscription.limits?.monthlyMinutes ?? "—"],
-            ["Knowledge", billing.subscription.limits?.knowledgeSources ?? "—"],
-          ].map(([label, val]) => (
-            <div className="rounded-lg border border-[#e7edeb] bg-[#f9fbfa] px-3 py-2" key={String(label)}>
-              <span className="block text-[10px] font-semibold uppercase text-[#71817d]">{label}</span>
-              <strong className="mt-0.5 block text-xs text-[#1d342e]">{String(val)}</strong>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Subscription &amp; pricing</h2>
+              <dl className="mt-3 grid gap-2 text-xs text-[#52645f]">
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Plan &amp; billing mode</dt>
+                  <dd className="font-semibold text-[#1d342e]">{billing.subscription.planName} v{billing.subscription.planVersion} · {modeLabel}</dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Plan price</dt>
+                  <dd className="font-semibold text-[#1d342e]">
+                    {money(billing.subscription.price?.billingType === "permanent" ? billing.subscription.price?.setupFeeMinor ?? 0 : billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.billingType === "permanent" ? "one-time" : billing.subscription.price?.interval ?? "period"}
+                    {billing.subscription.price?.setupFeeMinor ? ` · Setup ${money(billing.subscription.price.setupFeeMinor, billing.subscription.price.currency ?? currency)}` : ""}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Usage pricing</dt>
+                  <dd className="font-semibold text-[#1d342e]">{billing.subscription.usagePricing?.mode?.replaceAll("_", " ") ?? "Not configured"}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-[#71817d]">Current cycle</dt>
+                  <dd className="text-right font-medium text-[#1d342e]">{date(billing.subscription.currentPeriodStart)} – {date(billing.subscription.currentPeriodEnd)}</dd>
+                </div>
+              </dl>
+              <details className="mt-4 rounded-lg border border-[#e7edeb] bg-[#f9fbfa] p-3 text-xs text-[#52645f]">
+                <summary className="cursor-pointer font-semibold text-[#1d342e]">
+                  Configured AI models ({billing.models.stt.length} STT · {billing.models.llm.length} LLM · {billing.models.tts.length} TTS)
+                </summary>
+                <div className="mt-2 space-y-1.5">
+                  {([["stt", "Speech recognition"], ["llm", "Intelligence"], ["tts", "Voice output"]] as const).map(([category, title]) => (
+                    <p key={category}><strong>{title}:</strong> {billing.models[category].map((item) => item.label).join(", ") || "None"}</p>
+                  ))}
+                </div>
+              </details>
             </div>
-          ))}
-        </div>
-        {billing.subscription.features ? (
-          <div className="mt-3 flex flex-wrap gap-1.5 border-t border-[#f0f4f3] pt-3">
-            {Object.entries(billing.subscription.features).map(([feature, enabled]) => (
-              <span
-                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize ${enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-[#e7edeb] bg-[#f7f9f8] text-[#9aa7a3] line-through"}`}
-                key={feature}
-              >
-                {feature.replace(/([A-Z])/g, " $1").trim()}
-              </span>
-            ))}
-          </div>
-        ) : null}
-      </div>
-    </div>
-    <div className="grid gap-5 px-5 pb-5 lg:grid-cols-2">
-      <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Customer invoices &amp; recharges</h3>
-        {billing.invoices.length || (billing.rechargeOrders?.length ?? 0) ? (
-          <div className="mt-2 space-y-2">
-            {(billing.rechargeOrders ?? []).map((order) => (
-              <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={`recharge:${order._id}`}>
-                <span>WLR-{order._id.slice(-12).toUpperCase()} · {order.packageName} ({order.credits} credits)</span>
-                <strong className="text-[#1d342e]">{money(order.amountMinor, order.currency)}</strong>
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Quotas &amp; workspace features (synced to client)</h2>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {[
+                  ["Agents", billing.subscription.limits?.agents ?? "—"],
+                  ["Members", billing.subscription.limits?.members ?? "—"],
+                  ["Phone numbers", billing.subscription.limits?.phoneNumbers ?? "—"],
+                  ["Concurrent calls", billing.subscription.limits?.concurrentCalls ?? "—"],
+                  ["Monthly min", billing.subscription.limits?.monthlyMinutes ?? "—"],
+                  ["Knowledge", billing.subscription.limits?.knowledgeSources ?? "—"],
+                  ["API keys", billing.subscription.limits?.apiKeys ?? "—"],
+                ].map(([label, val]) => (
+                  <div className="rounded-lg border border-[#e7edeb] bg-[#f9fbfa] px-3 py-2" key={String(label)}>
+                    <span className="block text-[10px] font-semibold uppercase text-[#71817d]">{label}</span>
+                    <strong className="mt-0.5 block text-xs text-[#1d342e]">{String(val)}</strong>
+                  </div>
+                ))}
               </div>
-            ))}
-            {billing.invoices.map((invoice) => (
-              <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={invoice._id}>
-                <span>{invoice.invoiceNumber} · {invoice.status}</span>
-                <strong className="text-[#1d342e]">{money(invoice.totalMinor, invoice.currency)}</strong>
-              </div>
-            ))}
+              {billing.subscription.features ? (
+                <div className="mt-3 flex flex-wrap gap-1.5 border-t border-[#f0f4f3] pt-3">
+                  {Object.entries(billing.subscription.features).map(([feature, enabled]) => (
+                    <span
+                      className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize ${enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-[#e7edeb] bg-[#f7f9f8] text-[#9aa7a3] line-through"}`}
+                      key={feature}
+                    >
+                      {feature.replace(/([A-Z])/g, " $1").trim()}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
-        ) : <p className="mt-2 text-xs text-[#71817d]">No customer checkout invoices or Razorpay recharges yet.</p>}
-      </div>
-      <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Credit grants &amp; call deductions</h3>
-        <p className="mt-1 text-xs text-[#71817d]">Latest {billing.transactions.length} wallet entries.</p>
-        <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-[#e7edeb]">
-          {billing.transactions.length ? billing.transactions.map((transaction) => <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] px-3 py-2.5 text-xs last:border-b-0" key={transaction._id}><div><strong className="text-[#1d342e]">{transaction.description || transaction.type}</strong><p className="mt-0.5 text-[#71817d]">{date(transaction.createdAt)}{transaction.callId ? ` · Call ${transaction.callId.slice(-8)}` : ""}</p></div><div className="text-right"><strong className={transaction.amountCredits >= 0 ? "text-emerald-700" : "text-[#1d342e]"}>{transaction.amountCredits >= 0 ? "+" : ""}{money(transaction.amountCredits * 100, transaction.currency)}</strong><p className="mt-0.5 text-[#71817d]">Bal {money(transaction.balanceAfterCredits * 100, transaction.currency)}</p></div></div>) : <p className="p-4 text-xs text-[#71817d]">No wallet activity yet.</p>}
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Customer invoices &amp; recharges</h2>
+              {billing.invoices.length || (billing.rechargeOrders?.length ?? 0) ? (
+                <div className="mt-2 space-y-2">
+                  {(billing.rechargeOrders ?? []).map((order) => (
+                    <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={`recharge:${order._id}`}>
+                      <span>WLR-{order._id.slice(-12).toUpperCase()} · {order.packageName} ({order.credits} credits)</span>
+                      <strong className="text-[#1d342e]">{money(order.amountMinor, order.currency)}</strong>
+                    </div>
+                  ))}
+                  {billing.invoices.map((invoice) => (
+                    <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={invoice._id}>
+                      <span>{invoice.invoiceNumber} · {invoice.status}</span>
+                      <strong className="text-[#1d342e]">{money(invoice.totalMinor, invoice.currency)}</strong>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="mt-2 text-xs text-[#71817d]">No customer checkout invoices or Razorpay recharges yet.</p>}
+            </div>
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Credit grants &amp; call deductions</h2>
+              <p className="mt-1 text-xs text-[#71817d]">Latest {billing.transactions.length} wallet entries.</p>
+              <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-[#e7edeb]">
+                {billing.transactions.length ? billing.transactions.map((transaction) => <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] px-3 py-2.5 text-xs last:border-b-0" key={transaction._id}><div><strong className="text-[#1d342e]">{transaction.description || transaction.type}</strong><p className="mt-0.5 text-[#71817d]">{date(transaction.createdAt)}{transaction.callId ? ` · Call ${transaction.callId.slice(-8)}` : ""}</p></div><div className="text-right"><strong className={transaction.amountCredits >= 0 ? "text-emerald-700" : "text-[#1d342e]"}>{transaction.amountCredits >= 0 ? "+" : ""}{money(transaction.amountCredits * 100, transaction.currency)}</strong><p className="mt-0.5 text-[#71817d]">Bal {money(transaction.balanceAfterCredits * 100, transaction.currency)}</p></div></div>) : <p className="p-4 text-xs text-[#71817d]">No wallet activity yet.</p>}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </Card>;
+      ) : null}
+    </dialog>
+  );
 }
 
 function Input({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
@@ -534,6 +609,8 @@ export function PartnerWhiteLabelConsole() {
   const [overview, setOverview] = useState<PartnerOverview | null>(null);
   const [customers, setCustomers] = useState<WhiteLabelCustomer[]>([]);
   const [customerBilling, setCustomerBilling] = useState<PartnerCustomerBilling | null>(null);
+  const [customerBillingTarget, setCustomerBillingTarget] = useState<WhiteLabelCustomer | null>(null);
+  const [customerBillingOpen, setCustomerBillingOpen] = useState(false);
   const [customerBillingLoading, setCustomerBillingLoading] = useState(false);
   const [economics, setEconomics] = useState<PartnerEconomics | null>(null);
   const [billing, setBilling] = useState<PartnerBilling | null>(null);
@@ -622,7 +699,7 @@ export function PartnerWhiteLabelConsole() {
     try {
       const result = await action();
       await load();
-      if (customerBilling) setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id));
+      if (customerBilling) setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id).catch(() => null));
       const walletMigration = result && typeof result === "object" && "walletMigration" in result
         ? result.walletMigration as { fromCurrency: string; toCurrency: string; fxRate: number; balanceAfter: number } | undefined
         : undefined;
@@ -641,12 +718,21 @@ export function PartnerWhiteLabelConsole() {
     finally { setBusy(false); }
   }
 
-  async function openCustomerBilling(orgId: string) {
+  async function openCustomerBilling(row: WhiteLabelCustomer) {
+    const orgId = documentId(row);
+    setCustomerBillingTarget(row);
+    setCustomerBilling(null);
+    setCustomerBillingOpen(true);
     setCustomerBillingLoading(true);
     setNotice(null);
-    try { setCustomerBilling(await partnerWhiteLabelApi.customerBilling(orgId)); }
-    catch (error) { setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load customer billing." }); }
-    finally { setCustomerBillingLoading(false); }
+    try {
+      setCustomerBilling(await partnerWhiteLabelApi.customerBilling(orgId));
+    } catch (error) {
+      setCustomerBillingOpen(false);
+      setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load customer billing." });
+    } finally {
+      setCustomerBillingLoading(false);
+    }
   }
 
   function openAddCustomerModal() {
@@ -894,11 +980,11 @@ export function PartnerWhiteLabelConsole() {
       {tab === "brand" && defaultBrand ? <Card><SectionTitle title="Customer-facing brand" description="These settings drive metadata, authentication, navigation, support, legal links, and transactional email content." action={<Status value={defaultBrand.status} />} /><BrandEditor brand={defaultBrand} busy={busy} onSaved={async (message) => { await load(); setNotice({ tone: "success", message }); }} onError={(message) => setNotice({ tone: "critical", message })} onReload={load} /></Card> : null}
 
       {tab === "domains" ? <div className="grid gap-5"><Card><SectionTitle title="Add custom domain" description="The domain stays fail-closed until ownership, routing, edge, and TLS validations all pass." /><form className="grid gap-4 p-5 md:grid-cols-[180px_220px_minmax(0,1fr)_auto] md:items-end" onSubmit={addDomain}><Select label="Domain purpose" value={domainKind} onChange={(event) => setDomainKind(event.target.value as "app" | "api" | "link")}><option value="app">Customer app</option><option value="link">Public links</option>{overview.account.entitlements.customApiDomains ? <option value="api">Developer API</option> : null}</Select><Select label="Brand" required value={domainBrandId} onChange={(event) => setDomainBrandId(event.target.value)}>{overview.brands.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Input label="Hostname only" placeholder={domainKind === "api" ? "api.customerbrand.com" : domainKind === "link" ? "links.customerbrand.com" : "app.customerbrand.com"} required value={domain} onChange={(event) => setDomain(event.target.value)} /><button className={buttonClass} disabled={busy} type="submit">Reserve domain</button></form></Card>
-        {overview.domains.map((item) => <Card key={documentId(item)}><div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><strong className="text-[#29423b]">{item.hostname}</strong><Status value={item.status} /><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">{item.kind}</span><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">TLS {item.tls?.status ?? "not started"}</span></div><p className="mt-2 text-xs text-[#71817d]">Last checked {date(item.lastCheckedAt)}{item.failureReason ? ` · ${item.failureReason}` : ""}</p></div><div className="flex gap-2"><button className={secondaryButtonClass} disabled={busy || item.status === "active" || item.status === "disabled"} onClick={() => void perform(() => partnerWhiteLabelApi.verifyDomain(documentId(item)), "Domain verification refreshed.")}>Verify now</button>{item.status === "disabled" ? <button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.reactivateDomain(documentId(item)), "Domain reactivated. Add the displayed DNS records, then verify it.")}>Reactivate</button> : <button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { const reason = window.prompt("Reason for disabling this domain:"); if (reason) void perform(() => partnerWhiteLabelApi.disableDomain(documentId(item), reason), "Domain disabled and removed from branded request resolution."); }}>Disable</button>}</div></div><div className="overflow-x-auto border-t border-[#e7edeb]"><table className="w-full min-w-[720px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Type</th><th className="px-5 py-3">DNS name</th><th className="px-5 py-3">Value</th><th className="px-5 py-3">Purpose</th></tr></thead><tbody>{item.requiredRecords.map((record, index) => <tr className="border-t border-[#e7edeb]" key={`${record.name}-${index}`}><td className="px-5 py-3 font-bold text-[#118778]">{record.type}</td><td className="px-5 py-3 font-mono text-[#40564f]">{record.name}</td><td className="max-w-md break-all px-5 py-3 font-mono text-[#40564f]">{record.value}</td><td className="px-5 py-3 capitalize text-[#71817d]">{record.purpose}</td></tr>)}</tbody></table></div></Card>)}
+        {overview.domains.map((item) => <Card key={documentId(item)}><div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><strong className="text-[#29423b]">{item.hostname}</strong><Status value={item.status} /><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">{item.kind}</span><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">TLS {item.tls?.status ?? "not started"}</span></div><p className="mt-2 text-xs text-[#71817d]">Last checked {date(item.lastCheckedAt)}{item.failureReason ? ` · ${item.failureReason}` : ""}</p></div><div className="flex gap-1.5"><button className={compactSecondaryButtonClass} disabled={busy || item.status === "active" || item.status === "disabled"} onClick={() => void perform(() => partnerWhiteLabelApi.verifyDomain(documentId(item)), "Domain verification refreshed.")}>Verify now</button>{item.status === "disabled" ? <button className={compactPrimaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.reactivateDomain(documentId(item)), "Domain reactivated. Add the displayed DNS records, then verify it.")}>Reactivate</button> : <button className={compactDangerButtonClass} disabled={busy} onClick={() => { const reason = window.prompt("Reason for disabling this domain:"); if (reason) void perform(() => partnerWhiteLabelApi.disableDomain(documentId(item), reason), "Domain disabled and removed from branded request resolution."); }}>Disable</button>}</div></div><div className="overflow-x-auto border-t border-[#e7edeb]"><table className="w-full min-w-[720px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Type</th><th className="px-5 py-3">DNS name</th><th className="px-5 py-3">Value</th><th className="px-5 py-3">Purpose</th></tr></thead><tbody>{item.requiredRecords.map((record, index) => <tr className="border-t border-[#e7edeb]" key={`${record.name}-${index}`}><td className="px-5 py-3 font-bold text-[#118778]">{record.type}</td><td className="px-5 py-3 font-mono text-[#40564f]">{record.name}</td><td className="max-w-md break-all px-5 py-3 font-mono text-[#40564f]">{record.value}</td><td className="px-5 py-3 capitalize text-[#71817d]">{record.purpose}</td></tr>)}</tbody></table></div></Card>)}
       </div> : null}
 
       {tab === "plans" ? <div className="grid gap-5"><Card><SectionTitle title={editingPlanId ? "Edit draft price version" : "Create customer price version"} description="Enter selling prices and choose a model subset within the super-admin contract ceiling. Published versions are immutable." /><form className="grid gap-4 p-5" onSubmit={savePlan}><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Input label="Plan name" required value={plan.name} onChange={(event) => setPlan((value) => ({ ...value, name: event.target.value }))} /><Input disabled={Boolean(editingPlanId)} label="Stable key" required value={plan.key} onChange={(event) => setPlan((value) => ({ ...value, key: event.target.value }))} /><Select label="Currency" value={plan.currency} onChange={(event) => setPlan((value) => ({ ...value, currency: event.target.value }))}><option>USD</option><option>INR</option></Select><Select label="Billing cycle" value={plan.billingType === "permanent" ? "permanent" : plan.interval} onChange={(event) => { const v = event.target.value; setPlan((value) => v === "permanent" ? ({ ...value, billingType: "permanent" }) : ({ ...value, billingType: "subscription", interval: v as "month" | "year" })); }}><option value="month">Monthly</option><option value="year">Yearly</option><option value="permanent">One-time / Permanent</option></Select><Input label={plan.billingType === "permanent" ? "Recurring price (0)" : plan.interval === "year" ? "Yearly price" : "Monthly price"} min="0" required step="0.01" type="number" value={plan.monthlyPrice} onChange={(event) => setPlan((value) => ({ ...value, monthlyPrice: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label={plan.billingType === "permanent" ? "One-time package price" : "Setup fee"} min="0" step="0.01" type="number" value={plan.setupFee} onChange={(event) => setPlan((value) => ({ ...value, setupFee: event.target.value }))} /><Input disabled={plan.billingType === "permanent"} label="Trial days" min="0" type="number" value={plan.billingType === "permanent" ? "0" : plan.trialDays} onChange={(event) => setPlan((value) => ({ ...value, trialDays: event.target.value }))} /><Select label="Usage charging" value={plan.usageMode} onChange={(event) => setPlan((value) => ({ ...value, usageMode: event.target.value }))}><option value="cost_markup">Provider cost + markup</option><option value="fixed_per_minute">Fixed per minute</option><option value="included_only">Included minutes only</option></Select><Input label={plan.usageMode === "fixed_per_minute" ? "Price per minute" : "Usage markup %"} min="0" step="0.01" type="number" value={plan.usageMode === "fixed_per_minute" ? plan.perMinute : plan.markupPercent} onChange={(event) => setPlan((value) => plan.usageMode === "fixed_per_minute" ? ({ ...value, perMinute: event.target.value }) : ({ ...value, markupPercent: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label={`Included wallet credits (${plan.currency})`} min="0" step="0.01" type="number" value={plan.includedCredits} onChange={(event) => setPlan((value) => ({ ...value, includedCredits: event.target.value }))} /><Input label="Included minutes" min="0" type="number" value={plan.includedMinutes} onChange={(event) => setPlan((value) => ({ ...value, includedMinutes: event.target.value }))} /><Input label="Minimum charge per call" min="0" step="0.01" type="number" value={plan.minimumCall} onChange={(event) => setPlan((value) => ({ ...value, minimumCall: event.target.value }))} /><Input label="Agent limit" max={overview.account.limits.agentsPerCustomer} min="0" type="number" value={plan.agents} onChange={(event) => setPlan((value) => ({ ...value, agents: event.target.value }))} /><Input label="Member limit" max={overview.account.limits.membersPerCustomer} min="1" type="number" value={plan.members} onChange={(event) => setPlan((value) => ({ ...value, members: event.target.value }))} /><Input label="Phone-number limit" max={overview.account.limits.phoneNumbersPerCustomer} min="0" type="number" value={plan.phoneNumbers} onChange={(event) => setPlan((value) => ({ ...value, phoneNumbers: event.target.value }))} /><Input label="Concurrent-call limit" max={overview.account.limits.concurrentCallsPerCustomer} min="1" type="number" value={plan.concurrentCalls} onChange={(event) => setPlan((value) => ({ ...value, concurrentCalls: event.target.value }))} /><Input label="Monthly-minute ceiling" max={overview.account.limits.monthlyMinutesPerCustomer} min="0" type="number" value={plan.monthlyMinutes} onChange={(event) => setPlan((value) => ({ ...value, monthlyMinutes: event.target.value }))} /><Input label="Knowledge-source limit" min="0" type="number" value={plan.knowledgeSources} onChange={(event) => setPlan((value) => ({ ...value, knowledgeSources: event.target.value }))} /><Input label="API-key limit" min="0" type="number" value={plan.apiKeys} onChange={(event) => setPlan((value) => ({ ...value, apiKeys: event.target.value }))} /></div><fieldset className="rounded-xl border border-[#dce5e2] bg-[#f8faf9] p-4"><legend className="px-1 text-xs font-bold text-[#1d342e]">Customer plan features (visible on end-client billing page)</legend><div className="mt-2 grid gap-2 sm:grid-cols-3 lg:grid-cols-5">{([["campaigns", "Campaigns"], ["inboundCalling", "Inbound calling"], ["outboundCalling", "Outbound calling"], ["callRecording", "Call recording"], ["knowledgeBase", "Knowledge base"], ["integrations", "Integrations"], ["teamAccess", "Team access"], ["advancedAnalytics", "Advanced analytics"], ["developerApi", "Developer API"]] as const).map(([key, label]) => { const blocked = (key === "developerApi" && !overview.account.entitlements.developerApi) || (key === "advancedAnalytics" && !overview.account.entitlements.advancedAnalytics); const checked = Boolean(plan.features[key]) && !blocked; return <label className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold ${blocked ? "cursor-not-allowed border-[#e6ecea] bg-[#f1f4f3] text-[#8b9894]" : checked ? "cursor-pointer border-[#b9ddd4] bg-[#eff8f5] text-[#215e51]" : "cursor-pointer border-[#e0e7e5] bg-white text-[#647771]"}`} key={key}><input checked={checked} className="size-4 accent-[#168a78]" disabled={busy || blocked} onChange={(event) => setPlan((value) => ({ ...value, features: { ...value.features, [key]: event.target.checked } }))} type="checkbox" /><span>{label}</span></label>; })}</div></fieldset><ModelAccessPicker catalog={overview.modelAccessCatalog} disabled={busy} onChange={(modelAccess) => setPlan((value) => ({ ...value, modelAccess }))} value={plan.modelAccess} /><div className="flex justify-end gap-2">{editingPlanId ? <button className={secondaryButtonClass} disabled={busy} onClick={() => setEditingPlanId("")} type="button">Cancel editing</button> : null}<button className={buttonClass} disabled={busy}>{editingPlanId ? "Save draft changes" : "Create draft version"}</button></div></form></Card>
-        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.billingType === "permanent" ? "one-time" : item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{money(item.allowances.includedCredits * 100, item.price.currency)} included wallet credits</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-2">{item.status === "draft" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
+        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.billingType === "permanent" ? "one-time" : item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{money(item.allowances.includedCredits * 100, item.price.currency)} included wallet credits</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-1.5">{item.status === "draft" ? <><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={compactPrimaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
       </div> : null}
 
       {tab === "customers" ? <div className="grid min-w-0 gap-5">
@@ -1012,25 +1098,27 @@ export function PartnerWhiteLabelConsole() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-right">
-                        <div className="ml-auto flex max-w-[230px] flex-wrap justify-end gap-2">
+                        <div className="ml-auto flex max-w-[260px] flex-wrap justify-end gap-1.5">
                           <button
-                            className={buttonClass}
+                            aria-label={`Edit ${item.name}`}
+                            className={compactPrimaryButtonClass}
                             disabled={busy}
                             onClick={() => void openConfigureCustomerModal(item)}
+                            title="Edit plan, wallet credits, quotas, features & AI models"
                             type="button"
                           >
-                            Configure
+                            Edit
                           </button>
                           <button
-                            className={secondaryButtonClass}
+                            className={compactSecondaryButtonClass}
                             disabled={customerBillingLoading}
-                            onClick={() => void openCustomerBilling(orgId)}
+                            onClick={() => void openCustomerBilling(item)}
                             type="button"
                           >
                             View billing
                           </button>
                           <button
-                            className={secondaryButtonClass}
+                            className={compactSecondaryButtonClass}
                             disabled={busy || item.lifecycleStatus === "archived"}
                             onClick={() => {
                               const next = item.lifecycleStatus === "active" ? "suspended" : "active";
@@ -1043,7 +1131,7 @@ export function PartnerWhiteLabelConsole() {
                           </button>
                           {item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? (
                             <button
-                              className={secondaryButtonClass}
+                              className={compactSecondaryButtonClass}
                               disabled={busy}
                               onClick={() => {
                                 const reason = window.prompt("Admin renewal reference and reason:");
@@ -1055,7 +1143,7 @@ export function PartnerWhiteLabelConsole() {
                             </button>
                           ) : null}
                           <button
-                            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45"
+                            className={compactDangerButtonClass}
                             disabled={busy}
                             onClick={() => {
                               if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) {
@@ -1075,8 +1163,6 @@ export function PartnerWhiteLabelConsole() {
             </table>
           </div>
         </Card>
-        {customerBillingLoading ? <Card className="p-5 text-sm text-[#52645f]">Loading customer billing…</Card> : null}
-        {customerBilling ? <CustomerBillingDetails billing={customerBilling} onClose={() => setCustomerBilling(null)} /> : null}
       </div> : null}
 
       {tab === "billing" ? <div className="grid gap-5">
@@ -1184,7 +1270,7 @@ export function PartnerWhiteLabelConsole() {
                 </button>
                 {gateway?.gatewayMode === "custom" ? (
                   <button
-                    className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-50 disabled:opacity-45"
+                    className={compactDangerButtonClass}
                     disabled={busy}
                     onClick={() => void removeGateway()}
                     type="button"
@@ -1299,9 +1385,9 @@ export function PartnerWhiteLabelConsole() {
                           <td className="px-4 py-3 text-[#40564f]">{pkg.credits.toLocaleString()} credits ({pkg.currency})</td>
                           <td className="px-4 py-3"><Status value={pkg.active ? "active" : "archived"} /></td>
                           <td className="px-4 py-3 text-right">
-                            <div className="inline-flex flex-wrap justify-end gap-2">
-                              <button className={secondaryButtonClass} disabled={busy} onClick={() => editRechargePackage(pkg)} type="button">Edit</button>
-                              <button className={secondaryButtonClass} disabled={busy} onClick={() => void toggleRechargePackageActive(pkg)} type="button">
+                            <div className="inline-flex flex-wrap justify-end gap-1.5">
+                              <button className={compactSecondaryButtonClass} disabled={busy} onClick={() => editRechargePackage(pkg)} type="button">Edit</button>
+                              <button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void toggleRechargePackageActive(pkg)} type="button">
                                 {pkg.active ? "Archive" : "Activate"}
                               </button>
                             </div>
@@ -1345,6 +1431,22 @@ export function PartnerWhiteLabelConsole() {
 
       {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
       </div>
+      <CustomerBillingModal
+        billing={customerBilling}
+        customerName={customerBillingTarget?.name ?? ""}
+        loading={customerBillingLoading}
+        onClose={() => {
+          setCustomerBillingOpen(false);
+          setCustomerBilling(null);
+          setCustomerBillingTarget(null);
+        }}
+        onEdit={customerBillingTarget ? () => {
+          const targetRow = customerBillingTarget;
+          setCustomerBillingOpen(false);
+          void openConfigureCustomerModal(targetRow);
+        } : undefined}
+        open={customerBillingOpen}
+      />
       <CustomerConfigModal
         customerDetails={configCustomerDetails}
         customerRow={customerModal.row}

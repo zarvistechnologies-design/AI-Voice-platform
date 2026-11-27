@@ -28,10 +28,10 @@ type Props = {
   onError: (message: string) => void;
 };
 
-const fieldClass = "wl-field min-h-10 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
+const fieldClass = "wl-field min-h-9 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
 const labelClass = "wl-label grid gap-1.5 text-xs font-semibold text-[#52645f]";
-const primaryBtn = "wl-primary inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
-const secondaryBtn = "wl-secondary inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
+const primaryBtn = "wl-primary inline-flex min-h-8 items-center justify-center rounded-lg bg-[#126f62] px-3.5 text-xs font-bold !text-white shadow-xs transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const secondaryBtn = "wl-secondary inline-flex min-h-8 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-3 text-xs font-semibold text-[#40564f] shadow-xs transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
 
 function money(minor: number, currency: string) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(minor / 100);
@@ -519,8 +519,11 @@ function CustomerConfigForm({
               </select>
             </label>
             <label className={labelClass}>
-              <span>Credit amount ({currentWalletCurrency})</span>
+              <span>Credit amount ({currencyWillChange ? nextPlanCurrency : currentWalletCurrency})</span>
               <input className={fieldClass} disabled={walletMode === "none"} min={walletMode === "set" ? "0" : "0.01"} placeholder="e.g. 2000" step="0.01" type="number" value={walletAmount} onChange={(e) => setWalletAmount(e.target.value)} />
+              {currencyWillChange && walletMode !== "none" ? (
+                <span className="text-[10px] font-medium text-amber-800">Applied in {nextPlanCurrency} after currency conversion</span>
+              ) : null}
             </label>
             <label className={labelClass}>
               <span>Plan included credits ({config.currency})</span>
@@ -706,7 +709,7 @@ export function CustomerConfigModal({
 
   const formKey = mode === "add"
     ? `add-${open ? "open" : "closed"}`
-    : `edit-${customerRow ? documentId(customerRow) : "none"}-${customerDetails ? `hydrated-${customerDetails.subscription?.planVersion ?? 0}-${customerDetails.subscription?.billingMode ?? "inherit"}` : "row"}`;
+    : `edit-${customerRow ? documentId(customerRow) : "none"}-${customerDetails ? `hydrated-${customerDetails.subscription?.planVersion ?? 0}-${customerDetails.subscription?.billingMode ?? "inherit"}-${customerDetails.wallet.balanceCredits}-${customerDetails.wallet.currency}` : "row"}-${open ? "open" : "closed"}`;
 
   return (
     <dialog
@@ -724,7 +727,7 @@ export function CustomerConfigModal({
             {mode === "add" ? "New client tenant" : "Live client configuration"}
           </span>
           <h1 className="mt-1 text-lg font-bold text-[#1d342e]" id="customer-config-dialog-title">
-            {mode === "add" ? "Add client & assign billing" : `Configure ${customerRow?.name || "client"}`}
+            {mode === "add" ? "Add client & assign billing" : `Edit ${customerRow?.name || "client"}`}
           </h1>
         </div>
         <button className={secondaryBtn} disabled={submitting} onClick={onClose} type="button">

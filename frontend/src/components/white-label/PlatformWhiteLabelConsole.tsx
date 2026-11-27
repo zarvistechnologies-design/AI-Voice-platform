@@ -107,6 +107,18 @@ export function PlatformWhiteLabelConsole() {
       setAudits(auditResult.auditLogs);
       setLifecycle({ status: result.account.status, billingStatus: result.account.billingStatus, reason: "" });
       setCommercial({ platformFee: String(result.account.contract.platformFeeMinor / 100), minimumCommitment: String(result.account.contract.minimumCommitmentMinor / 100), wholesaleMarkup: String(result.account.contract.wholesaleMarkupBps / 100), brands: String(result.account.limits.brands), customerOrganizations: String(result.account.limits.customerOrganizations), agentsPerCustomer: String(result.account.limits.agentsPerCustomer), membersPerCustomer: String(result.account.limits.membersPerCustomer), phoneNumbersPerCustomer: String(result.account.limits.phoneNumbersPerCustomer), concurrentCallsPerCustomer: String(result.account.limits.concurrentCallsPerCustomer), monthlyMinutesPerCustomer: String(result.account.limits.monthlyMinutesPerCustomer), retailBillingEnabled: result.account.retailBilling?.enabled ?? false, linkedAccountId: result.account.retailBilling?.razorpayLinkedAccountId ?? "", transferMode: result.account.retailBilling?.transferMode ?? "disabled", taxRate: String((result.account.retailBilling?.taxRateBps ?? 0) / 100), taxLabel: result.account.retailBilling?.taxLabel ?? "Tax", taxRegistrationId: result.account.retailBilling?.taxRegistrationId ?? "", graceDays: String(result.account.retailBilling?.gracePeriodDays ?? 3), reason: "" });
+      const loadedEntitlements = result.account.entitlements ?? {};
+      setCommercialEntitlements({
+        customDomains: loadedEntitlements.customDomains ?? true,
+        customApiDomains: loadedEntitlements.customApiDomains ?? false,
+        customEmailBranding: loadedEntitlements.customEmailBranding ?? true,
+        removePoweredBy: loadedEntitlements.removePoweredBy ?? false,
+        customCustomerPricing: loadedEntitlements.customCustomerPricing ?? true,
+        multipleBrands: loadedEntitlements.multipleBrands ?? false,
+        bringYourOwnProviders: loadedEntitlements.bringYourOwnProviders ?? false,
+        advancedAnalytics: loadedEntitlements.advancedAnalytics ?? true,
+        developerApi: loadedEntitlements.developerApi ?? true,
+      });
       const initialModelAccess = result.account.modelAccess
         ? {
             stt: (result.account.modelAccess.stt ?? []).map((k) => k === "cartesia:ink-whisper" ? "cartesia:ink-2" : k),
