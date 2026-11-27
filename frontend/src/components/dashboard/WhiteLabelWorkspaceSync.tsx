@@ -36,6 +36,7 @@ export function WhiteLabelWorkspaceSync() {
         const data = await response.json() as { revision?: string };
         if (!active || !data.revision) return;
         if (revision && revision !== data.revision) {
+          await validateStoredSession({ force: true });
           window.location.reload();
           return;
         }

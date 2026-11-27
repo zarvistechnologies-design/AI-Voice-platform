@@ -7,18 +7,13 @@ export function ThemeRouteSync() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const isDashboard = pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
-    let isDark = false;
-    if (isDashboard) {
-      try {
-        const saved = localStorage.getItem("vozon_dashboard_theme");
-        isDark = saved !== "light";
-      } catch {
-        isDark = true;
-      }
+    document.documentElement.setAttribute("data-dashboard-theme", "light");
+    document.documentElement.classList.remove("dark");
+    try {
+      localStorage.removeItem("vozon_dashboard_theme");
+    } catch {
+      /* localStorage may be unavailable */
     }
-    document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", isDark);
   }, [pathname]);
 
   return null;

@@ -132,6 +132,15 @@ export function BillingShell() {
   const whiteLabelIncludedMinutes = data?.currentPlan?.includedMinutes ?? 0;
   const whiteLabelIncludedCredits = data?.currentPlan?.includedCredits ?? 0;
   const whiteLabelPlanPrice = data?.currentPlan?.priceAmount ?? data?.currentPlan?.monthlyPrice ?? 0;
+  const whiteLabelSetupFee = (data?.currentPlan?.setupFeeMinor ?? data?.subscription?.priceSnapshot?.setupFeeMinor ?? 0) / 100;
+  const whiteLabelPlanVersion = data?.currentPlan?.version ?? data?.subscription?.planVersion;
+  const whiteLabelFeatures = data?.subscription?.featuresSnapshot ?? data?.currentPlan?.features ?? null;
+  const whiteLabelBillingMode = data?.whiteLabel?.billingMode ?? (data?.whiteLabel?.managedByPartner ? "manual" : "retail");
+  const whiteLabelBillingModeLabel = whiteLabelBillingMode === "retail"
+    ? "Retail checkout"
+    : whiteLabelBillingMode === "recharge"
+      ? "Razorpay self-serve recharge"
+      : "Manual / offline credits";
   const whiteLabelPlanPeriod = data?.currentPlan?.billingType === "permanent"
     ? "one-time"
     : data?.currentPlan?.interval ?? "month";
@@ -374,32 +383,126 @@ export function BillingShell() {
           {!data ? <div className="rounded-xl border border-[#eaeaea] bg-white p-6 text-sm text-[#71717a]">{notice ? "Billing data is unavailable. Use Refresh to try again." : "Loading your billing details..."}</div> : null}
           {data ? <>
           {data?.whiteLabel ? (
-            <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
-              <div className="border-b border-[#eaeaea] px-5 py-4">
-                <span className="app-label text-[#71717a]">Plan, credits &amp; deductions</span>
-                <p className="mt-1 text-xs text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? "Included minutes are used first; once used, each call deducts from your wallet." : "Calls deduct credits based on billable duration after usage is finalized."} One credit equals {money(1, activeCurrency)} on this plan.</p>
+            <>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <section className="flex flex-col justify-between rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
+                  <div>
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">Assigned plan</span>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold capitalize text-emerald-700">
+                        <span className="size-1.5 rounded-full bg-emerald-600" />
+                        {data.subscription?.status?.replaceAll("_", " ") ?? "Active"}
+                      </span>
+                    </div>
+                    <h2 className="mt-2 text-xl font-bold tracking-tight text-[#171717]">
+                      {data.currentPlan?.name ?? "Active Plan"}
+                      {whiteLabelPlanVersion ? <span className="ml-1.5 text-xs font-semibold text-[#71717a]">v{whiteLabelPlanVersion}</span> : null}
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold text-[#27272a]">
+                      {data.subscription?.priceSnapshot
+                        ? `${creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / ${whiteLabelPlanPeriod}`
+                        : "Managed by provider"}
+                    </p>
+                    {whiteLabelSetupFee > 0 ? (
+                      <p className="mt-0.5 text-xs text-[#71717a]">
+                        Setup fee: {creditMoney(whiteLabelSetupFee, data.currentPlan?.currency ?? walletCurrency)}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#f4f4f5] pt-3 text-[11px] text-[#71717a]">
+                    <span className="rounded-md bg-[#f4f4f5] px-2 py-0.5 font-semibold text-[#3f3f46]">{whiteLabelBillingModeLabel}</span>
+                    <span>{data.whiteLabel.productName}</span>
+                  </div>
+                </section>
+
+                <section className="flex flex-col justify-between rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
+                  <div>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">Available wallet</span>
+                    <div className="mt-2 text-2xl font-bold tracking-tight text-[#171717]">
+                      {creditMoney(balance, walletCurrency)}
+                    </div>
+                    <p className="mt-1 text-xs text-[#71717a]">
+                      Plan allowance: <strong className="font-semibold text-[#27272a]">{creditUnits(whiteLabelIncludedCredits)}</strong>
+                    </p>
+                    <p className="mt-0.5 text-xs text-[#71717a]">
+                      Lifetime credited: {creditUnits(lifetime)}
+                    </p>
+                  </div>
+                  <div className="mt-4 border-t border-[#f4f4f5] pt-3 text-[11px] text-[#71717a]">
+                    1 credit equals {money(1, activeCurrency)} on this workspace.
+                  </div>
+                </section>
+
+                <section className="flex flex-col justify-between rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
+                  <div>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">Minutes &amp; call pricing</span>
+                    <div className="mt-2 text-2xl font-bold tracking-tight text-[#171717]">
+                      {whiteLabelIncludedMinutes > 0
+                        ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} min left`
+                        : "Pay from wallet"}
+                    </div>
+                    <p className="mt-1 text-xs text-[#52525b]">
+                      {data.currentPlan?.usagePricing?.mode === "fixed_per_minute"
+                        ? `${creditMoney((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per billable minute${whiteLabelIncludedMinutes > 0 ? " after included min" : ""}`
+                        : data.currentPlan?.usagePricing?.mode === "included_only"
+                          ? whiteLabelIncludedMinutes > 0 ? "Included minutes only (no overage)" : "No per-minute usage fee"
+                          : `Provider cost + ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup`}
+                    </p>
+                    {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? (
+                      <p className="mt-0.5 text-xs text-[#71717a]">
+                        Min per call: {creditMoney(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="mt-4 border-t border-[#f4f4f5] pt-3 text-[11px] text-[#71717a]">
+                    {whiteLabelIncludedMinutes > 0
+                      ? `${whiteLabelIncludedMinutes.toLocaleString()} included minutes per cycle`
+                      : "Calls deduct automatically after completion."}
+                  </div>
+                </section>
+
+                <section className="flex flex-col justify-between rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
+                  <div>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#71717a]">Deducted this month</span>
+                    <div className="mt-2 text-2xl font-bold tracking-tight text-[#171717]">
+                      {creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}
+                    </div>
+                    <p className="mt-1 text-xs text-[#71717a]">
+                      {data.usage?.calls ?? 0} calls · {Number(data.usage?.minutes ?? 0).toFixed(2)} min total
+                    </p>
+                  </div>
+                  <div className="mt-4 border-t border-[#f4f4f5] pt-3 text-[11px] text-[#71717a]">
+                    {data.subscription?.currentPeriodEnd
+                      ? `Current cycle ends ${dateTime(data.subscription.currentPeriodEnd)}`
+                      : "Billing cycle managed by provider"}
+                  </div>
+                </section>
               </div>
-              <dl className="grid sm:grid-cols-2 lg:grid-cols-4">
-                <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan bought</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</dd><p className="mt-1 text-[11px] text-[#71717a]">{creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod} · {whiteLabelIncludedMinutes.toLocaleString()} included min · {creditUnits(whiteLabelIncludedCredits)} included wallet credits</p><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} included min remaining` : "Calls deduct from wallet credits"}</p></div>
-                <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits granted</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditUnits(lifetime)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Plan allowance: {creditUnits(whiteLabelIncludedCredits)}</p></div>
-                <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Spendable balance remaining</p></div>
-                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">{data.usage?.calls ?? 0} calls · {Number(data.usage?.minutes ?? 0).toFixed(2)} min used</p></div>
-              </dl>
-              <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
-                <strong className="text-[#171717]">Call pricing: </strong>
-                {data.currentPlan?.usagePricing?.mode === "fixed_per_minute"
-                  ? `${creditMoney((data.currentPlan.usagePricing.perMinuteAmountMinor ?? 0) / 100, data.currentPlan.currency ?? walletCurrency)} per billable minute${whiteLabelIncludedMinutes > 0 ? " after included minutes" : ""}.`
-                  : data.currentPlan?.usagePricing?.mode === "included_only"
-                    ? whiteLabelIncludedMinutes > 0 ? "Calls use the included minutes; no overage charge is configured." : "No per-minute charge is configured on this plan."
-                    : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup${whiteLabelIncludedMinutes > 0 ? " after included minutes" : ""}. The final charge varies by the AI models used.`}
-                {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${creditMoney(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}.` : ""}
-              </div>
-            </section>
+
+              {whiteLabelPaymentDue ? (
+                <section className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50/70 p-5 shadow-xs sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-800">Subscription invoice due</span>
+                    <h2 className="mt-1 text-base font-bold text-[#171717]">Complete payment to activate plan credits</h2>
+                    <p className="mt-0.5 text-xs text-[#52525b]">Your wallet credits unlock automatically as soon as payment verifies.</p>
+                    {!data.configured ? <p className="mt-1 text-xs font-medium text-rose-700">Checkout is not configured yet. Contact your provider.</p> : null}
+                  </div>
+                  <button
+                    className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[#171717] px-5 text-xs font-semibold text-white hover:bg-black disabled:opacity-50"
+                    disabled={Boolean(busy) || !data.configured}
+                    onClick={() => void payWhiteLabelInvoice()}
+                    type="button"
+                  >
+                    {busy === "whiteLabelCheckout" ? "Opening payment…" : "Pay subscription invoice"}
+                  </button>
+                </section>
+              ) : null}
+            </>
           ) : null}
 
           {data?.whiteLabel && data.recharge?.enabled ? (
-            <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eaeaea] px-5 py-4">
+            <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7eb] px-5 py-4">
                 <div>
                   <span className="app-label text-[#71717a]">Wallet recharge</span>
                   <h2 className="mt-1 text-base font-semibold text-[#171717]">Add credits to your wallet</h2>
@@ -494,199 +597,95 @@ export function BillingShell() {
             </section>
           ) : null}
 
-          {data?.whiteLabel && data.currentPlan?.models ? (
-            <section className="rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">
-              <h2 className="m-0 text-sm font-semibold text-[#171717]">Models available on your plan</h2>
-              <p className="mt-1 text-xs text-[#71717a]">These are the configured models your agents can use. Realtime models appear under Intelligence.</p>
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                {([ ["stt", "Speech recognition"], ["llm", "Intelligence"], ["tts", "Voice output"] ] as const).map(([category, title]) => (
-                  <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3" key={category}>
-                    <h3 className="m-0 text-xs font-semibold text-[#171717]">{title}</h3>
-                    <ul className="mt-2 space-y-1 text-xs text-[#52525b]">
-                      {data.currentPlan.models?.[category].length
-                        ? data.currentPlan.models[category].map((model) => <li key={model.key}>{model.label}{model.kind === "realtime" ? " · realtime" : ""}</li>)
-                        : <li>No models available</li>}
-                    </ul>
+          {data?.whiteLabel ? (
+            <div className="grid gap-4 lg:grid-cols-[1.45fr_0.55fr]">
+              <section className="rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h2 className="m-0 text-sm font-semibold text-[#171717]">Workspace quotas &amp; usage</h2>
+                    <p className="mt-0.5 text-xs text-[#71717a]">Live limits active on your workspace.</p>
                   </div>
-                ))}
-              </div>
-            </section>
-          ) : null}
+                  <span className="rounded-full bg-[#f4f4f5] px-2.5 py-0.5 text-[11px] font-medium text-[#52525b]">
+                    Synced with provider plan
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  {[
+                    ["Voice agents", `${data.usage?.agents ?? 0} / ${data.currentPlan?.limits?.agents ?? "∞"}`],
+                    ["Team members", `${data.usage?.members ?? 0} / ${data.currentPlan?.limits?.members ?? "∞"}`],
+                    ["Phone numbers", `${data.usage?.phoneNumbers ?? 0} / ${data.currentPlan?.limits?.phoneNumbers ?? "∞"}`],
+                    ["Concurrent calls", String(data.currentPlan?.limits?.concurrentCalls ?? "—")],
+                    ["Monthly min cap", data.currentPlan?.limits?.monthlyMinutes != null ? `${data.currentPlan.limits.monthlyMinutes.toLocaleString()} min` : "Unlimited"],
+                    ["Knowledge sources", String(data.currentPlan?.limits?.knowledgeSources ?? "—")],
+                    ["API keys", String(data.currentPlan?.limits?.apiKeys ?? "—")],
+                    ["Cycle period", data.subscription?.currentPeriodEnd ? dateTime(data.subscription.currentPeriodEnd) : "Ongoing"],
+                  ].map(([label, value]) => (
+                    <div className="rounded-lg border border-[#eaeaea] bg-[#fafafa] px-3.5 py-3" key={label}>
+                      <p className="text-[11px] font-medium text-[#71717a]">{label}</p>
+                      <p className="mt-1 text-sm font-bold text-[#171717]">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
-          {data?.whiteLabel?.managedByPartner ? (
-            <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <section className="flex flex-col justify-between rounded-xl border border-[#e5e7eb] bg-white p-5 shadow-xs">
                 <div>
-                  <span className="app-label text-[#71717a]">Subscription & Plan</span>
-                  <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">
-                    {data.currentPlan?.name ?? (data.subscription?.plan ? data.subscription.plan.replaceAll("_", " ") : "Active Plan")}
-                  </h2>
-                  <p className="mt-1 text-xs text-[#71717a]">
-                    Your workspace is provided and managed directly by <strong className="text-[#171717]">{data.whiteLabel.productName}</strong>.
-                  </p>
-                  {data.subscription?.priceSnapshot ? (
-                    <p className="mt-1 text-xs font-medium text-[#52525b]">
-                      {creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod}
-                      {data.subscription.planVersion ? ` · Version ${data.subscription.planVersion}` : ""}
-                      {data.subscription.currentPeriodEnd ? ` · Ends ${dateTime(data.subscription.currentPeriodEnd)}` : ""}
-                    </p>
-                  ) : null}
-                </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-0.5 text-xs font-medium text-[#171717]">
-                  <span className="size-1.5 rounded-full bg-[#171717]" />
-                  {data.subscription?.status?.replaceAll("_", " ") ?? "Active"}
-                </span>
-              </div>
-
-              <div className="mt-5 grid gap-3 border-t border-[#eaeaea] pt-5 sm:grid-cols-3">
-                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
-                  <p className="text-[11px] font-medium text-[#71717a]">Calls Handled</p>
-                  <p className="mt-0.5 text-lg font-bold text-[#171717]">
-                    {data.usage?.calls ?? 0}
-                  </p>
-                </div>
-                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
-                  <p className="text-[11px] font-medium text-[#71717a]">Minutes Used</p>
-                  <p className="mt-0.5 text-lg font-bold text-[#171717]">
-                    {Number(data.usage?.minutes ?? 0).toFixed(2)} min
-                  </p>
-                </div>
-                <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
-                  <p className="text-[11px] font-medium text-[#71717a]">Support & Upgrades</p>
-                  {data.whiteLabel.supportEmail ? (
-                    <a
-                      href={`mailto:${data.whiteLabel.supportEmail}`}
-                      className="mt-0.5 block truncate text-xs font-medium text-[#171717] hover:underline"
-                    >
-                      {data.whiteLabel.supportEmail}
-                    </a>
-                  ) : (
-                    <p className="mt-0.5 text-xs font-medium text-[#171717]">Contact Provider</p>
-                  )}
-                </div>
-              </div>
-
-              {data.currentPlan?.limits ? (
-                <div className="mt-5 border-t border-[#eaeaea] pt-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Assigned plan limits</p>
-                  <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-                    {[
-                      ["Voice agents", `${data.usage?.agents ?? 0} / ${data.currentPlan.limits.agents ?? "∞"}`],
-                      ["Team members", `${data.usage?.members ?? 0} / ${data.currentPlan.limits.members ?? "∞"}`],
-                      ["Phone numbers", `${data.usage?.phoneNumbers ?? 0} / ${data.currentPlan.limits.phoneNumbers ?? "∞"}`],
-                      ["Concurrent calls", String(data.currentPlan.limits.concurrentCalls ?? "—")],
-                      ["Monthly minutes cap", data.currentPlan.limits.monthlyMinutes != null ? `${data.currentPlan.limits.monthlyMinutes.toLocaleString()} min` : "Unlimited"],
-                      ["Knowledge sources", String(data.currentPlan.limits.knowledgeSources ?? "—")],
-                      ["API keys", String(data.currentPlan.limits.apiKeys ?? "—")],
-                      ["Billing cycle ends", data.subscription?.currentPeriodEnd ? dateTime(data.subscription.currentPeriodEnd) : "—"],
-                    ].map(([label, value]) => (
-                      <div key={label} className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3.5 py-2.5">
-                        <p className="text-[11px] text-[#71717a]">{label}</p>
-                        <p className="mt-0.5 text-sm font-semibold text-[#171717]">{value}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
-              {data.subscription?.featuresSnapshot ? (
-                <div className="mt-5 border-t border-[#eaeaea] pt-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Enabled plan features</p>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    {Object.entries(data.subscription.featuresSnapshot)
-                      .filter(([, enabled]) => Boolean(enabled))
-                      .map(([feature]) => (
+                  <h2 className="m-0 text-sm font-semibold text-[#171717]">Plan features</h2>
+                  <p className="mt-0.5 text-xs text-[#71717a]">Capabilities enabled by {data.whiteLabel.productName}.</p>
+                  {whiteLabelFeatures ? (
+                    <div className="mt-3.5 flex flex-wrap gap-2">
+                      {Object.entries(whiteLabelFeatures).map(([feature, enabled]) => (
                         <span
+                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium capitalize ${enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-[#e5e7eb] bg-[#fafafa] text-[#a1a1aa] line-through"}`}
                           key={feature}
-                          className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[11px] font-medium capitalize text-[#171717]"
                         >
                           {feature.replace(/([A-Z])/g, " $1").trim()}
                         </span>
                       ))}
-                  </div>
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-xs text-[#71717a]">All standard workspace capabilities enabled.</p>
+                  )}
                 </div>
-              ) : null}
-            </section>
-          ) : (
+
+                <div className="mt-5 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-3.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#71717a]">Provider support</p>
+                  <p className="mt-1 text-xs font-semibold text-[#171717]">{data.whiteLabel.productName}</p>
+                  {data.whiteLabel.supportEmail ? (
+                    <a
+                      className="mt-1 inline-block text-xs font-medium text-[#2563eb] hover:underline"
+                      href={`mailto:${data.whiteLabel.supportEmail}`}
+                    >
+                      {data.whiteLabel.supportEmail}
+                    </a>
+                  ) : (
+                    <p className="mt-1 text-xs text-[#71717a]">Contact your account manager for plan changes.</p>
+                  )}
+                </div>
+              </section>
+            </div>
+          ) : null}
+
+          {!data?.whiteLabel ? (
             <>
-              {data?.whiteLabel && !data.whiteLabel.managedByPartner ? (
-                <section className="rounded-lg border border-[#eaeaea] bg-white p-5 shadow-xs">
-                  <span className="app-label text-[#71717a]">Your subscription plan</span>
-                  <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</h2>
-                  <p className="mt-1 text-xs text-[#71717a]">Plan provided by {data.whiteLabel.productName}.</p>
-                  <dl className="mt-4 grid gap-3 border-t border-[#eaeaea] pt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot ? `${creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / ${whiteLabelPlanPeriod}` : "Managed by provider"}</dd></div>
-                    <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{whiteLabelIncludedMinutes.toLocaleString()} min</dd></div>
-                    {whiteLabelIncludedCredits > 0 ? <div><dt className="text-[11px] text-[#71717a]">Wallet credit allowance</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd></div> : null}
-                    <div><dt className="text-[11px] text-[#71717a]">Monthly minute limit</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.limits?.monthlyMinutes?.toLocaleString() ?? "—"} min</dd></div>
-                    <div><dt className="text-[11px] text-[#71717a]">Status</dt><dd className="m-0 mt-1 text-sm font-semibold capitalize text-[#171717]">{data.subscription?.status?.replaceAll("_", " ") ?? "Active"}</dd></div>
-                  </dl>
-                  {data.currentPlan?.limits ? (
-                    <div className="mt-5 border-t border-[#eaeaea] pt-5">
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Assigned plan limits</p>
-                      <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-                        {[
-                          ["Voice agents", `${data.usage?.agents ?? 0} / ${data.currentPlan.limits.agents ?? "∞"}`],
-                          ["Team members", `${data.usage?.members ?? 0} / ${data.currentPlan.limits.members ?? "∞"}`],
-                          ["Phone numbers", `${data.usage?.phoneNumbers ?? 0} / ${data.currentPlan.limits.phoneNumbers ?? "∞"}`],
-                          ["Concurrent calls", String(data.currentPlan.limits.concurrentCalls ?? "—")],
-                          ["Monthly minutes cap", data.currentPlan.limits.monthlyMinutes != null ? `${data.currentPlan.limits.monthlyMinutes.toLocaleString()} min` : "Unlimited"],
-                          ["Knowledge sources", String(data.currentPlan.limits.knowledgeSources ?? "—")],
-                          ["API keys", String(data.currentPlan.limits.apiKeys ?? "—")],
-                          ["Billing cycle ends", data.subscription?.currentPeriodEnd ? dateTime(data.subscription.currentPeriodEnd) : "—"],
-                        ].map(([label, value]) => (
-                          <div key={label} className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3.5 py-2.5">
-                            <p className="text-[11px] text-[#71717a]">{label}</p>
-                            <p className="mt-0.5 text-sm font-semibold text-[#171717]">{value}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-                  {data.subscription?.featuresSnapshot ? (
-                    <div className="mt-5 border-t border-[#eaeaea] pt-5">
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Enabled plan features</p>
-                      <div className="mt-2.5 flex flex-wrap gap-2">
-                        {Object.entries(data.subscription.featuresSnapshot)
-                          .filter(([, enabled]) => Boolean(enabled))
-                          .map(([feature]) => (
-                            <span
-                              key={feature}
-                              className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[11px] font-medium capitalize text-[#171717]"
-                            >
-                              {feature.replace(/([A-Z])/g, " $1").trim()}
-                            </span>
-                          ))}
-                      </div>
-                    </div>
-                  ) : null}
-                  {whiteLabelPaymentDue ? (
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-4">
-                      <div><strong className="text-sm text-[#171717]">Payment needed for plan credits</strong><p className="mt-1 text-xs text-[#71717a]">Your allowance is added to the wallet after payment is verified.</p></div>
-                      <button className="rounded-md bg-[#2563eb] px-4 py-2 text-xs font-semibold text-white disabled:opacity-50" type="button" onClick={() => void payWhiteLabelInvoice()} disabled={Boolean(busy) || !data.configured}>{busy === "whiteLabelCheckout" ? "Opening payment…" : "Pay subscription"}</button>
-                      {!data.configured ? <p className="w-full text-xs text-[#71717a]">Checkout is not configured. Contact your provider.</p> : null}
-                    </div>
-                  ) : null}
-                </section>
-              ) : null}
-              {!data?.whiteLabel ? <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+              <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
                 <div className="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_320px] md:p-5">
-                  <div><span className="app-label text-[#71717a]">Available balance</span><h2 className="mt-1 mb-0 text-3xl font-semibold tracking-tight text-[#171717]">{creditMoney(balance)}</h2><p className="app-caption mt-1.5 mb-0 text-xs text-[#71717a]">{creditMoney(lifetime)} lifetime credits purchased</p><p className="app-caption mt-0.5 mb-0 text-xs text-[#a1a1aa]">{data?.whiteLabel ? `Balances and usage are shown in ${walletCurrency}.` : "All balances and usage are shown in Indian rupees."}</p></div>
-                  {(!data?.whiteLabel || data.configured) ? <div className="grid gap-2.5 border-t border-[#eaeaea] pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-5">
+                  <div><span className="app-label text-[#71717a]">Available balance</span><h2 className="mt-1 mb-0 text-3xl font-semibold tracking-tight text-[#171717]">{creditMoney(balance)}</h2><p className="app-caption mt-1.5 mb-0 text-xs text-[#71717a]">{creditMoney(lifetime)} lifetime credits purchased</p><p className="app-caption mt-0.5 mb-0 text-xs text-[#a1a1aa]">All balances and usage are shown in Indian rupees.</p></div>
+                  <div className="grid gap-2.5 border-t border-[#eaeaea] pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-5">
                     <span className="app-label text-xs font-semibold text-[#71717a]">Add credits</span>
                     <div className="grid grid-cols-3 gap-1.5">
                       {topUpOptions.map((amount) => <button className={`h-8 rounded-md border text-xs font-medium transition ${selectedTopUp === amount ? "border-black bg-[#171717] text-white" : "border-[#eaeaea] bg-white text-[#52525b] hover:border-black hover:text-[#171717]"}`} key={amount} type="button" aria-pressed={selectedTopUp === amount} onClick={() => setSelectedTopUp(amount)}>{money(amount)}</button>)}
                     </div>
                     <button className="h-8 rounded-md bg-[#2563eb] px-3 text-xs font-medium text-white hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-50" type="button" onClick={() => void purchaseCredits()} disabled={busy === "topup" || !data?.configured}>{busy === "topup" ? "Opening checkout..." : `Add ${money(selectedTopUp)} credits`}</button>
                     <p className="app-caption m-0 text-[11px] text-[#a1a1aa]">The checkout shows the final amount, including applicable tax.</p>
-                  </div> : null}
+                  </div>
                 </div>
                 <dl className="grid border-t border-[#dbe4e1] sm:grid-cols-2 lg:grid-cols-4">
                   {[["This month", money(toInr(data.usage.chargedCredits))], ["Calls handled", data.usage.calls.toLocaleString()], ["Minimum to call", money(toInr(data.creditSettings.minimumCallStartCredits, data.creditSettings.currency ?? walletCurrency))], ["Recent top-ups", `${totals.topUps} (${money(totals.net)})`]].map(([label, value], index) => <div className={`px-5 py-4 ${index ? "border-t border-[#dbe4e1] sm:border-t-0 sm:border-l" : ""}`} key={label}><dt className="app-caption">{label}</dt><dd className="m-0 mt-1 text-lg font-semibold">{value}</dd></div>)}
                 </dl>
-              </section> : null}
+              </section>
 
-              {!data?.whiteLabel ? <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
+              <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
                 <div className="border-b border-[#eaeaea] px-5 py-3.5"><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Billing details</h2></div>
                 <div className="grid md:grid-cols-2">
                   {data?.canManageBillingProfile ? <div className="flex flex-col gap-4 border-b border-[#eaeaea] p-5 md:col-span-2 md:flex-row md:items-center md:justify-between">
@@ -717,47 +716,63 @@ export function BillingShell() {
                     </dl>
                   </div>
                 </div>
-              </section> : null}
+              </section>
             </>
-          )}
+          ) : null}
 
-          <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
-            <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Credit &amp; usage history</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Grants, payments, call deductions, and refunds in {data?.whiteLabel ? walletCurrency : "INR"}</p></div><span className="app-caption text-xs text-[#71717a]">Latest {data?.transactions.length ?? 0} entries</span></div>
-            {data?.transactions.length ? <div className="divide-y divide-[#eaeaea]">{data.transactions.map((tx) => {
-              const isCredit = tx.amountCredits >= 0;
-              return <div className="flex items-center justify-between gap-4 px-5 py-3 text-xs" key={tx._id}><div className="min-w-0"><strong className="block truncate font-semibold text-[#171717]">{tx.description || tx.type}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">{dateTime(tx.createdAt)}{tx.callId ? ` · Call ${tx.callId.slice(-8)}` : ""}</span></div><div className="shrink-0 text-right"><strong className={`block font-semibold ${isCredit ? "text-emerald-700" : "text-[#171717]"}`}>{isCredit ? "+" : ""}{creditMoney(tx.amountCredits, tx.currency || walletCurrency)}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">Balance: {creditMoney(tx.balanceAfterCredits, tx.currency || walletCurrency)}</span></div></div>;
-            })}</div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No credit transactions yet.</div>}
-          </section>
+          <div className={`grid gap-4 ${(!data?.whiteLabel || !data.whiteLabel.managedByPartner || (data.invoices.length + (data.recharge?.orders.length ?? 0)) > 0) ? "lg:grid-cols-2" : ""}`}>
+            <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-xs">
+              <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] px-5 py-3.5">
+                <div>
+                  <h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Credit &amp; usage history</h2>
+                  <p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Grants, payments, call deductions, and refunds in {data?.whiteLabel ? walletCurrency : "INR"}</p>
+                </div>
+                <span className="app-caption text-xs text-[#71717a]">Latest {data?.transactions.length ?? 0} entries</span>
+              </div>
+              {data?.transactions.length ? <div className="max-h-96 divide-y divide-[#eaeaea] overflow-y-auto">{data.transactions.map((tx) => {
+                const isCredit = tx.amountCredits >= 0;
+                return <div className="flex items-center justify-between gap-4 px-5 py-3 text-xs" key={tx._id}><div className="min-w-0"><strong className="block truncate font-semibold text-[#171717]">{tx.description || tx.type}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">{dateTime(tx.createdAt)}{tx.callId ? ` · Call ${tx.callId.slice(-8)}` : ""}</span></div><div className="shrink-0 text-right"><strong className={`block font-semibold ${isCredit ? "text-emerald-700" : "text-[#171717]"}`}>{isCredit ? "+" : ""}{creditMoney(tx.amountCredits, tx.currency || walletCurrency)}</strong><span className="mt-0.5 block text-[11px] text-[#71717a]">Balance: {creditMoney(tx.balanceAfterCredits, tx.currency || walletCurrency)}</span></div></div>;
+              })}</div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No credit transactions yet.</div>}
+            </section>
 
-          <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
-            <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Invoices</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Wallet top-ups and monthly charges</p></div><span className="app-caption text-xs text-[#71717a]">{(data?.invoices.length ?? 0) + (data?.recharge?.orders.length ?? 0)} invoices</span></div>
-            {((data?.invoices.length ?? 0) > 0 || (data?.recharge?.orders.length ?? 0) > 0) ? <div className="divide-y divide-[#eaeaea]">
-              {(data?.recharge?.orders ?? []).map((order) => {
-                const invoiceNumber = `WLR-${order._id.slice(-12).toUpperCase()}`;
-                const isDownloading = busy === `wlRechargeInvoice:${order._id}`;
-                return (
-                  <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={`recharge:${order._id}`}>
-                    <div className="min-w-0">
-                      <strong className="block truncate text-xs font-semibold text-[#171717]">{invoiceNumber}</strong>
-                      <span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{order.packageName} · {creditUnits(order.credits)}</span>
-                    </div>
-                    <div className="sm:text-right">
-                      <strong className="block text-xs font-semibold text-[#171717]">{money(order.amountMinor / 100, order.currency)}</strong>
-                      <span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{order.status} · {dateTime(order.paidAt || order.createdAt)}</span>
-                    </div>
-                    <button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadWhiteLabelRechargeInvoice(order._id, invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button>
+            {(!data?.whiteLabel || !data.whiteLabel.managedByPartner || (data.invoices.length + (data.recharge?.orders.length ?? 0)) > 0) ? (
+              <section className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-xs">
+                <div className="flex items-center justify-between gap-4 border-b border-[#e5e7eb] px-5 py-3.5">
+                  <div>
+                    <h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Invoices &amp; receipts</h2>
+                    <p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Wallet top-ups and monthly charges</p>
                   </div>
-                );
-              })}
-              {(data?.invoices ?? []).map((invoice) => {
-                const amount = ((invoice.amountPaid && invoice.amountPaid > 0 ? invoice.amountPaid : undefined) ?? invoice.amountDue ?? invoice.totalMinor ?? 0) / 100;
-                const isDownloading = busy === `invoice:${invoice._id}`;
-                const invoiceCurrency = invoice.currency.toUpperCase();
-                const invoiceFallbackTitle = data?.whiteLabel ? `${data.whiteLabel.productName} payment invoice` : "Vozon payment invoice";
-                return <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-xs font-semibold text-[#171717]">{invoice.invoiceNumber || invoiceFallbackTitle}</strong><span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-xs font-semibold text-[#171717]">{creditMoney(amount, invoiceCurrency)}</strong><span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{invoice.status || "Status unavailable"} · {dateTime(invoice.createdAt)}{!data?.whiteLabel && invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
-              })}
-            </div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No invoices yet.</div>}
-          </section>
+                  <span className="app-caption text-xs text-[#71717a]">{(data?.invoices.length ?? 0) + (data?.recharge?.orders.length ?? 0)} records</span>
+                </div>
+                {((data?.invoices.length ?? 0) > 0 || (data?.recharge?.orders.length ?? 0) > 0) ? <div className="max-h-96 divide-y divide-[#eaeaea] overflow-y-auto">
+                  {(data?.recharge?.orders ?? []).map((order) => {
+                    const invoiceNumber = `WLR-${order._id.slice(-12).toUpperCase()}`;
+                    const isDownloading = busy === `wlRechargeInvoice:${order._id}`;
+                    return (
+                      <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={`recharge:${order._id}`}>
+                        <div className="min-w-0">
+                          <strong className="block truncate text-xs font-semibold text-[#171717]">{invoiceNumber}</strong>
+                          <span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{order.packageName} · {creditUnits(order.credits)}</span>
+                        </div>
+                        <div className="sm:text-right">
+                          <strong className="block text-xs font-semibold text-[#171717]">{money(order.amountMinor / 100, order.currency)}</strong>
+                          <span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{order.status} · {dateTime(order.paidAt || order.createdAt)}</span>
+                        </div>
+                        <button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadWhiteLabelRechargeInvoice(order._id, invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button>
+                      </div>
+                    );
+                  })}
+                  {(data?.invoices ?? []).map((invoice) => {
+                    const amount = ((invoice.amountPaid && invoice.amountPaid > 0 ? invoice.amountPaid : undefined) ?? invoice.amountDue ?? invoice.totalMinor ?? 0) / 100;
+                    const isDownloading = busy === `invoice:${invoice._id}`;
+                    const invoiceCurrency = invoice.currency.toUpperCase();
+                    const invoiceFallbackTitle = data?.whiteLabel ? `${data.whiteLabel.productName} payment invoice` : "Vozon payment invoice";
+                    return <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-xs font-semibold text-[#171717]">{invoice.invoiceNumber || invoiceFallbackTitle}</strong><span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-xs font-semibold text-[#171717]">{creditMoney(amount, invoiceCurrency)}</strong><span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{invoice.status || "Status unavailable"} · {dateTime(invoice.createdAt)}{!data?.whiteLabel && invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+                  })}
+                </div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No invoices yet.</div>}
+              </section>
+            ) : null}
+          </div>
           </> : null}
         </div>
       </section>

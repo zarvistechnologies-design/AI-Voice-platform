@@ -48,40 +48,16 @@ export function DashboardWorkspaceBar() {
     currency: string;
     includedMinutesRemaining: number | null;
   } | null>(null);
-  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
+    document.documentElement.setAttribute("data-dashboard-theme", "light");
+    document.documentElement.classList.remove("dark");
     try {
-      const saved = localStorage.getItem("vozon_dashboard_theme");
-      const isDark = saved !== "light";
-      const timer = window.setTimeout(() => setDarkMode(isDark), 0);
-      document.documentElement.setAttribute("data-dashboard-theme", isDark ? "dark" : "light");
-      document.documentElement.classList.toggle("dark", isDark);
-      return () => window.clearTimeout(timer);
+      localStorage.removeItem("vozon_dashboard_theme");
     } catch {
       /* localStorage may be unavailable */
     }
   }, []);
-
-  function toggleTheme() {
-    setDarkMode((prev) => {
-      const next = !prev;
-      const value = next ? "dark" : "light";
-      const root = document.documentElement;
-      root.classList.add("theme-switching");
-      document.documentElement.setAttribute("data-dashboard-theme", value);
-      document.documentElement.classList.toggle("dark", next);
-      try {
-        localStorage.setItem("vozon_dashboard_theme", value);
-      } catch {
-        /* localStorage may be unavailable */
-      }
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => root.classList.remove("theme-switching"));
-      });
-      return next;
-    });
-  }
 
   useEffect(() => {
     if (!session) return;
@@ -177,26 +153,7 @@ export function DashboardWorkspaceBar() {
             </span>
           </Link>
 
-          <span className="hidden h-4 w-px bg-[#eaeaea] sm:block dark:bg-zinc-800" aria-hidden="true" />
-
-          <button
-            type="button"
-            onClick={toggleTheme}
-            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            className="grid size-7 shrink-0 place-items-center rounded-md border border-[#eaeaea] bg-white text-[#52525b] transition hover:border-[#d4d4d8] hover:bg-[#f4f4f5] hover:text-[#171717] dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-white"
-          >
-            {darkMode ? (
-              <svg className="size-3.5 fill-none stroke-current stroke-[1.9]" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-              </svg>
-            ) : (
-              <svg className="size-3.5 fill-none stroke-current stroke-[1.9]" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            )}
-          </button>
+          <span className="hidden h-4 w-px bg-[#eaeaea] sm:block" aria-hidden="true" />
 
           <Link
             href="/dashboard/profile"

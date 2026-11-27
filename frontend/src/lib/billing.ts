@@ -7,13 +7,16 @@ export type PlanId = "free" | "starter" | "growth" | "enterprise";
 export type BillingPlan = {
   id: string;
   name: string;
+  version?: number;
   monthlyPrice: number | null;
   priceAmount?: number;
+  setupFeeMinor?: number;
   billingType?: "subscription" | "permanent";
   currency?: string;
   interval?: string;
   includedMinutes?: number;
   includedCredits?: number;
+  features?: Record<string, boolean>;
   models?: Record<"stt" | "llm" | "tts", Array<{ key: string; label: string; provider: string; model: string; kind: "realtime" | "pipeline" }>>;
   usagePricing?: {
     mode: "cost_markup" | "fixed_per_minute" | "included_only";
@@ -108,7 +111,7 @@ export type BillingSummary = {
     currentPeriodEnd?: string;
     trialEndsAt?: string;
     cancelAtPeriodEnd?: boolean;
-    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; interval?: string; billingType?: "subscription" | "permanent" };
+    priceSnapshot?: { currency?: string; recurringAmountMinor?: number; setupFeeMinor?: number; trialDays?: number; taxBehavior?: string; interval?: string; billingType?: "subscription" | "permanent" };
     featuresSnapshot?: Record<string, boolean>;
   };
   currentPlan: BillingPlan;
