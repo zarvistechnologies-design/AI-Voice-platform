@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import { ModelAccessPicker } from "@/components/white-label/ModelAccessPicker";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { openRazorpayCheckout, type RazorpayCheckoutPayload } from "@/lib/razorpayCheckout";
@@ -706,18 +707,20 @@ export function PartnerWhiteLabelConsole() {
     }, "Payment gateway reverted to platform default.");
   }
 
-  if (!session || loading) return <main className="grid min-h-screen place-items-center bg-[#f3f6f5] text-sm font-semibold text-[#71817d]">Loading white-label operations…</main>;
-  if (!overview) return <main className="grid min-h-screen place-items-center bg-[#f3f6f5] p-6 text-[#1d342e]"><Card className="max-w-lg p-7 text-center"><h1 className="text-xl font-bold">White-label access is not enabled</h1><p className="mt-3 text-sm leading-6 text-[#71817d]">A platform super administrator must approve a contract for this organization first.</p><button className={`${secondaryButtonClass} mt-5`} onClick={() => router.push("/dashboard/agents")}>Return to dashboard</button></Card></main>;
+  if (!session || loading) return <main className="partner-white-label-loading grid min-h-screen place-items-center text-sm font-semibold">Loading white-label operations…</main>;
+  if (!overview) return <main className="partner-white-label-loading grid min-h-screen place-items-center p-6"><Card className="max-w-lg p-7 text-center"><h1 className="text-xl font-bold">White-label access is not enabled</h1><p className="mt-3 text-sm leading-6 text-[#71817d]">A platform super administrator must approve a contract for this organization first.</p><button className={`${secondaryButtonClass} mt-5`} onClick={() => router.push("/dashboard/agents")}>Return to dashboard</button></Card></main>;
 
   const tabs: Array<{ id: Tab; label: string }> = [{ id: "launch", label: "Launch control" }, { id: "brand", label: "Brand" }, { id: "domains", label: "Domains" }, { id: "plans", label: "Pricing plans" }, { id: "customers", label: "Customers" }, { id: "billing", label: "Billing" }, { id: "contract", label: "Contract" }];
-  return <main className={`partner-white-label-console grid min-h-screen bg-[#f3f6f5] text-[#1d342e] ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
+  return <main className={`dashboard-home-theme partner-white-label-console grid min-h-screen ${showUserSidebar ? "lg:grid-cols-[272px_minmax(0,1fr)]" : "lg:grid-cols-[64px_minmax(0,1fr)]"}`}>
     <DashboardSidebar activeLabel="White label" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
-    <section className="min-w-0 p-4 sm:p-6"><div className="mx-auto grid max-w-[1500px] gap-5">
-      <header className="overflow-hidden rounded-2xl border border-[#dce7e3] bg-[linear-gradient(120deg,#ffffff_0%,#f4faf8_70%,#eaf6f2_100%)] p-6 shadow-[0_10px_30px_rgba(28,55,47,0.06)] sm:p-8">
+    <section className="min-w-0">
+      <DashboardPageHeader workspaceBarOnly />
+      <div className="partner-white-label-content mx-auto grid max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
+      <header className="partner-white-label-hero overflow-hidden rounded-2xl border p-6 sm:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex gap-2"><Status value={overview.account.status} /><Status value={overview.account.billingStatus} /></div></div>
       </header>
       {notice ? <div className={`rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`}>{notice.message}</div> : null}
-      <nav className="flex gap-1 overflow-x-auto rounded-xl border border-[#dde6e3] bg-white p-1.5 shadow-[0_6px_18px_rgba(28,55,47,0.04)]" aria-label="White-label administration">{tabs.map((item) => <button className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
+      <nav className="partner-white-label-tabs flex gap-1 overflow-x-auto rounded-xl border p-1.5" aria-label="White-label administration">{tabs.map((item) => <button aria-pressed={tab === item.id} className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "partner-white-label-tab-active bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
 
       {tab === "launch" ? <div className="grid gap-5 xl:grid-cols-[1fr_0.7fr]">
         <Card><SectionTitle title="Production launch gates" description="Complete these four steps before onboarding customers." /><div className="grid gap-3 p-5">{readiness.map((item) => <button className="flex items-center justify-between rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4 text-left transition hover:border-[#c8d8d3] hover:bg-[#f3f8f6]" key={item.label} onClick={() => setTab(item.tab)}><span><strong className="block text-sm font-semibold text-[#29423b]">{item.label}</strong><span className="mt-1 block text-xs text-[#7b8b86]">{item.ready ? "Gate passed" : "Action required"}</span></span><span className={`grid size-8 place-items-center rounded-full text-sm font-bold ${item.ready ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>{item.ready ? "✓" : "!"}</span></button>)}</div></Card>
@@ -842,6 +845,7 @@ export function PartnerWhiteLabelConsole() {
       </div> : null}
 
       {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
-    </div></section>
+      </div>
+    </section>
   </main>;
 }
