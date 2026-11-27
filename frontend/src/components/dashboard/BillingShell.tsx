@@ -40,8 +40,9 @@ export function BillingShell() {
   const [data, setData] = useState<BillingSummary | null>(null);
   const [billingCheckedAt, setBillingCheckedAt] = useState<number | null>(null);
   const [notice, setNotice] = useState("");
-  const [busy, setBusy] = useState<"" | "topup" | "cancel" | "enterprise" | "whiteLabelCheckout" | "profile" | `invoice:${string}`>("");
+  const [busy, setBusy] = useState<"" | "topup" | "wlRecharge" | "cancel" | "enterprise" | "whiteLabelCheckout" | "profile" | `invoice:${string}` | `wlRechargeInvoice:${string}`>("");
   const [selectedTopUp, setSelectedTopUp] = useState(2_000);
+  const [selectedRechargeId, setSelectedRechargeId] = useState("");
   const [gstin, setGstin] = useState("");
   const [billingAddress, setBillingAddress] = useState("");
   const [billingExtra, setBillingExtra] = useState({ companyName: "", phone: "", country: "", state: "", postalCode: "" });
@@ -74,7 +75,7 @@ export function BillingShell() {
     void validateStoredSession();
     const credits = new URLSearchParams(window.location.search).get("credits");
     const timer = window.setTimeout(async () => {
-      await load();
+      await load(true);
       if (credits === "success") {
         setNotice("Payment return received. Check the wallet balance and invoice to confirm your credits were added.");
       }
@@ -143,6 +144,11 @@ export function BillingShell() {
   );
   const lifetime = Math.max(wallet?.lifetimePurchasedCredits ?? 0, balance, 0);
   const latestPayment = data?.transactions.find((item) => item.type === "topup" || item.type === "auto_reload");
+  const rechargePackages = useMemo(() => data?.recharge?.packages ?? [], [data?.recharge?.packages]);
+  const selectedRechargePackage = useMemo(
+    () => rechargePackages.find((pkg) => pkg.id === selectedRechargeId) ?? rechargePackages[0] ?? null,
+    [rechargePackages, selectedRechargeId],
+  );
   const totals = useMemo(() => {
     const transactions = data?.transactions ?? [];
     return {
@@ -176,6 +182,59 @@ export function BillingShell() {
       });
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not complete credit purchase.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function purchaseWhiteLabelRecharge() {
+    if (!selectedRechargePackage) {
+      setNotice("Select a recharge package first.");
+      return;
+    }
+    if (!data?.recharge?.ready) {
+      setNotice(data?.recharge?.reason || "Online wallet recharge is not available yet. Contact your provider.");
+      return;
+    }
+    setBusy("wlRecharge");
+    try {
+      const checkout = await billingApi.whiteLabelRecharge(selectedRechargePackage.id);
+      const payment = await openRazorpayCheckout({ ...checkout, displayMode: "all" });
+      const verification = await billingApi.verifyWhiteLabelRecharge(payment);
+      const updated = await load(true);
+      setNotice(`${money(checkout.amount / 100, checkout.currency)} payment verified and ${creditUnits(verification.credits)} added to your wallet.`);
+      setSuccessData({
+        isOpen: true,
+        type: "topup",
+        amountInr: checkout.amount / 100,
+        currency: checkout.currency,
+        creditsAdded: verification.credits,
+        paymentId: payment.razorpay_payment_id,
+        invoiceId: verification.rechargeId ? `wl-recharge:${verification.rechargeId}` : undefined,
+        newBalanceCredits: updated?.wallet?.balanceCredits,
+      });
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not complete wallet recharge.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function downloadWhiteLabelRechargeInvoice(rechargeId: string, invoiceNumber: string) {
+    setBusy(`wlRechargeInvoice:${rechargeId}`);
+    try {
+      const blob = await billingApi.downloadWhiteLabelRechargeInvoice(rechargeId);
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${invoiceNumber || `WLR-${rechargeId.slice(-12).toUpperCase()}`}.html`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+      setNotice("Recharge invoice downloaded. Open it and select Print / Save PDF for a PDF copy.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Could not download recharge invoice.");
     } finally {
       setBusy("");
     }
@@ -310,7 +369,7 @@ export function BillingShell() {
         />
 
         <div className="grid w-full gap-4 px-4 py-4 sm:px-5 lg:px-6">
-          {notice ? <div className="rounded-md border border-[#eaeaea] bg-white px-3 py-2 text-xs font-medium text-[#171717]">{notice}</div> : null}
+          {notice ? <div aria-live="polite" className="rounded-md border border-[#eaeaea] bg-white px-3 py-2 text-xs font-medium text-[#171717]" role="status">{notice}</div> : null}
 
           {!data ? <div className="rounded-xl border border-[#eaeaea] bg-white p-6 text-sm text-[#71717a]">{notice ? "Billing data is unavailable. Use Refresh to try again." : "Loading your billing details..."}</div> : null}
           {data ? <>
@@ -324,7 +383,7 @@ export function BillingShell() {
                 <div className="border-b border-[#eaeaea] p-4 lg:border-b-0"><dt className="text-xs text-[#71717a]">Plan bought</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</dd><p className="mt-1 text-[11px] text-[#71717a]">{creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod} · {whiteLabelIncludedMinutes.toLocaleString()} included min · {creditUnits(whiteLabelIncludedCredits)} included wallet credits</p><p className="mt-1 text-[11px] text-[#71717a]">{whiteLabelIncludedMinutes > 0 ? `${(data.periodUsage?.minutesRemaining ?? whiteLabelIncludedMinutes).toLocaleString()} included min remaining` : "Calls deduct from wallet credits"}</p></div>
                 <div className="border-b border-[#eaeaea] p-4 sm:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Credits granted</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditUnits(lifetime)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Plan allowance: {creditUnits(whiteLabelIncludedCredits)}</p></div>
                 <div className="border-b border-[#eaeaea] p-4 lg:border-l lg:border-b-0"><dt className="text-xs text-[#71717a]">Available wallet balance</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(wallet?.balanceCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">Spendable balance remaining</p></div>
-                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">{data.usage?.calls ?? 0} calls · {Math.round(data.usage?.minutes ?? 0)} min used</p></div>
+                <div className="p-4 sm:border-l"><dt className="text-xs text-[#71717a]">Deducted this month</dt><dd className="mt-1 text-xl font-bold text-[#171717]">{creditMoney(data.usage?.chargedCredits ?? 0, walletCurrency)}</dd><p className="mt-1 text-[11px] text-[#71717a]">{data.usage?.calls ?? 0} calls · {Number(data.usage?.minutes ?? 0).toFixed(2)} min used</p></div>
               </dl>
               <div className="border-t border-[#eaeaea] bg-[#fafafa] px-5 py-4 text-xs text-[#52525b]">
                 <strong className="text-[#171717]">Call pricing: </strong>
@@ -334,6 +393,103 @@ export function BillingShell() {
                     ? whiteLabelIncludedMinutes > 0 ? "Calls use the included minutes; no overage charge is configured." : "No per-minute charge is configured on this plan."
                     : `Provider usage cost plus ${((data.currentPlan?.usagePricing?.markupBps ?? 0) / 100).toFixed(2)}% markup${whiteLabelIncludedMinutes > 0 ? " after included minutes" : ""}. The final charge varies by the AI models used.`}
                 {data.currentPlan?.usagePricing?.minimumCallAmountMinor ? ` Minimum billable call: ${creditMoney(data.currentPlan.usagePricing.minimumCallAmountMinor / 100, data.currentPlan.currency ?? walletCurrency)}.` : ""}
+              </div>
+            </section>
+          ) : null}
+
+          {data?.whiteLabel ? (
+            <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eaeaea] px-5 py-4">
+                <div>
+                  <span className="app-label text-[#71717a]">Wallet recharge</span>
+                  <h2 className="mt-1 text-base font-semibold text-[#171717]">Add credits to your wallet</h2>
+                  <p className="mt-0.5 text-xs text-[#71717a]">
+                    Choose a recharge pack below and pay directly through {data.whiteLabel.productName}&apos;s Razorpay checkout.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="block text-[11px] text-[#71817a]">Current balance</span>
+                  <strong className="text-lg font-bold text-[#171717]">{creditMoney(balance, walletCurrency)}</strong>
+                </div>
+              </div>
+              <div className="p-5">
+                {rechargePackages.length > 0 ? (
+                  <div className="grid gap-4">
+                    <div aria-label="Available recharge packages" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" role="radiogroup">
+                      {rechargePackages.map((pkg) => {
+                        const isSelected = selectedRechargePackage?.id === pkg.id;
+                        return (
+                          <button
+                            aria-checked={isSelected}
+                            className={`flex flex-col justify-between rounded-lg border p-4 text-left transition ${isSelected ? "border-[#171717] bg-[#fafafa] ring-2 ring-[#171717]/15" : "border-[#eaeaea] bg-white hover:border-[#a1a1aa]"}`}
+                            key={pkg.id}
+                            onClick={() => setSelectedRechargeId(pkg.id)}
+                            role="radio"
+                            type="button"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <span className="text-xs font-semibold text-[#52525b]">{pkg.name}</span>
+                              <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${isSelected ? "bg-[#171717] text-white" : "bg-[#f4f4f5] text-[#71717a]"}`}>
+                                {isSelected ? "Selected" : pkg.currency}
+                              </span>
+                            </div>
+                            <div className="mt-3">
+                              <strong className="block text-xl font-bold text-[#171717]">{money(pkg.priceMinor / 100, pkg.currency)}</strong>
+                              <span className="mt-1 block text-xs font-medium text-emerald-700">+{creditUnits(pkg.credits)}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex flex-col gap-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="text-xs text-[#52525b]">
+                        {selectedRechargePackage ? (
+                          <>
+                            <strong className="block text-sm text-[#171717]">
+                              {selectedRechargePackage.name} · +{creditUnits(selectedRechargePackage.credits)}
+                            </strong>
+                            <span className="mt-0.5 block">
+                              {(data.recharge?.taxRateBps ?? 0) > 0
+                                ? `Total payable ${money(selectedRechargePackage.priceMinor / 100, selectedRechargePackage.currency)} (${data.recharge?.taxLabel || "GST"} ${((data.recharge?.taxRateBps ?? 0) / 100).toFixed(2)}% included).`
+                                : `Total payable ${money(selectedRechargePackage.priceMinor / 100, selectedRechargePackage.currency)}. Credits are added immediately after verification.`}
+                            </span>
+                          </>
+                        ) : null}
+                        {!data.recharge?.ready ? (
+                          <span className="mt-1 block font-medium text-amber-700">
+                            {data.recharge?.reason || "Online recharge is not ready yet. Contact your provider."}
+                          </span>
+                        ) : null}
+                      </div>
+                      <button
+                        className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-md bg-[#171717] px-5 text-xs font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={Boolean(busy) || !data.recharge?.ready || !selectedRechargePackage}
+                        onClick={() => void purchaseWhiteLabelRecharge()}
+                        type="button"
+                      >
+                        {busy === "wlRecharge"
+                          ? "Opening checkout..."
+                          : selectedRechargePackage
+                            ? `Pay ${money(selectedRechargePackage.priceMinor / 100, selectedRechargePackage.currency)}`
+                            : "Select a pack"}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-[#d4d4d8] bg-[#fafafa] p-4 text-xs text-[#52525b]">
+                    <strong className="block text-[#171717]">No {walletCurrency} recharge packs published yet</strong>
+                    <p className="mt-1">
+                      {!data.recharge?.ready && data.recharge?.reason
+                        ? `${data.recharge.reason} `
+                        : ""}
+                      Your provider can configure {walletCurrency} recharge packs from their white-label Billing console, or assign credits directly to your workspace.
+                      {data.whiteLabel.supportEmail ? (
+                        <> Contact <a className="font-semibold text-[#171717] underline" href={`mailto:${data.whiteLabel.supportEmail}`}>{data.whiteLabel.supportEmail}</a> for assistance.</>
+                      ) : null}
+                    </p>
+                  </div>
+                )}
               </div>
             </section>
           ) : null}
@@ -368,9 +524,9 @@ export function BillingShell() {
                   <p className="mt-1 text-xs text-[#71717a]">
                     Your workspace is provided and managed directly by <strong className="text-[#171717]">{data.whiteLabel.productName}</strong>.
                   </p>
-                  {data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? (
+                  {data.subscription?.priceSnapshot ? (
                     <p className="mt-1 text-xs font-medium text-[#52525b]">
-                      {creditMoney(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency ?? walletCurrency)} / {data.subscription.priceSnapshot.interval ?? "month"}
+                      {creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / {whiteLabelPlanPeriod}
                       {data.subscription.planVersion ? ` · Version ${data.subscription.planVersion}` : ""}
                       {data.subscription.currentPeriodEnd ? ` · Ends ${dateTime(data.subscription.currentPeriodEnd)}` : ""}
                     </p>
@@ -392,7 +548,7 @@ export function BillingShell() {
                 <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
                   <p className="text-[11px] font-medium text-[#71717a]">Minutes Used</p>
                   <p className="mt-0.5 text-lg font-bold text-[#171717]">
-                    {Math.round(data.usage?.minutes ?? 0)} min
+                    {Number(data.usage?.minutes ?? 0).toFixed(2)} min
                   </p>
                 </div>
                 <div className="rounded-md border border-[#eaeaea] bg-[#fafafa] p-3.5">
@@ -459,12 +615,51 @@ export function BillingShell() {
                   <h2 className="mt-1 text-xl font-bold tracking-tight text-[#171717]">{data.currentPlan?.name ?? "Active Plan"}</h2>
                   <p className="mt-1 text-xs text-[#71717a]">Plan provided by {data.whiteLabel.productName}.</p>
                   <dl className="mt-4 grid gap-3 border-t border-[#eaeaea] pt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot?.recurringAmountMinor !== undefined ? `${money(data.subscription.priceSnapshot.recurringAmountMinor / 100, data.subscription.priceSnapshot.currency)} / ${data.subscription.priceSnapshot.interval ?? "month"}` : "Managed by provider"}</dd></div>
+                    <div><dt className="text-[11px] text-[#71717a]">Plan price</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.subscription?.priceSnapshot ? `${creditMoney(whiteLabelPlanPrice, data.currentPlan?.currency ?? walletCurrency)} / ${whiteLabelPlanPeriod}` : "Managed by provider"}</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Included minutes</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{whiteLabelIncludedMinutes.toLocaleString()} min</dd></div>
                     {whiteLabelIncludedCredits > 0 ? <div><dt className="text-[11px] text-[#71717a]">Wallet credit allowance</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{creditMoney(whiteLabelIncludedCredits, data.currentPlan?.currency ?? walletCurrency)}</dd></div> : null}
                     <div><dt className="text-[11px] text-[#71717a]">Monthly minute limit</dt><dd className="m-0 mt-1 text-sm font-semibold text-[#171717]">{data.currentPlan?.limits?.monthlyMinutes?.toLocaleString() ?? "—"} min</dd></div>
                     <div><dt className="text-[11px] text-[#71717a]">Status</dt><dd className="m-0 mt-1 text-sm font-semibold capitalize text-[#171717]">{data.subscription?.status?.replaceAll("_", " ") ?? "Active"}</dd></div>
                   </dl>
+                  {data.currentPlan?.limits ? (
+                    <div className="mt-5 border-t border-[#eaeaea] pt-5">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Assigned plan limits</p>
+                      <div className="mt-3 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+                        {[
+                          ["Voice agents", `${data.usage?.agents ?? 0} / ${data.currentPlan.limits.agents ?? "∞"}`],
+                          ["Team members", `${data.usage?.members ?? 0} / ${data.currentPlan.limits.members ?? "∞"}`],
+                          ["Phone numbers", `${data.usage?.phoneNumbers ?? 0} / ${data.currentPlan.limits.phoneNumbers ?? "∞"}`],
+                          ["Concurrent calls", String(data.currentPlan.limits.concurrentCalls ?? "—")],
+                          ["Monthly minutes cap", data.currentPlan.limits.monthlyMinutes != null ? `${data.currentPlan.limits.monthlyMinutes.toLocaleString()} min` : "Unlimited"],
+                          ["Knowledge sources", String(data.currentPlan.limits.knowledgeSources ?? "—")],
+                          ["API keys", String(data.currentPlan.limits.apiKeys ?? "—")],
+                          ["Billing cycle ends", data.subscription?.currentPeriodEnd ? dateTime(data.subscription.currentPeriodEnd) : "—"],
+                        ].map(([label, value]) => (
+                          <div key={label} className="rounded-md border border-[#eaeaea] bg-[#fafafa] px-3.5 py-2.5">
+                            <p className="text-[11px] text-[#71717a]">{label}</p>
+                            <p className="mt-0.5 text-sm font-semibold text-[#171717]">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {data.subscription?.featuresSnapshot ? (
+                    <div className="mt-5 border-t border-[#eaeaea] pt-5">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-[#71717a]">Enabled plan features</p>
+                      <div className="mt-2.5 flex flex-wrap gap-2">
+                        {Object.entries(data.subscription.featuresSnapshot)
+                          .filter(([, enabled]) => Boolean(enabled))
+                          .map(([feature]) => (
+                            <span
+                              key={feature}
+                              className="rounded-full border border-[#eaeaea] bg-[#fafafa] px-2.5 py-1 text-[11px] font-medium capitalize text-[#171717]"
+                            >
+                              {feature.replace(/([A-Z])/g, " $1").trim()}
+                            </span>
+                          ))}
+                      </div>
+                    </div>
+                  ) : null}
                   {whiteLabelPaymentDue ? (
                     <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#eaeaea] bg-[#fafafa] p-4">
                       <div><strong className="text-sm text-[#171717]">Payment needed for plan credits</strong><p className="mt-1 text-xs text-[#71717a]">Your allowance is added to the wallet after payment is verified.</p></div>
@@ -535,14 +730,33 @@ export function BillingShell() {
           </section>
 
           <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white">
-            <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Invoices</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Wallet top-ups and monthly charges</p></div><span className="app-caption text-xs text-[#71717a]">{data?.invoices.length ?? 0} invoices</span></div>
-            {data?.invoices.length ? <div className="divide-y divide-[#eaeaea]">{data.invoices.map((invoice) => {
-              const amount = ((invoice.amountPaid && invoice.amountPaid > 0 ? invoice.amountPaid : undefined) ?? invoice.amountDue ?? invoice.totalMinor ?? 0) / 100;
-              const isDownloading = busy === `invoice:${invoice._id}`;
-              const invoiceCurrency = invoice.currency.toUpperCase();
-              const invoiceFallbackTitle = data?.whiteLabel ? `${data.whiteLabel.productName} payment invoice` : "Vozon payment invoice";
-              return <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-xs font-semibold text-[#171717]">{invoice.invoiceNumber || invoiceFallbackTitle}</strong><span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-xs font-semibold text-[#171717]">{creditMoney(amount, invoiceCurrency)}</strong><span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{invoice.status || "Status unavailable"} · {dateTime(invoice.createdAt)}{!data?.whiteLabel && invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
-            })}</div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No invoices yet.</div>}
+            <div className="flex items-center justify-between gap-4 border-b border-[#eaeaea] px-5 py-3.5"><div><h2 className="app-section-title m-0 text-sm font-semibold text-[#171717]">Invoices</h2><p className="app-caption mt-0.5 mb-0 text-xs text-[#71717a]">Wallet top-ups and monthly charges</p></div><span className="app-caption text-xs text-[#71717a]">{(data?.invoices.length ?? 0) + (data?.recharge?.orders.length ?? 0)} invoices</span></div>
+            {((data?.invoices.length ?? 0) > 0 || (data?.recharge?.orders.length ?? 0) > 0) ? <div className="divide-y divide-[#eaeaea]">
+              {(data?.recharge?.orders ?? []).map((order) => {
+                const invoiceNumber = `WLR-${order._id.slice(-12).toUpperCase()}`;
+                const isDownloading = busy === `wlRechargeInvoice:${order._id}`;
+                return (
+                  <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={`recharge:${order._id}`}>
+                    <div className="min-w-0">
+                      <strong className="block truncate text-xs font-semibold text-[#171717]">{invoiceNumber}</strong>
+                      <span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{order.packageName} · {creditUnits(order.credits)}</span>
+                    </div>
+                    <div className="sm:text-right">
+                      <strong className="block text-xs font-semibold text-[#171717]">{money(order.amountMinor / 100, order.currency)}</strong>
+                      <span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{order.status} · {dateTime(order.paidAt || order.createdAt)}</span>
+                    </div>
+                    <button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadWhiteLabelRechargeInvoice(order._id, invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button>
+                  </div>
+                );
+              })}
+              {(data?.invoices ?? []).map((invoice) => {
+                const amount = ((invoice.amountPaid && invoice.amountPaid > 0 ? invoice.amountPaid : undefined) ?? invoice.amountDue ?? invoice.totalMinor ?? 0) / 100;
+                const isDownloading = busy === `invoice:${invoice._id}`;
+                const invoiceCurrency = invoice.currency.toUpperCase();
+                const invoiceFallbackTitle = data?.whiteLabel ? `${data.whiteLabel.productName} payment invoice` : "Vozon payment invoice";
+                return <div className="grid gap-3 px-5 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center" key={invoice._id}><div className="min-w-0"><strong className="block truncate text-xs font-semibold text-[#171717]">{invoice.invoiceNumber || invoiceFallbackTitle}</strong><span className="app-caption mt-0.5 block text-[11px] text-[#71717a]">{invoiceCurrency === "INR" && invoice.description ? invoice.description : dateTime(invoice.createdAt)}</span></div><div className="sm:text-right"><strong className="block text-xs font-semibold text-[#171717]">{creditMoney(amount, invoiceCurrency)}</strong><span className="app-caption mt-0.5 block capitalize text-[11px] text-[#71717a]">{invoice.status || "Status unavailable"} · {dateTime(invoice.createdAt)}{!data?.whiteLabel && invoiceCurrency !== "INR" ? " · converted for display" : ""}</span></div><button className="h-7 rounded-md border border-[#eaeaea] bg-white px-2.5 text-xs font-medium text-[#171717] hover:bg-[#f4f4f5] disabled:opacity-50" type="button" onClick={() => void downloadInvoice(invoice._id, invoice.invoiceNumber)} disabled={Boolean(busy)}>{isDownloading ? "Downloading..." : "Download"}</button></div>;
+              })}
+            </div> : <div className="px-5 py-8 text-center text-xs text-[#71717a]">No invoices yet.</div>}
           </section>
           </> : null}
         </div>
@@ -564,7 +778,14 @@ export function BillingShell() {
         data={successData}
         money={money}
         onClose={() => setSuccessData(null)}
-        onDownloadInvoice={(invoiceId) => void downloadInvoice(invoiceId, "")}
+        onDownloadInvoice={(invoiceId) => {
+          if (invoiceId.startsWith("wl-recharge:")) {
+            const rechargeId = invoiceId.slice("wl-recharge:".length);
+            void downloadWhiteLabelRechargeInvoice(rechargeId, `WLR-${rechargeId.slice(-12).toUpperCase()}`);
+          } else {
+            void downloadInvoice(invoiceId, "");
+          }
+        }}
       />
     </main>
   );
