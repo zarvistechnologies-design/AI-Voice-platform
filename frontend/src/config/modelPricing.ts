@@ -202,6 +202,16 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
           { name: "ink-whisper", rate: "$0.003", unit: "per audio minute", detail: "60 credits/minute at $50 per 1M credits" },
         ],
       },
+      {
+        name: "Murf AI",
+        shortName: "M",
+        accent: "#3b82f6",
+        sourceUrl: MURF_PRICING,
+        models: [
+          { name: "finch_indic_1.0", rate: "$0.002", unit: "per audio minute", detail: "$0.12/hr · Real-time STT for English (IN) & 11 Indian languages", badge: "Recommended" },
+          { name: "finch_global_1.0", rate: "$0.002", unit: "per audio minute", detail: "$0.12/hr · Real-time STT for Global English & European languages" },
+        ],
+      },
     ],
   },
   {

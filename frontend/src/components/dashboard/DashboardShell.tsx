@@ -2044,6 +2044,17 @@ const fallbackCatalog: ModelCatalog = {
       models: ["azure-speech-stt"],
       languages: fallbackLanguageCatalog,
     },
+    {
+      provider: "murf",
+      label: "Murf AI",
+      configured: true,
+      models: ["finch_indic_1.0", "finch_global_1.0"],
+      languages: fallbackLanguageCatalog,
+      languagesByModel: {
+        "finch_indic_1.0": fallbackLanguageCatalog,
+        "finch_global_1.0": fallbackLanguageCatalog,
+      },
+    },
   ],
   tts: [
     {
@@ -3582,6 +3593,22 @@ const modelPresentation: Record<string, { label: string; detail: string }> = {
   scribe_v1: {
     label: "Scribe v1",
     detail: "Use Scribe v2 or Scribe v2 Realtime",
+  },
+  "finch_indic_1.0": {
+    label: "Finch Indic 1.0 (recommended)",
+    detail: "Realtime streaming STT · English (IN) & 11 Indian languages",
+  },
+  "finch_global_1.0": {
+    label: "Finch Global 1.0",
+    detail: "Realtime streaming STT · US/UK/AU English & European languages",
+  },
+  "falcon-2.1": {
+    label: "Murf Falcon 2.1 (recommended)",
+    detail: "Ultra-low latency (~100 ms TTFA) conversational TTS",
+  },
+  "falcon-2": {
+    label: "Murf Falcon 2",
+    detail: "Realtime streaming conversational TTS",
   },
 };
 

@@ -34,7 +34,7 @@ export type ProviderModel = "openai-realtime" | "gemini-live" | "gemini-realtime
 export type PipelineMode = "realtime" | "pipeline";
 export type RealtimeProvider = "openai" | "gemini";
 export type PipelineProvider = "openai" | "gemini" | "sarvam" | "inception" | "elevenlabs" | "cartesia" | "deepgram" | "azure" | "murf";
-export type SttProvider = "openai" | "sarvam" | "elevenlabs" | "deepgram" | "cartesia" | "azure";
+export type SttProvider = "openai" | "sarvam" | "elevenlabs" | "deepgram" | "cartesia" | "azure" | "murf";
 export type FirstMessageMode =
   "assistant-speaks-first" | "user-speaks-first" | "model-generated";
 
