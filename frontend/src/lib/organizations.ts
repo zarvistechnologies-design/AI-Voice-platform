@@ -9,6 +9,9 @@ export type Organization = {
   name: string;
   slug: string;
   plan: "free" | "starter" | "growth" | "enterprise";
+  whiteLabelAccountId?: string;
+  whiteLabelPlanName?: string;
+  whiteLabelFeatures?: Record<string, boolean>;
   settings?: {
     timezone: string;
     dataRetentionDays: number;
@@ -111,6 +114,58 @@ export const organizationApi = {
     });
     invalidateApiCache("organizations", "/current/members");
     return result;
+  },
+  previewInvitation: async (token: string) => {
+    const response = await fetch(`${API_URL}/api/organizations/invitations/preview?token=${encodeURIComponent(token)}`, {
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    });
+    const data = (await response.json().catch(() => null)) as ({
+      email: string;
+      role: Exclude<OrganizationRole, "owner">;
+      expiresAt: string;
+      organizationName: string;
+      hasAccount: boolean;
+      whiteLabel: boolean;
+      productName: string;
+      message?: string;
+    }) | null;
+    if (!response.ok || !data) throw new Error(data?.message ?? "This invitation is invalid or expired.");
+    return data;
+  },
+  completeInvitation: async (input: { token: string; name: string; password: string }) => {
+    const response = await fetch(`${API_URL}/api/organizations/invitations/complete`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await response.json().catch(() => null)) as {
+      user: {
+        id: string;
+        name: string;
+        email: string;
+        emailVerified: boolean;
+        twoFactorEnabled: boolean;
+        platformRole?: "user" | "support" | "super_admin";
+        createdAt: string;
+      };
+      organization: {
+        id: string;
+        name: string;
+        slug: string;
+        role: string;
+        whiteLabelAccountId?: string;
+        whiteLabelBrandId?: string;
+        whiteLabelFeatures?: Record<string, boolean>;
+        whiteLabelPlanName?: string;
+      };
+      token: string;
+      message?: string;
+    } | null;
+    if (!response.ok || !data?.user) throw new Error(data?.message ?? "Could not complete invitation.");
+    invalidateApiCache("organizations");
+    return data;
   },
   acceptInvitation: async (token: string) => {
     const result = await request<Record<string, never>>("/invitations/accept", {

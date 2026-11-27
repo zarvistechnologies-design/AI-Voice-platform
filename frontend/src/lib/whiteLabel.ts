@@ -368,7 +368,8 @@ export const partnerWhiteLabelApi = {
   revisePlan: (planId: string) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/revise`, { method: "POST" }),
   archivePlan: (planId: string) => request<{ plan: WhiteLabelPlan }>(`/api/partner/white-label/plans/${planId}/archive`, { method: "POST" }),
   customers: () => request<{ customers: WhiteLabelCustomer[]; pagination: { total: number } }>("/api/partner/white-label/customers?limit=100"),
-  provisionCustomer: (body: unknown) => request<{ organization: WhiteLabelCustomer; emailDeliveryStatus: string; activationUrl?: string }>("/api/partner/white-label/customers", { method: "POST", body }),
+  provisionCustomer: (body: unknown) => request<{ organization: WhiteLabelCustomer; emailDeliveryStatus: string; activationUrl?: string; existingAccount?: boolean }>("/api/partner/white-label/customers", { method: "POST", body }),
+  resendCustomerActivation: (orgId: string) => request<{ emailDeliveryStatus: "sent" | "preview" | "failed"; activationUrl: string; alreadyActivated: boolean }>(`/api/partner/white-label/customers/${orgId}/activation`, { method: "POST" }),
   updateCustomerConfig: (orgId: string, body: unknown) => request<{
     organization: WhiteLabelCustomer;
     subscription: WhiteLabelCustomer["subscription"];

@@ -616,6 +616,15 @@ export function PartnerWhiteLabelConsole() {
   const [billing, setBilling] = useState<PartnerBilling | null>(null);
   const [tab, setTab] = useState<Tab>("launch");
   const [notice, setNotice] = useState<Notice>(null);
+  const [activationLinkBanner, setActivationLinkBanner] = useState<{
+    organizationName: string;
+    url: string;
+    emailDeliveryStatus: string;
+    existingAccount?: boolean;
+  } | null>(null);
+  const [activationCopyStatus, setActivationCopyStatus] = useState<"" | "Copied" | "Copy failed">("");
+  const activationInputRef = useRef<HTMLInputElement>(null);
+  const activationCopyTimer = useRef<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [showUserSidebar, setShowUserSidebar] = useState(false);
@@ -755,6 +764,67 @@ export function PartnerWhiteLabelConsole() {
     } finally {
       setConfigCustomerLoading(false);
     }
+  }
+
+  async function resendCustomerActivation(row: WhiteLabelCustomer) {
+    const orgId = documentId(row);
+    setBusy(true);
+    setNotice(null);
+    try {
+      const result = await partnerWhiteLabelApi.resendCustomerActivation(orgId);
+      setActivationLinkBanner({
+        organizationName: row.name,
+        url: result.activationUrl,
+        emailDeliveryStatus: result.emailDeliveryStatus,
+        existingAccount: result.alreadyActivated,
+      });
+      setActivationCopyStatus("");
+      setNotice({
+        tone: result.emailDeliveryStatus === "sent" ? "success" : "info",
+        message: result.alreadyActivated
+          ? result.emailDeliveryStatus === "sent"
+            ? `Workspace sign-in email sent to ${row.ownerUserId?.email ?? row.name}.`
+            : `Workspace sign-in link ready for ${row.name} below.`
+          : result.emailDeliveryStatus === "sent"
+            ? `Activation email sent to ${row.ownerUserId?.email ?? row.name}. You can also copy the setup link below.`
+            : `Email delivery (${result.emailDeliveryStatus}) did not send automatically — share the setup link below with ${row.name}.`,
+      });
+    } catch (error) {
+      setNotice({
+        tone: "error",
+        message: error instanceof Error ? error.message : "Could not generate customer activation link.",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function copyActivationUrl() {
+    if (!activationLinkBanner?.url) return;
+    if (activationCopyTimer.current) {
+      window.clearTimeout(activationCopyTimer.current);
+      activationCopyTimer.current = null;
+    }
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(activationLinkBanner.url);
+      copied = true;
+    } catch {
+      const input = activationInputRef.current;
+      if (input) {
+        const previousFocus = document.activeElement as HTMLElement | null;
+        input.focus();
+        input.select();
+        try {
+          copied = document.execCommand("copy");
+        } catch {
+          copied = false;
+        }
+        previousFocus?.focus({ preventScroll: true });
+      }
+    }
+    setActivationCopyStatus(copied ? "Copied" : "Copy failed");
+    activationCopyTimer.current = window.setTimeout(() => setActivationCopyStatus(""), 2500);
   }
 
   async function addDomain(event: FormEvent) {
@@ -969,6 +1039,59 @@ export function PartnerWhiteLabelConsole() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex flex-wrap gap-2"><span className="wl-hero-state">Account <Status value={overview.account.status} /></span><span className="wl-hero-state">Billing <Status value={overview.account.billingStatus} /></span></div></div>
       </header>
       {notice ? <div aria-live="polite" className={`wl-notice rounded-lg border px-4 py-3 text-sm font-semibold ${notice.tone === "error" || notice.tone === "critical" ? "border-rose-200 bg-rose-50 text-rose-700" : notice.tone === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-sky-200 bg-sky-50 text-sky-700"}`} role="status">{notice.message}</div> : null}
+      {activationLinkBanner ? (
+        <section className="rounded-xl border border-[#b9ddd4] bg-[#eff8f5] p-4 shadow-xs" aria-label="Client onboarding link">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <strong className="block text-sm text-[#14231f]">
+                {activationLinkBanner.existingAccount ? "Client sign-in link" : "Client password setup link"} · {activationLinkBanner.organizationName}
+              </strong>
+              <p className="mt-1 text-xs text-[#40564f]">
+                {activationLinkBanner.emailDeliveryStatus === "sent"
+                  ? "Onboarding email sent. Share this direct link with the client if needed:"
+                  : `Email status: ${activationLinkBanner.emailDeliveryStatus}. Send this direct link to your client so they can open their workspace immediately:`}
+              </p>
+            </div>
+            <button
+              aria-label={`Dismiss link for ${activationLinkBanner.organizationName}`}
+              className={compactSecondaryButtonClass}
+              onClick={() => setActivationLinkBanner(null)}
+              type="button"
+            >
+              Dismiss
+            </button>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <label className="sr-only" htmlFor="wl-client-activation-url">Client onboarding link</label>
+            <input
+              className="min-h-8 min-w-[240px] flex-1 rounded-lg border border-[#b9ddd4] bg-white px-3 text-xs font-medium text-[#14231f] outline-none"
+              id="wl-client-activation-url"
+              onFocus={(event) => event.currentTarget.select()}
+              readOnly
+              ref={activationInputRef}
+              value={activationLinkBanner.url}
+            />
+            <button
+              className={compactPrimaryButtonClass}
+              onClick={() => void copyActivationUrl()}
+              type="button"
+            >
+              Copy link
+            </button>
+            <a
+              className={compactSecondaryButtonClass}
+              href={activationLinkBanner.url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Open
+            </a>
+            <span aria-live="polite" className="min-w-[4.5rem] text-xs font-semibold text-[#11695c]" role="status">
+              {activationCopyStatus}
+            </span>
+          </div>
+        </section>
+      ) : null}
       <nav className="partner-white-label-tabs flex gap-1 overflow-x-auto rounded-xl border p-1.5" aria-label="White-label administration">{tabs.map((item) => <button aria-pressed={tab === item.id} className={`shrink-0 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${tab === item.id ? "partner-white-label-tab-active bg-[#126f62] !text-white shadow-sm" : "text-[#647771] hover:bg-[#f1f6f4] hover:text-[#29423b]"}`} style={tab === item.id ? { color: "#ffffff" } : undefined} key={item.id} onClick={() => setTab(item.id)}>{item.label}</button>)}</nav>
 
       {tab === "launch" ? <div className="grid gap-5 xl:grid-cols-[1fr_0.7fr]">
@@ -1003,6 +1126,11 @@ export function PartnerWhiteLabelConsole() {
               </button>
             }
           />
+          {overview.account.status !== "active" ? (
+            <div className="mx-5 mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-950" role="status">
+              <strong>Account activation pending:</strong> Your partner account is currently <strong>{overview.account.status}</strong>. New client provisioning requires an <strong>active</strong> partner account from platform administration.
+            </div>
+          ) : null}
           <div className="overflow-x-auto" role="region" aria-label="Customer organizations" tabIndex={0}>
             <table className="w-full text-left text-xs">
               <thead className="bg-[#f7f9f8] text-[#71817d]">
@@ -1116,6 +1244,16 @@ export function PartnerWhiteLabelConsole() {
                             type="button"
                           >
                             View billing
+                          </button>
+                          <button
+                            aria-label={`${item.ownerUserId?.emailVerified ? "Login link" : "Setup link"} for ${item.name}`}
+                            className={compactSecondaryButtonClass}
+                            disabled={busy}
+                            onClick={() => void resendCustomerActivation(item)}
+                            title={item.ownerUserId?.emailVerified ? "Send / copy customer sign-in link" : "Resend email & copy 72h setup link"}
+                            type="button"
+                          >
+                            {item.ownerUserId?.emailVerified ? "Login link" : "Setup link"}
                           </button>
                           <button
                             className={compactSecondaryButtonClass}
@@ -1458,10 +1596,20 @@ export function PartnerWhiteLabelConsole() {
           setConfigCustomerDetails(null);
         }}
         onError={(message) => setNotice({ tone: "error", message })}
-        onSuccess={async (message) => {
+        onNavigateTab={(nextTab) => setTab(nextTab)}
+        onSuccess={async (message, extra) => {
           await load();
           if (customerBilling) {
             setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id).catch(() => null));
+          }
+          if (extra?.activationUrl) {
+            setActivationLinkBanner({
+              organizationName: extra.organizationName || "New client",
+              url: extra.activationUrl,
+              emailDeliveryStatus: extra.emailDeliveryStatus || "failed",
+              existingAccount: extra.existingAccount,
+            });
+            setActivationCopyStatus("");
           }
           setNotice({ tone: "success", message });
         }}

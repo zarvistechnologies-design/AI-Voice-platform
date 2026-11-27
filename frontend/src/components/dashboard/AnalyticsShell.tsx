@@ -657,7 +657,7 @@ export function AnalyticsShell() {
       return {
         tone: "Start here",
         headline: "Your analytics will become useful after the first calls",
-        body: "Run a test call or launch a campaign. Vozon will turn the results into trends, outcomes and agent comparisons here.",
+        body: "Run a test call or launch a campaign to see trends, outcomes and agent comparisons here.",
       };
     if (data.summary.completionRate >= 85)
       return {

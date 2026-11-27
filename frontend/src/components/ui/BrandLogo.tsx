@@ -9,13 +9,17 @@ export function BrandLogo({
   compact = false,
   logoColor,
   showWebsiteLogo = false,
+  surface = "light",
 }: {
   compact?: boolean;
   logoColor?: string;
   showWebsiteLogo?: boolean;
+  surface?: "light" | "dark";
 }) {
   const brand = useBrand();
-  const logoUrl = brand.logoDarkUrl || brand.logoUrl;
+  const logoUrl = surface === "dark"
+    ? (brand.logoDarkUrl || brand.logoUrl)
+    : (brand.logoUrl || brand.logoDarkUrl);
   return (
     <Link
       className="inline-flex min-w-max items-center gap-2 text-[0.9rem] font-extrabold text-inherit no-underline max-[560px]:text-[0.82rem]"
