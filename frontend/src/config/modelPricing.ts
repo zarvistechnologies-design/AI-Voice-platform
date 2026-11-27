@@ -36,6 +36,7 @@ const ELEVENLABS_PRICING = "https://elevenlabs.io/pricing/api";
 const DEEPGRAM_PRICING = "https://deepgram.com/pricing";
 const CARTESIA_PRICING = "https://docs.cartesia.ai/pricing";
 const INCEPTION_PRICING = "https://docs.inceptionlabs.ai/get-started/models";
+const MURF_PRICING = "https://murf.ai/api/pricing";
 
 export const modelPricingCategories: readonly ModelPriceCategory[] = [
   {
@@ -267,6 +268,16 @@ export const modelPricingCategories: readonly ModelPriceCategory[] = [
         sourceUrl: CARTESIA_PRICING,
         models: [
           { name: "sonic-3.6", rate: "$0.05", unit: "per 1K characters", detail: "Estimate at $50 per 1M credits; account rate varies", badge: "Recommended" },
+        ],
+      },
+      {
+        name: "Murf AI",
+        shortName: "M",
+        accent: "#3b82f6",
+        sourceUrl: MURF_PRICING,
+        models: [
+          { name: "falcon-2.1", rate: "$0.01", unit: "per 1K characters", detail: "Ultra-low latency (~100ms TTFA) conversational TTS", badge: "Recommended" },
+          { name: "falcon-2", rate: "$0.01", unit: "per 1K characters", detail: "Real-time streaming conversational TTS" },
         ],
       },
     ],
