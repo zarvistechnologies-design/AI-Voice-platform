@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { CustomerConfigModal } from "@/components/white-label/CustomerConfigModal";
 import { ModelAccessPicker } from "@/components/white-label/ModelAccessPicker";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { openRazorpayCheckout, type RazorpayCheckoutPayload } from "@/lib/razorpayCheckout";
@@ -62,8 +63,13 @@ function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomer
   const credits = (value: number) => money(value * 100, currency);
   const includedMinutes = billing.subscription.allowances?.includedMinutes ?? 0;
   const includedCredits = billing.subscription.allowances?.includedCredits ?? 0;
+  const modeLabel = billing.subscription.effectiveBillingMode === "retail"
+    ? "Retail checkout"
+    : billing.subscription.effectiveBillingMode === "recharge"
+      ? "Partner Razorpay recharge"
+      : "Manual / offline credits";
   return <Card>
-    <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
+    <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")} · ${modeLabel}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
     {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="mx-5 mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
     <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
       {[
@@ -500,8 +506,10 @@ export function PartnerWhiteLabelConsole() {
   const [customerCreditAmounts, setCustomerCreditAmounts] = useState<Record<string, string>>({});
   const [customerCreditCurrencies, setCustomerCreditCurrencies] = useState<Record<string, "INR" | "USD">>({});
   const [customerCreditModes, setCustomerCreditModes] = useState<Record<string, "set" | "add">>({});
+  const [customerModal, setCustomerModal] = useState<{ open: boolean; mode: "add" | "edit"; row: WhiteLabelCustomer | null }>({ open: false, mode: "add", row: null });
+  const [configCustomerDetails, setConfigCustomerDetails] = useState<PartnerCustomerBilling | null>(null);
+  const [configCustomerLoading, setConfigCustomerLoading] = useState(false);
   const planModelsInitialized = useRef(false);
-  const [customer, setCustomer] = useState({ organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "", brandId: "", planId: "" });
   const [gateway, setGateway] = useState<WhiteLabelPaymentGateway | null>(null);
   const [gatewayForm, setGatewayForm] = useState({ keyId: "", keySecret: "", webhookSecret: "" });
   const [showSecretInput, setShowSecretInput] = useState(false);
@@ -544,7 +552,6 @@ export function PartnerWhiteLabelConsole() {
         }));
       }
       setDomainBrandId((value) => value || (nextOverview.brands[0] ? documentId(nextOverview.brands[0]) : ""));
-      setCustomer((value) => ({ ...value, brandId: value.brandId || (nextOverview.brands[0] ? documentId(nextOverview.brands[0]) : ""), planId: value.planId || (nextOverview.plans.find((item) => item.status === "published") ? documentId(nextOverview.plans.find((item) => item.status === "published")!) : "") }));
     } catch (error) {
       setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load white-label operations." });
     } finally {
@@ -599,6 +606,28 @@ export function PartnerWhiteLabelConsole() {
     try { setCustomerBilling(await partnerWhiteLabelApi.customerBilling(orgId)); }
     catch (error) { setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load customer billing." }); }
     finally { setCustomerBillingLoading(false); }
+  }
+
+  function openAddCustomerModal() {
+    setNotice(null);
+    setConfigCustomerDetails(null);
+    setConfigCustomerLoading(false);
+    setCustomerModal({ open: true, mode: "add", row: null });
+  }
+
+  async function openConfigureCustomerModal(row: WhiteLabelCustomer) {
+    setNotice(null);
+    setConfigCustomerDetails(null);
+    setCustomerModal({ open: true, mode: "edit", row });
+    setConfigCustomerLoading(true);
+    try {
+      const details = await partnerWhiteLabelApi.customerBilling(documentId(row));
+      setConfigCustomerDetails(details);
+    } catch (error) {
+      setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load full customer configuration." });
+    } finally {
+      setConfigCustomerLoading(false);
+    }
   }
 
   async function addDomain(event: FormEvent) {
@@ -673,15 +702,6 @@ export function PartnerWhiteLabelConsole() {
       modelAccess: item.modelAccess ?? inheritedModels,
     });
     setEditingPlanId(documentId(item));
-  }
-
-  async function provision(event: FormEvent) {
-    event.preventDefault();
-    await perform(async () => {
-      const result = await partnerWhiteLabelApi.provisionCustomer(customer);
-      if (result.activationUrl) await navigator.clipboard.writeText(result.activationUrl).catch(() => undefined);
-    }, "Customer workspace provisioned and activation delivery started. A preview activation URL was copied when email preview mode was active.");
-    setCustomer((value) => ({ ...value, organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "" }));
   }
 
   async function payPartnerInvoice() {
@@ -840,8 +860,265 @@ export function PartnerWhiteLabelConsole() {
         <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.billingType === "permanent" ? "one-time" : item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{money(item.allowances.includedCredits * 100, item.price.currency)} included wallet credits</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-2">{item.status === "draft" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
       </div> : null}
 
-      {tab === "customers" ? <div className="grid gap-5"><Card><SectionTitle title="Provision customer organization" description="Creates an isolated tenant, immutable subscription snapshot, wallet, owner activation, and branded email delivery." /><form className="grid gap-4 p-5" onSubmit={provision}><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><Input label="Organization" required value={customer.organizationName} onChange={(event) => setCustomer((value) => ({ ...value, organizationName: event.target.value }))} /><Input label="Owner name" required value={customer.ownerName} onChange={(event) => setCustomer((value) => ({ ...value, ownerName: event.target.value }))} /><Input label="Owner email" required type="email" value={customer.ownerEmail} onChange={(event) => setCustomer((value) => ({ ...value, ownerEmail: event.target.value }))} /><Input label="External customer ID" value={customer.externalCustomerId} onChange={(event) => setCustomer((value) => ({ ...value, externalCustomerId: event.target.value }))} /></div><div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end"><Select label="Published brand" required value={customer.brandId} onChange={(event) => setCustomer((value) => ({ ...value, brandId: event.target.value }))}>{overview.brands.filter((item) => item.status === "published").map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Select label="Published plan" required value={customer.planId} onChange={(event) => setCustomer((value) => ({ ...value, planId: event.target.value }))}>{publishedPlans.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.name} v{item.version} · {money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)} / {item.price.billingType === "permanent" ? "one-time" : item.price.interval}</option>)}</Select><button className={buttonClass} disabled={busy || !publishedPlans.length}>Provision securely</button></div></form></Card>
-        <Card><SectionTitle title="Customer organizations" description={`${customers.length} isolated customer tenants. Set exact replaces the wallet balance; Add increases it. Amounts in another currency are converted to the wallet currency.`} /><div className="overflow-x-auto"><table className="w-full min-w-[1200px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Customer</th><th className="px-5 py-3">Owner</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Plan snapshot</th><th className="px-5 py-3">Tenant</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Actions</th></tr></thead><tbody>{customers.map((item) => { const orgId = documentId(item); const selectedPlanId = customerPlanChoices[orgId] ?? item.subscription?.planId ?? ""; return <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={orgId}><td className="px-5 py-4"><strong className="block text-sm text-[#29423b]">{item.name}</strong><span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span></td><td className="px-5 py-4"><span className="block text-[#40564f]">{item.ownerUserId?.name}</span><span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span></td><td className="px-5 py-4 text-[#536963]">{item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}</td><td className="px-5 py-4 text-[#536963]">{item.subscription ? <><span className="block">{item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion}</span><span className="mt-1 block text-[#8a9894]">Price: {money(item.subscription.priceSnapshot?.billingType === "permanent" ? item.subscription.priceSnapshot?.setupFeeMinor ?? 0 : item.subscription.priceSnapshot?.recurringAmountMinor ?? 0, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} / {item.subscription.priceSnapshot?.billingType === "permanent" ? "one-time" : item.subscription.priceSnapshot?.interval ?? "month"}</span><span className="mt-1 block text-[#8a9894]">Included: {money(Number(item.subscription.allowancesSnapshot?.includedCredits ?? 0) * 100, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} credits · {Number(item.subscription.allowancesSnapshot?.includedMinutes ?? 0).toLocaleString()} min</span><span className="mt-1 block text-[#8a9894]">Wallet: {money(Number(item.wallet?.balanceCredits ?? 0) * 100, item.wallet?.currency ?? item.subscription.priceSnapshot?.currency ?? "USD")}</span><span className="mt-1 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span></> : "Missing"}</td><td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td><td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td><td className="px-5 py-4"><div className="flex min-w-[430px] flex-wrap gap-2"><button className={secondaryButtonClass} disabled={busy || item.lifecycleStatus === "archived"} onClick={() => { const next = item.lifecycleStatus === "active" ? "suspended" : "active"; const reason = window.prompt(`Reason for marking this customer ${next}:`); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(orgId, next, reason), `Customer marked ${next}.`); }}>{item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}</button>{item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? <button className={buttonClass} disabled={busy} onClick={() => { const reason = window.prompt("Admin renewal reference and reason:"); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(orgId, "active", reason), "Subscription renewed for the next plan period."); }}>Renew</button> : null}{item.subscription ? <><select aria-label={`Plan for ${item.name}`} className={`${fieldClass} min-h-10 w-48`} disabled={busy || !publishedPlans.length} value={selectedPlanId} onChange={(event) => setCustomerPlanChoices((choices) => ({ ...choices, [orgId]: event.target.value }))}><option value="" disabled>Select plan</option>{item.subscription.planId && !publishedPlans.some((availablePlan) => documentId(availablePlan) === item.subscription?.planId) ? <option value={item.subscription.planId}>Assigned: {item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion} (not published)</option> : null}{publishedPlans.map((availablePlan) => <option key={documentId(availablePlan)} value={documentId(availablePlan)}>{availablePlan.name} v{availablePlan.version}{" \u00b7 "}{money(availablePlan.price.billingType === "permanent" ? availablePlan.price.setupFeeMinor : availablePlan.price.recurringAmountMinor, availablePlan.price.currency)}{" \u00b7 "}{availablePlan.price.billingType === "permanent" ? "one-time" : availablePlan.price.interval}{" \u00b7 "}{availablePlan.allowances.includedCredits.toLocaleString()} credits{" \u00b7 "}{availablePlan.allowances.includedMinutes.toLocaleString()} min</option>)}</select><button className={secondaryButtonClass} disabled={busy || !selectedPlanId || !publishedPlans.some((availablePlan) => documentId(availablePlan) === selectedPlanId) || matchesAssignedPlan(item, publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId))} onClick={() => { const nextPlan = publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId); if (!nextPlan) return; const currentCurrency = String(item.subscription?.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD").toUpperCase(); const nextCurrency = nextPlan.price.currency.toUpperCase(); const migrateWalletCurrency = currentCurrency !== nextCurrency; if (migrateWalletCurrency && !window.confirm(`This plan changes the customer's billing currency from ${currentCurrency} to ${nextCurrency}. The wallet balance will be converted at the configured platform rate, and automatic reload will be disabled. Continue?`)) return; void perform(() => partnerWhiteLabelApi.updateCustomerPlan(orgId, selectedPlanId, "Partner updated customer plan", migrateWalletCurrency), "Customer plan updated and visible in their billing page."); }}>Update plan</button></> : null}<button className={secondaryButtonClass} disabled={customerBillingLoading} onClick={() => void openCustomerBilling(orgId)}>{'View billing'}</button><div className="flex flex-wrap items-center gap-1.5"><select aria-label={`Credit mode for ${item.name}`} className={`${fieldClass} min-h-10 w-24`} disabled={busy} value={customerCreditModes[orgId] ?? "set"} onChange={(event) => setCustomerCreditModes((modes) => ({ ...modes, [orgId]: event.target.value as "set" | "add" }))}><option value="set">Set exact</option><option value="add">Add</option></select><select aria-label={`Credit currency for ${item.name}`} className={`${fieldClass} min-h-10 w-20`} disabled={busy} value={customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR")} onChange={(event) => setCustomerCreditCurrencies((currencies) => ({ ...currencies, [orgId]: event.target.value as "INR" | "USD" }))}><option value="INR">INR (₹)</option><option value="USD">USD ($)</option></select><input aria-label={`Credits to give ${item.name}`} className={`${fieldClass} min-h-10 w-24`} disabled={busy} min="0.01" placeholder="Amount" step="0.01" type="number" value={customerCreditAmounts[orgId] ?? ""} onChange={(event) => setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: event.target.value }))} /><button className={secondaryButtonClass} disabled={busy} onClick={() => { const amount = Number(customerCreditAmounts[orgId]); const creditCurrency = customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR"); const mode = customerCreditModes[orgId] ?? "set"; if (!Number.isFinite(amount) || amount <= 0) { setNotice({ tone: "error", message: "Enter a credit amount greater than zero." }); return; } void perform(async () => { const result = await partnerWhiteLabelApi.grantCustomerCredits(orgId, amount, "Partner assigned customer wallet credits", creditCurrency, mode); setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: "" })); return result; }, mode === "set" ? `${item.name} wallet balance set to ${amount} ${creditCurrency}.` : `${amount} ${creditCurrency} credits added to ${item.name}.`); }}>Assign credits</button></div><button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) { void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(orgId); }, "Customer organization and user deleted. You can now re-provision them."); } }}>Delete</button></div></td></tr>; })}</tbody></table></div></Card>
+      {tab === "customers" ? <div className="grid gap-5">
+        <Card>
+          <SectionTitle
+            title="Customer organizations"
+            description={`${customers.length} isolated customer tenants. Assign billing mode (Manual, Partner Razorpay Recharge, or Retail Checkout) and configure plans, credits, limits, features, or AI models — edits update the end client immediately.`}
+            action={
+              <button
+                className={buttonClass}
+                disabled={busy}
+                onClick={openAddCustomerModal}
+                type="button"
+              >
+                + Add client
+              </button>
+            }
+          />
+          <div className="overflow-x-auto" role="region" aria-label="Customer organizations" tabIndex={0}>
+            <table className="w-full min-w-[1280px] text-left text-xs">
+              <thead className="bg-[#f7f9f8] text-[#71817d]">
+                <tr>
+                  <th className="px-5 py-3">Customer</th>
+                  <th className="px-5 py-3">Owner</th>
+                  <th className="px-5 py-3">Brand</th>
+                  <th className="px-5 py-3">Billing mode</th>
+                  <th className="px-5 py-3">Plan snapshot</th>
+                  <th className="px-5 py-3">Tenant</th>
+                  <th className="px-5 py-3">Subscription</th>
+                  <th className="px-5 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.length === 0 ? (
+                  <tr className="border-t border-[#e7edeb]">
+                    <td className="px-5 py-8 text-center text-sm text-[#71817d]" colSpan={8}>
+                      No client workspaces yet. Click <strong>+ Add client</strong> above to create a customer tenant and assign their billing mode.
+                    </td>
+                  </tr>
+                ) : null}
+                {customers.map((item) => {
+                  const orgId = documentId(item);
+                  const selectedPlanId = customerPlanChoices[orgId] ?? item.subscription?.planId ?? "";
+                  const assignedBillingMode = item.subscription?.billingMode ?? "inherit";
+                  const resolvedBillingMode = item.subscription?.effectiveBillingMode ?? (overview.account.retailBilling?.enabled ? "retail" : "manual");
+                  const modeBadgeLabel = resolvedBillingMode === "retail"
+                    ? "Retail checkout"
+                    : resolvedBillingMode === "recharge"
+                      ? "Razorpay recharge"
+                      : "Manual credits";
+                  return (
+                    <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={orgId}>
+                      <td className="px-5 py-4">
+                        <strong className="block text-sm text-[#29423b]">{item.name}</strong>
+                        <span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className="block text-[#40564f]">{item.ownerUserId?.name}</span>
+                        <span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span>
+                      </td>
+                      <td className="px-5 py-4 text-[#536963]">
+                        {item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="grid min-w-[165px] gap-1.5">
+                          <span className="inline-flex w-fit rounded-full bg-[#eef7f5] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-[#11695c]">
+                            {assignedBillingMode === "inherit" ? `Auto · ${modeBadgeLabel}` : modeBadgeLabel}
+                          </span>
+                          {item.subscription ? (
+                            <select
+                              aria-label={`Billing mode for ${item.name}`}
+                              className={`${fieldClass} min-h-9 text-xs`}
+                              disabled={busy}
+                              value={assignedBillingMode}
+                              onChange={(event) => {
+                                const nextMode = event.target.value as "inherit" | "manual" | "recharge" | "retail";
+                                void perform(
+                                  () => partnerWhiteLabelApi.updateCustomerConfig(orgId, {
+                                    billingMode: nextMode,
+                                    reason: `Partner changed billing mode to ${nextMode}`,
+                                  }),
+                                  `${item.name} billing mode updated to ${nextMode}. End-client billing page synced.`,
+                                );
+                              }}
+                            >
+                              <option value="manual">Manual / Offline credits</option>
+                              <option value="recharge">Razorpay self-serve recharge</option>
+                              <option value="retail">Full Razorpay retail</option>
+                              <option value="inherit">Auto (account default)</option>
+                            </select>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-[#536963]">
+                        {item.subscription ? (
+                          <>
+                            <span className="block font-semibold text-[#29423b]">{item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion}</span>
+                            <span className="mt-1 block text-[#8a9894]">Price: {money(item.subscription.priceSnapshot?.billingType === "permanent" ? item.subscription.priceSnapshot?.setupFeeMinor ?? 0 : item.subscription.priceSnapshot?.recurringAmountMinor ?? 0, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} / {item.subscription.priceSnapshot?.billingType === "permanent" ? "one-time" : item.subscription.priceSnapshot?.interval ?? "month"}</span>
+                            <span className="mt-1 block text-[#8a9894]">Included: {money(Number(item.subscription.allowancesSnapshot?.includedCredits ?? 0) * 100, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} credits · {Number(item.subscription.allowancesSnapshot?.includedMinutes ?? 0).toLocaleString()} min</span>
+                            <span className="mt-1 block text-[#8a9894]">Wallet: {money(Number(item.wallet?.balanceCredits ?? 0) * 100, item.wallet?.currency ?? item.subscription.priceSnapshot?.currency ?? "USD")}</span>
+                            <span className="mt-1 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span>
+                          </>
+                        ) : "Missing"}
+                      </td>
+                      <td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td>
+                      <td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td>
+                      <td className="px-5 py-4">
+                        <div className="flex min-w-[440px] flex-wrap gap-2">
+                          <button
+                            className={buttonClass}
+                            disabled={busy}
+                            onClick={() => void openConfigureCustomerModal(item)}
+                            type="button"
+                          >
+                            Configure
+                          </button>
+                          <button
+                            className={secondaryButtonClass}
+                            disabled={customerBillingLoading}
+                            onClick={() => void openCustomerBilling(orgId)}
+                            type="button"
+                          >
+                            View billing
+                          </button>
+                          <button
+                            className={secondaryButtonClass}
+                            disabled={busy || item.lifecycleStatus === "archived"}
+                            onClick={() => {
+                              const next = item.lifecycleStatus === "active" ? "suspended" : "active";
+                              const reason = window.prompt(`Reason for marking this customer ${next}:`);
+                              if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(orgId, next, reason), `Customer marked ${next}.`);
+                            }}
+                            type="button"
+                          >
+                            {item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}
+                          </button>
+                          {item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? (
+                            <button
+                              className={secondaryButtonClass}
+                              disabled={busy}
+                              onClick={() => {
+                                const reason = window.prompt("Admin renewal reference and reason:");
+                                if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(orgId, "active", reason), "Subscription renewed for the next plan period.");
+                              }}
+                              type="button"
+                            >
+                              Renew
+                            </button>
+                          ) : null}
+                          {item.subscription ? (
+                            <>
+                              <select
+                                aria-label={`Plan for ${item.name}`}
+                                className={`${fieldClass} min-h-10 w-48`}
+                                disabled={busy || !publishedPlans.length}
+                                value={selectedPlanId}
+                                onChange={(event) => setCustomerPlanChoices((choices) => ({ ...choices, [orgId]: event.target.value }))}
+                              >
+                                <option value="" disabled>Select plan</option>
+                                {item.subscription.planId && !publishedPlans.some((availablePlan) => documentId(availablePlan) === item.subscription?.planId) ? (
+                                  <option value={item.subscription.planId}>Assigned: {item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion} (not published)</option>
+                                ) : null}
+                                {publishedPlans.map((availablePlan) => (
+                                  <option key={documentId(availablePlan)} value={documentId(availablePlan)}>
+                                    {availablePlan.name} v{availablePlan.version}{" \u00b7 "}{money(availablePlan.price.billingType === "permanent" ? availablePlan.price.setupFeeMinor : availablePlan.price.recurringAmountMinor, availablePlan.price.currency)}{" \u00b7 "}{availablePlan.price.billingType === "permanent" ? "one-time" : availablePlan.price.interval}{" \u00b7 "}{availablePlan.allowances.includedCredits.toLocaleString()} credits{" \u00b7 "}{availablePlan.allowances.includedMinutes.toLocaleString()} min
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                className={secondaryButtonClass}
+                                disabled={busy || !selectedPlanId || !publishedPlans.some((availablePlan) => documentId(availablePlan) === selectedPlanId) || matchesAssignedPlan(item, publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId))}
+                                onClick={() => {
+                                  const nextPlan = publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId);
+                                  if (!nextPlan) return;
+                                  const currentCurrency = String(item.subscription?.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD").toUpperCase();
+                                  const nextCurrency = nextPlan.price.currency.toUpperCase();
+                                  const migrateWalletCurrency = currentCurrency !== nextCurrency;
+                                  if (migrateWalletCurrency && !window.confirm(`This plan changes the customer's billing currency from ${currentCurrency} to ${nextCurrency}. The wallet balance will be converted at the configured platform rate, and automatic reload will be disabled. Continue?`)) return;
+                                  void perform(() => partnerWhiteLabelApi.updateCustomerPlan(orgId, selectedPlanId, "Partner updated customer plan", migrateWalletCurrency), "Customer plan updated and visible in their billing page.");
+                                }}
+                                type="button"
+                              >
+                                Update plan
+                              </button>
+                            </>
+                          ) : null}
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <select
+                              aria-label={`Credit mode for ${item.name}`}
+                              className={`${fieldClass} min-h-10 w-24`}
+                              disabled={busy}
+                              value={customerCreditModes[orgId] ?? "set"}
+                              onChange={(event) => setCustomerCreditModes((modes) => ({ ...modes, [orgId]: event.target.value as "set" | "add" }))}
+                            >
+                              <option value="set">Set exact</option>
+                              <option value="add">Add</option>
+                            </select>
+                            <select
+                              aria-label={`Credit currency for ${item.name}`}
+                              className={`${fieldClass} min-h-10 w-20`}
+                              disabled={busy}
+                              value={customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR")}
+                              onChange={(event) => setCustomerCreditCurrencies((currencies) => ({ ...currencies, [orgId]: event.target.value as "INR" | "USD" }))}
+                            >
+                              <option value="INR">INR (₹)</option>
+                              <option value="USD">USD ($)</option>
+                            </select>
+                            <input
+                              aria-label={`Credits to give ${item.name}`}
+                              className={`${fieldClass} min-h-10 w-24`}
+                              disabled={busy}
+                              min="0.01"
+                              placeholder="Amount"
+                              step="0.01"
+                              type="number"
+                              value={customerCreditAmounts[orgId] ?? ""}
+                              onChange={(event) => setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: event.target.value }))}
+                            />
+                            <button
+                              className={secondaryButtonClass}
+                              disabled={busy}
+                              onClick={() => {
+                                const amount = Number(customerCreditAmounts[orgId]);
+                                const creditCurrency = customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR");
+                                const mode = customerCreditModes[orgId] ?? "set";
+                                if (!Number.isFinite(amount) || amount <= 0) {
+                                  setNotice({ tone: "error", message: "Enter a credit amount greater than zero." });
+                                  return;
+                                }
+                                void perform(async () => {
+                                  const result = await partnerWhiteLabelApi.grantCustomerCredits(orgId, amount, "Partner assigned customer wallet credits", creditCurrency, mode);
+                                  setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: "" }));
+                                  return result;
+                                }, mode === "set" ? `${item.name} wallet balance set to ${amount} ${creditCurrency}.` : `${amount} ${creditCurrency} credits added to ${item.name}.`);
+                              }}
+                              type="button"
+                            >
+                              Assign credits
+                            </button>
+                          </div>
+                          <button
+                            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45"
+                            disabled={busy}
+                            onClick={() => {
+                              if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) {
+                                void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(orgId); }, "Customer organization and user deleted. You can now re-provision them.");
+                              }
+                            }}
+                            type="button"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
         {customerBillingLoading ? <Card className="p-5 text-sm text-[#52645f]">Loading customer billing…</Card> : null}
         {customerBilling ? <CustomerBillingDetails billing={customerBilling} onClose={() => setCustomerBilling(null)} /> : null}
       </div> : null}
@@ -1112,6 +1389,27 @@ export function PartnerWhiteLabelConsole() {
 
       {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
       </div>
+      <CustomerConfigModal
+        customerDetails={configCustomerDetails}
+        customerRow={customerModal.row}
+        gateway={gateway}
+        loadingDetails={configCustomerLoading}
+        mode={customerModal.mode}
+        onClose={() => {
+          setCustomerModal((prev) => ({ ...prev, open: false }));
+          setConfigCustomerDetails(null);
+        }}
+        onError={(message) => setNotice({ tone: "error", message })}
+        onSuccess={async (message) => {
+          await load();
+          if (customerBilling) {
+            setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id).catch(() => null));
+          }
+          setNotice({ tone: "success", message });
+        }}
+        open={customerModal.open}
+        overview={overview}
+      />
     </section>
   </main>;
 }

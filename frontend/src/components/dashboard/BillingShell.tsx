@@ -397,7 +397,7 @@ export function BillingShell() {
             </section>
           ) : null}
 
-          {data?.whiteLabel ? (
+          {data?.whiteLabel && data.recharge?.enabled ? (
             <section className="overflow-hidden rounded-lg border border-[#eaeaea] bg-white shadow-xs">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#eaeaea] px-5 py-4">
                 <div>

@@ -89,7 +89,7 @@ export type BillingSummary = {
   billingProfile?: { companyName: string; gstin: string; address: string; phone: string; country: string; state: string; postalCode: string };
   canManageBillingProfile?: boolean;
   paymentProvider?: string;
-  whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean };
+  whiteLabel?: { productName: string; supportEmail: string; managedByPartner: boolean; billingMode?: "manual" | "recharge" | "retail" };
   wallet: CreditWallet;
   creditSettings: {
     currency: string;
@@ -170,6 +170,7 @@ export type BillingSummary = {
     disputeStatus?: string;
   } | null;
   recharge?: {
+    enabled?: boolean;
     packages: Array<{
       id: string;
       name: string;

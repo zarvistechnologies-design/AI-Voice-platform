@@ -6,6 +6,17 @@
   background-color: #24262c;
 }
 
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+}
+
 @utility bg-zinc-850 {
   background-color: #18181b;
 }
@@ -4104,7 +4115,7 @@ main.voice-agent-theme.dashboard-home-theme .agent-editor-shell {
 .dashboard-home-theme .dashboard-page-header > .dashboard-workspace-bar {
   position: fixed !important;
   inset: 0 0 auto 0 !important;
-  z-index: 70 !important;
+  z-index: 35 !important;
   height: 48px !important;
   box-sizing: border-box;
 }
