@@ -2804,6 +2804,13 @@ function deepgramModelsForLanguage(
   });
 }
 
+const murfIndicSttLanguageCodes = new Set([
+  "en", "hi", "as", "bn", "gu", "kn", "ml", "mr", "or", "od", "pa", "ta", "te",
+]);
+const murfGlobalSttLanguageCodes = new Set([
+  "en", "de", "es", "fr", "it", "pt", "nl",
+]);
+
 function normalizeSttModelForLanguage(
   provider: string,
   model: string,
@@ -2812,6 +2819,35 @@ function normalizeSttModelForLanguage(
 ) {
   if (provider === "cartesia") {
     return "ink-2";
+  }
+  if (provider === "murf") {
+    const matched = languageCatalog.find(
+      (item) =>
+        item.value === language ||
+        item.label === language ||
+        item.code === language,
+    );
+    const code = (matched?.code ?? language).trim().toLowerCase();
+    const baseCode = code.split("-")[0] ?? "";
+    const resolvedModel = model || "finch_indic_1.0";
+    if (!baseCode || baseCode === "unknown" || baseCode === "multilingual") {
+      return resolvedModel;
+    }
+    if (
+      resolvedModel === "finch_global_1.0" &&
+      !murfGlobalSttLanguageCodes.has(baseCode) &&
+      murfIndicSttLanguageCodes.has(baseCode)
+    ) {
+      return "finch_indic_1.0";
+    }
+    if (
+      resolvedModel !== "finch_global_1.0" &&
+      !murfIndicSttLanguageCodes.has(baseCode) &&
+      murfGlobalSttLanguageCodes.has(baseCode)
+    ) {
+      return "finch_global_1.0";
+    }
+    return resolvedModel;
   }
   if (provider !== "deepgram") return model;
   const models = deepgramModelsForLanguage(
