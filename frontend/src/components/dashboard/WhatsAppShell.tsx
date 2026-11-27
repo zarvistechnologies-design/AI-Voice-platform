@@ -84,6 +84,7 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
   );
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [notice, setNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [webhookChecking, setWebhookChecking] = useState(false);
 
   // Entities state - initialized instantly from module cache so switching tabs has 0ms lag
   const [templates, setTemplates] = useState<WhatsAppTemplate[]>(
@@ -244,6 +245,21 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
       setLoading(false);
     }
   };
+
+  async function recheckWhatsAppWebhook() {
+    setWebhookChecking(true);
+    try {
+      const status = await whatsappApi.getStatus(true);
+      setConnectionStatus(status);
+      if (globalWhatsAppDataCache) {
+        globalWhatsAppDataCache = { ...globalWhatsAppDataCache, connectionStatus: status, fetchedAt: Date.now() };
+      }
+    } catch (error) {
+      setNotice({ type: "error", text: error instanceof Error ? error.message : "Could not recheck the WhatsApp webhook." });
+    } finally {
+      setWebhookChecking(false);
+    }
+  }
 
   useEffect(() => {
     void loadData();
@@ -421,10 +437,29 @@ export function WhatsAppShell({ initialTab = "campaigns" }: WhatsAppShellProps) 
 
           {isConnected && connectionStatus?.webhook &&
             (!connectionStatus.webhook.receiverReady || !connectionStatus.webhook.subscribed) && (
-              <div className="rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-[12.5px] text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
-                {!connectionStatus.webhook.receiverReady
-                  ? "WhatsApp inbound messages are blocked: set META_APP_SECRET on the backend and restart it."
-                  : "WhatsApp inbound webhook subscription is not active. The backend will retry; check the Meta app’s messages webhook subscription if chats still do not arrive."}
+              <div className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-[12px] text-amber-950 shadow-sm dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-start gap-2.5">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber-200 text-[11px] font-bold text-amber-900 dark:bg-amber-900/60 dark:text-amber-100">!</span>
+                  <div className="min-w-0">
+                    <strong className="block text-[12px] font-bold">
+                      {!connectionStatus.webhook.receiverReady ? "Inbound messages are blocked" : "Inbound webhook status could not be confirmed"}
+                    </strong>
+                    <p className="mb-0 mt-1 leading-relaxed text-amber-900/90 dark:text-amber-100/80">
+                      {!connectionStatus.webhook.receiverReady
+                        ? "Set META_APP_SECRET on the backend and restart it so inbound webhook signatures can be verified."
+                        : <>Your WhatsApp account is still connected. This check only affects receiving incoming chats; outbound messages can continue to work. In Meta for Developers, open your app → WhatsApp → Configuration and confirm the <strong>messages</strong> webhook field is subscribed. Callback URL: <code className="break-all rounded bg-amber-100 px-1 dark:bg-amber-900/50">{connectionStatus.webhook.callbackUrl || "the backend WhatsApp webhook URL"}</code>. Use the same verification token configured on the backend.</>}
+                    </p>
+                  </div>
+                </div>
+                {connectionStatus.webhook.receiverReady && (
+                  <div className="flex shrink-0 flex-wrap items-center gap-2 pl-8 sm:pl-0">
+                    <a href="https://developers.facebook.com/apps/" target="_blank" rel="noreferrer" className="inline-flex h-8 items-center rounded-lg border border-amber-300 bg-white px-3 text-[11px] font-semibold text-amber-950 transition hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-900/50">Open Meta app</a>
+                    <button type="button" onClick={() => void recheckWhatsAppWebhook()} disabled={webhookChecking} className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-amber-900 px-3 text-[11px] font-semibold text-white transition hover:bg-amber-800 disabled:cursor-wait disabled:opacity-60 dark:bg-amber-200 dark:text-amber-950 dark:hover:bg-amber-100">
+                      {webhookChecking && <span className="size-3 animate-spin rounded-full border border-current border-t-transparent" />}
+                      {webhookChecking ? "Checking..." : "Recheck"}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
