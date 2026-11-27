@@ -2,19 +2,22 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
+import { useBrand } from "@/components/branding/BrandProvider";
 import { voiceApi, type AgentTemplate, type GuidedAgentInput, type GuidedAgentPreview } from "@/lib/voice";
 import { integrationsApi } from "@/lib/integrations";
 
 type Step = "start" | "choose" | "details" | "review";
 type Props = { onClose: () => void; onCreated: (agentId: string) => void };
 
-const integrationChoices: { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] = [
-  { mode: "google_workspace", title: "Automate with Google Workspace (Recommended)", detail: "Real-time Google Calendar availability & booking, with caller leads and appointment records auto-synced to Google Sheets." },
-  { mode: "requests", title: "Take requests for my staff", detail: "Answer questions and save requests in your dashboard. Staff confirm bookings." },
-  { mode: "native", title: "Use the Vozon clinic schedule", detail: "Book new appointments using doctors and available times you manage in Vozon." },
-  { mode: "external", title: "Connect existing business software", detail: "Create a draft, then configure the connection before activation." },
-  { mode: "digitalbot", title: "Connect DigitalBot", detail: "Create a draft, then attach your DigitalBot connection." },
-];
+function buildIntegrationChoices(productName: string): { mode: GuidedAgentInput["mode"]; title: string; detail: string }[] {
+  return [
+    { mode: "google_workspace", title: "Automate with Google Workspace (Recommended)", detail: "Real-time Google Calendar availability & booking, with caller leads and appointment records auto-synced to Google Sheets." },
+    { mode: "requests", title: "Take requests for my staff", detail: "Answer questions and save requests in your dashboard. Staff confirm bookings." },
+    { mode: "native", title: `Use the ${productName} clinic schedule`, detail: `Book new appointments using doctors and available times you manage in ${productName}.` },
+    { mode: "external", title: "Connect existing business software", detail: "Create a draft, then configure the connection before activation." },
+    { mode: "digitalbot", title: "Connect DigitalBot", detail: "Create a draft, then attach your DigitalBot connection." },
+  ];
+}
 
 const scheduleFields = new Set(["appointmentTimezone", "bookingDays", "bookingStart", "bookingEnd", "appointmentDuration"]);
 const requestSummaries: Record<string, string> = {
@@ -126,8 +129,8 @@ function StructuredListField({
   }
 
   return (
-    <fieldset className="grid gap-3 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
-      <legend className="px-1 text-xs font-semibold text-[#52645f]">
+    <fieldset className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/60">
+      <legend className="px-1 text-xs font-semibold text-slate-700 dark:text-zinc-300">
         {question.label}{question.required ? " *" : ""}
       </legend>
       {question.options?.length ? (
@@ -135,8 +138,8 @@ function StructuredListField({
           {question.options.map((option) => {
             const selected = items.includes(option);
             return (
-              <label className={`flex cursor-pointer items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-5 ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#52645f]"}`} key={option}>
-                <input className="mt-0.5 accent-[#118778]" type="checkbox" checked={selected} onChange={() => update(selected ? items.filter((item) => item !== option) : [...items, option])} />
+              <label className={`flex cursor-pointer items-start gap-2 rounded-lg border px-3 py-2.5 text-xs leading-5 transition ${selected ? "border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-500 dark:bg-blue-950/30 dark:text-blue-300" : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"}`} key={option}>
+                <input className="mt-0.5 accent-blue-600 dark:accent-blue-500" type="checkbox" checked={selected} onChange={() => update(selected ? items.filter((item) => item !== option) : [...items, option])} />
                 <span>{option}</span>
               </label>
             );
@@ -146,7 +149,7 @@ function StructuredListField({
       {items.filter((item) => !question.options?.includes(item)).length ? (
         <div className="flex flex-wrap gap-2">
           {items.filter((item) => !question.options?.includes(item)).map((item) => (
-            <button className="rounded-full border border-[#b8c8c3] bg-white px-3 py-1.5 text-left text-xs font-medium text-[#29423b]" key={item} type="button" title="Remove" onClick={() => update(items.filter((current) => current !== item))}>
+            <button className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-left text-xs font-medium text-slate-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200" key={item} type="button" title="Remove" onClick={() => update(items.filter((current) => current !== item))}>
               {item} <span aria-hidden="true">×</span>
             </button>
           ))}
@@ -166,9 +169,9 @@ function StructuredListField({
             }
           }}
         />
-        <button className="rounded-lg border border-[#b8c8c3] bg-white px-3 text-sm font-semibold text-[#0e6f62] disabled:opacity-40" type="button" disabled={!draft.trim() || value.length >= 300} onClick={addDraft}>Add</button>
+        <button className="rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-800 dark:text-blue-300" type="button" disabled={!draft.trim() || value.length >= 300} onClick={addDraft}>Add</button>
       </div>
-      <span className="text-xs font-normal leading-5 text-[#8a9894]">{question.hint}</span>
+      <span className="text-xs font-normal leading-5 text-slate-500 dark:text-zinc-400">{question.hint}</span>
     </fieldset>
   );
 }
@@ -187,7 +190,7 @@ function QuestionField({
   onHoursChange: (value: HoursDraft) => void;
 }) {
   const inputId = `guided-${question.id}`;
-  const hint = question.hint ? <span className="font-normal leading-4 text-[#8a9894]">{question.hint}</span> : null;
+  const hint = question.hint ? <span className="font-normal leading-4 text-slate-500 dark:text-zinc-400">{question.hint}</span> : null;
   const label = <span>{question.label}{question.required ? " *" : ""}</span>;
 
   if (question.control === "list" || question.control === "handoff") {
@@ -200,30 +203,30 @@ function QuestionField({
       onChange(formatBusinessHours(next));
     };
     return (
-      <fieldset className="grid gap-2 rounded-xl border border-[#dce7e3] bg-[#fbfdfc] p-4 sm:col-span-2">
-        <legend className="px-1 text-xs font-semibold text-[#52645f]">{label}</legend>
+      <fieldset className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-2 dark:border-zinc-800 dark:bg-zinc-900/60">
+        <legend className="px-1 text-xs font-semibold text-slate-700 dark:text-zinc-300">{label}</legend>
         <div className="flex flex-wrap gap-2" aria-label="Opening days">
           {weekdays.map((day) => {
             const selected = hours.days.includes(day.value);
-            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-[#118778] bg-[#e7f5f0] text-[#0e6f62]" : "border-[#d5e2dd] bg-white text-[#71817d]"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => changeHours({ ...hours, days: selected ? hours.days.filter((item) => item !== day.value) : [...hours.days, day.value] })}>{day.value}</button>;
+            return <button className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${selected ? "border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500" : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-blue-400"}`} key={day.value} type="button" aria-pressed={selected} onClick={() => changeHours({ ...hours, days: selected ? hours.days.filter((item) => item !== day.value) : [...hours.days, day.value] })}>{day.value}</button>;
           })}
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Opens
+          <label className="grid gap-1 text-xs font-medium text-slate-700 dark:text-zinc-300">Opens
             <input className={fieldClass} type="time" step={300} required disabled={hours.alwaysOpen} value={hours.start} onChange={(event) => changeHours({ ...hours, start: event.target.value })} />
           </label>
-          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Closes
+          <label className="grid gap-1 text-xs font-medium text-slate-700 dark:text-zinc-300">Closes
             <input className={fieldClass} type="time" step={300} required disabled={hours.alwaysOpen} value={hours.end} onChange={(event) => changeHours({ ...hours, end: event.target.value })} />
           </label>
-          <label className="grid gap-1 text-xs font-medium text-[#52645f]">Timezone
+          <label className="grid gap-1 text-xs font-medium text-slate-700 dark:text-zinc-300">Timezone
             <select className={fieldClass} required value={hours.timezone} onChange={(event) => changeHours({ ...hours, timezone: event.target.value })}>
               {timezoneOptions.map((timezone) => <option key={timezone} value={timezone}>{timezone}</option>)}
             </select>
           </label>
         </div>
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#52645f]">
-          <label className="flex items-center gap-2"><input className="accent-[#118778]" type="checkbox" checked={hours.alwaysOpen} onChange={(event) => changeHours({ ...hours, alwaysOpen: event.target.checked, closesNextDay: false })} />Open 24 hours</label>
-          {!hours.alwaysOpen ? <label className="flex items-center gap-2"><input className="accent-[#118778]" type="checkbox" checked={hours.closesNextDay} onChange={(event) => changeHours({ ...hours, closesNextDay: event.target.checked })} />Closing time is next day</label> : null}
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-700 dark:text-zinc-300">
+          <label className="flex items-center gap-2"><input className="accent-blue-600 dark:accent-blue-500" type="checkbox" checked={hours.alwaysOpen} onChange={(event) => changeHours({ ...hours, alwaysOpen: event.target.checked, closesNextDay: false })} />Open 24 hours</label>
+          {!hours.alwaysOpen ? <label className="flex items-center gap-2"><input className="accent-blue-600 dark:accent-blue-500" type="checkbox" checked={hours.closesNextDay} onChange={(event) => changeHours({ ...hours, closesNextDay: event.target.checked })} />Closing time is next day</label> : null}
         </div>
         {hint}
       </fieldset>
@@ -268,6 +271,9 @@ function QuestionField({
 let memoryTemplatesCache: AgentTemplate[] = [];
 
 export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
+  const brand = useBrand();
+  const productName = brand.productName || "our platform";
+  const integrationChoices = useMemo(() => buildIntegrationChoices(productName), [productName]);
   const [step, setStep] = useState<Step>("start");
   const [templates, setTemplates] = useState<AgentTemplate[]>(memoryTemplatesCache);
   const [selectedId, setSelectedId] = useState("");
@@ -470,7 +476,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
           <div>
             <p className="m-0 text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-500 dark:text-zinc-400">Your business receptionist</p>
             <h2 className="mt-1 text-xl font-bold text-slate-900 dark:text-white" id="guided-agent-title">{step === "start" ? "How would you like to begin?" : step === "choose" ? "Choose a ready template" : step === "details" ? selected ? "Tell us about your business" : "Create a blank agent" : "Your receptionist is prepared"}</h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">{step === "start" ? "Choose the setup that fits you. You can change everything later." : "Add your details. Vozon prepares the conversation and request capture for you."}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-zinc-400">{step === "start" ? "Choose the setup that fits you. You can change everything later." : `Add your details. ${productName} prepares the conversation and request capture for you.`}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2" aria-label={`Step ${stepNumber} of ${progressLabels.length}`}>
               {progressLabels.map((label, index) => <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${index + 1 === stepNumber ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white" : "bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400"}`} key={label}>{index + 1}. {label}</span>)}
             </div>
@@ -483,7 +489,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
             <button className="group min-h-52 rounded-2xl border-2 border-blue-600 bg-blue-50/60 p-6 text-left transition hover:bg-blue-50 hover:shadow-lg dark:border-blue-500 dark:bg-blue-950/20 dark:hover:bg-blue-950/40" type="button" onClick={() => { setError(""); setStep("choose"); }}>
               <span className="inline-flex rounded-full bg-blue-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white dark:bg-blue-500">Recommended</span>
               <strong className="mt-5 block text-xl text-slate-900 dark:text-white">Use a ready template</strong>
-              <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Choose your business type. Vozon prepares the receptionist, questions, and request tools automatically.</span>
+              <span className="mt-3 block text-sm leading-6 text-slate-600 dark:text-zinc-300">Choose your business type. {productName} prepares the receptionist, questions, and request tools automatically.</span>
               <span className="mt-5 block text-sm font-bold text-blue-700 dark:text-blue-300">Choose a template &rarr;</span>
             </button>
             <button className="group min-h-52 rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition hover:border-blue-400 hover:bg-blue-50/40 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-blue-500 dark:hover:bg-blue-950/20" type="button" onClick={() => { setSelectedId(""); setName(""); setPreview(null); setPrompt(""); setError(""); setStep("details"); }}>
@@ -689,7 +695,7 @@ export function GuidedAgentCreateDialog({ onClose, onCreated }: Props) {
                   : mode === "requests"
                   ? requestSummaries[selected.id]
                   : mode === "native"
-                  ? "Check the Vozon clinic schedule and book new appointments. Staff handle changes and cancellations."
+                  ? `Check the ${productName} clinic schedule and book new appointments. Staff handle changes and cancellations.`
                   : "Your conversation is prepared. Connect the selected business software before activating automatic actions."}
               </p>
               <ul className="mt-4 grid gap-2 text-sm text-slate-700 dark:text-zinc-300">

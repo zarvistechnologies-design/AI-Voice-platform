@@ -169,6 +169,34 @@ export type BillingSummary = {
     refundStatus?: "none" | "partial" | "full";
     disputeStatus?: string;
   } | null;
+  recharge?: {
+    packages: Array<{
+      id: string;
+      name: string;
+      currency: "INR" | "USD";
+      priceMinor: number;
+      credits: number;
+    }>;
+    orders: Array<{
+      _id: string;
+      packageId: string;
+      packageName: string;
+      currency: "INR" | "USD";
+      amountMinor: number;
+      credits: number;
+      taxRateBps: number;
+      status: "pending" | "paid";
+      razorpayOrderId?: string;
+      razorpayPaymentId?: string;
+      paidAt?: string;
+      createdAt: string;
+    }>;
+    ready: boolean;
+    currency?: string;
+    taxRateBps?: number;
+    taxLabel?: string;
+    reason?: string;
+  };
   transactions: BillingTransaction[];
 };
 
@@ -184,6 +212,7 @@ export type RazorpayCheckoutPayload = {
   name: string;
   description: string;
   prefill: { name?: string; email?: string };
+  displayMode?: "cards_only" | "all";
 };
 async function request<T>(path: string, init: RequestInit = {}) {
   if (!getSession()) throw new Error("Sign in before managing billing.");
@@ -247,6 +276,31 @@ export const billingApi = {
     });
     invalidateApiCache("billing");
     return verified;
+  },
+  whiteLabelRecharge: (packageId: string) =>
+    request<RazorpayCheckoutPayload>("/white-label/recharge", {
+      method: "POST",
+      body: JSON.stringify({ packageId }),
+    }),
+  verifyWhiteLabelRecharge: async (result: { razorpay_order_id?: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+    const verified = await request<{ success: boolean; credits: number; rechargeId: string }>("/white-label/recharge/verify", {
+      method: "POST",
+      body: JSON.stringify(result),
+    });
+    invalidateApiCache("billing");
+    return verified;
+  },
+  downloadWhiteLabelRechargeInvoice: async (rechargeId: string) => {
+    if (!getSession()) throw new Error("Sign in before downloading an invoice.");
+    const response = await fetch(`${API_URL}/api/billing/white-label/recharge/${encodeURIComponent(rechargeId)}/invoice`, {
+      credentials: "include",
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      throw new Error(data?.message ?? "Invoice download failed.");
+    }
+    return response.blob();
   },
   updateAutoReload: async (input: { enabled: boolean; thresholdCredits: number; reloadAmountCredits: number }) => {
     const result = await request<{ wallet: CreditWallet }>("/auto-reload", {

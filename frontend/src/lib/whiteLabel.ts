@@ -13,6 +13,18 @@ export type WhiteLabelModelOption = {
 };
 export type WhiteLabelModelCatalog = Record<WhiteLabelModelCategory, WhiteLabelModelOption[]>;
 
+export type WhiteLabelRechargePackage = {
+  _id: string;
+  id?: string;
+  name: string;
+  currency: "INR" | "USD";
+  priceMinor: number;
+  credits: number;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type WhiteLabelAccount = {
   _id: string;
   id?: string;
@@ -64,6 +76,7 @@ export type WhiteLabelAccount = {
     taxRegistrationId: string;
     gracePeriodDays: number;
   };
+  rechargePackages?: WhiteLabelRechargePackage[];
   createdAt: string;
 };
 
@@ -167,6 +180,7 @@ export type PartnerCustomerBilling = {
     createdAt: string;
   }>;
   invoices: Array<{ _id: string; invoiceNumber: string; status: string; totalMinor: number; currency: string; dueAt: string; paidAt?: string }>;
+  rechargeOrders?: Array<{ _id: string; packageName: string; currency: string; amountMinor: number; credits: number; razorpayPaymentId?: string; paidAt?: string; createdAt: string }>;
 };
 
 export type PartnerOverview = {
@@ -251,6 +265,7 @@ export type WhiteLabelPaymentGateway = {
   hasCustomWebhookSecret: boolean;
   platformGatewayAvailable: boolean;
   currency: string;
+  webhookUrl?: string;
 };
 
 export const partnerWhiteLabelApi = {
@@ -265,6 +280,12 @@ export const partnerWhiteLabelApi = {
     validateCredentials?: boolean;
   }) => request<WhiteLabelPaymentGateway>("/api/partner/white-label/gateway", { method: "PUT", body }),
   deletePaymentGateway: () => request<WhiteLabelPaymentGateway>("/api/partner/white-label/gateway", { method: "DELETE" }),
+  createRechargePackage: (body: { name: string; currency: "INR" | "USD"; price: number; credits: number; active?: boolean }) =>
+    request<{ packages: WhiteLabelRechargePackage[] }>("/api/partner/white-label/recharge-packages", { method: "POST", body }),
+  updateRechargePackage: (packageId: string, body: { name: string; currency: "INR" | "USD"; price: number; credits: number; active?: boolean }) =>
+    request<{ packages: WhiteLabelRechargePackage[] }>(`/api/partner/white-label/recharge-packages/${packageId}`, { method: "PATCH", body }),
+  archiveRechargePackage: (packageId: string) =>
+    request<{ packages: WhiteLabelRechargePackage[] }>(`/api/partner/white-label/recharge-packages/${packageId}`, { method: "DELETE" }),
   createBillingCheckout: (invoiceId: string) => request<{
     settled: boolean;
     provider?: "razorpay";

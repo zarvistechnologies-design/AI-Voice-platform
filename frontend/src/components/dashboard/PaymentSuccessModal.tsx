@@ -6,6 +6,7 @@ export type PaymentSuccessData = {
   isOpen: boolean;
   type: "topup" | "subscription";
   amountInr: number;
+  currency?: string;
   creditsAdded?: number;
   paymentId?: string;
   invoiceId?: string;
@@ -51,6 +52,7 @@ export function PaymentSuccessModal({
   }
 
   const isTopUp = data.type === "topup";
+  const displayCurrency = data.currency || "INR";
 
   return (
     <div
@@ -99,7 +101,7 @@ export function PaymentSuccessModal({
           <div className="flex items-center justify-between pb-3">
             <span className="text-xs font-medium text-[#71817d]">Amount Paid</span>
             <div className="text-right">
-              <span className="text-base font-bold text-[#14231f]">{money(data.amountInr)}</span>
+              <span className="text-base font-bold text-[#14231f]">{money(data.amountInr, displayCurrency)}</span>
               <span className="ml-2 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
                 Paid
               </span>
@@ -110,7 +112,7 @@ export function PaymentSuccessModal({
             <div className="flex items-center justify-between py-3">
               <span className="text-xs font-medium text-[#71817d]">Credits Added</span>
               <span className="font-semibold text-emerald-700">
-                +{money(data.creditsAdded)}
+                +{money(data.creditsAdded, displayCurrency)}
               </span>
             </div>
           ) : null}
@@ -119,7 +121,7 @@ export function PaymentSuccessModal({
             <div className="flex items-center justify-between py-3">
               <span className="text-xs font-medium text-[#71817d]">Available Balance</span>
               <span className="font-bold text-[#14231f]">
-                {money(data.newBalanceCredits)}
+                {money(data.newBalanceCredits, displayCurrency)}
               </span>
             </div>
           ) : null}

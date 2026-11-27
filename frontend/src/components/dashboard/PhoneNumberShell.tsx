@@ -228,6 +228,9 @@ export function PhoneNumberShell() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [showImport, setShowImport] = useState(false);
+  const [showVobizSip, setShowVobizSip] = useState(false);
+  const [vobizSipUsername, setVobizSipUsername] = useState("");
+  const [vobizSipPassword, setVobizSipPassword] = useState("");
   const [showBuy, setShowBuy] = useState(false);
   const [showMoreActions, setShowMoreActions] = useState(false);
   const [search, setSearch] = useState("");
@@ -445,6 +448,23 @@ export function PhoneNumberShell() {
     }
   }
 
+  async function saveVobizSipCredentials() {
+    if (!beginRequest()) return;
+    showMessage("");
+    try {
+      const result = await voiceApi.updateVobizSipCredentials(vobizSipUsername.trim(), vobizSipPassword.trim());
+      const refreshed = await voiceApi.phoneNumbers();
+      setNumbers(refreshed.numbers);
+      setVobizSipPassword("");
+      setShowVobizSip(false);
+      showMessage(`Vobiz SIP credentials saved and ${result.configured} outbound number routes updated.`);
+    } catch (caught) {
+      showMessage(errorMessage(caught), true);
+    } finally {
+      finishRequest();
+    }
+  }
+
   async function deleteNumber(number: BackendPhoneNumber) {
     const deletionPending = number.lifecycle === "deleting";
     const confirmed = window.confirm(
@@ -565,6 +585,16 @@ export function PhoneNumberShell() {
                 </button>
                 {showMoreActions ? (
                   <div className="absolute right-0 top-[calc(100%+6px)] z-30 w-48 rounded-md border border-[#eaeaea] bg-white p-1 shadow-lg">
+                    {numbers.some((number) => number.provider === "Vobiz") ? (
+                      <button
+                        className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
+                        disabled={busy || loading}
+                        onClick={() => { setShowMoreActions(false); setShowVobizSip(true); }}
+                        type="button"
+                      >
+                        Vobiz SIP credentials
+                      </button>
+                    ) : null}
                     <button
                       className="flex h-8 w-full items-center gap-2 rounded px-2.5 text-left text-[12px] font-medium text-[#171717] hover:bg-[#fafafa]"
                       disabled={busy || loading}
@@ -594,6 +624,21 @@ export function PhoneNumberShell() {
           ) : null}
           {error ? (
             <Notice tone="error" message={error} onClose={() => setError("")} />
+          ) : null}
+
+          {showVobizSip ? (
+            <form className="grid gap-3 rounded-xl border border-[#eaeaea] bg-white p-4 sm:grid-cols-2" onSubmit={(event) => { event.preventDefault(); void saveVobizSipCredentials(); }}>
+              <div className="sm:col-span-2">
+                <h3 className="m-0 text-sm font-semibold">Vobiz outbound SIP credentials</h3>
+                <p className="mt-1 text-xs text-[#71717a]">Enter the credential attached to your Vobiz outbound trunk. It is separate from your API Auth ID and Auth Token.</p>
+              </div>
+              <label className="grid gap-1 text-xs font-medium">SIP username<input className="h-9 rounded-md border border-[#eaeaea] px-3" autoComplete="off" required disabled={busy} value={vobizSipUsername} onChange={(event) => setVobizSipUsername(event.target.value)} /></label>
+              <label className="grid gap-1 text-xs font-medium">SIP password<input className="h-9 rounded-md border border-[#eaeaea] px-3" autoComplete="new-password" required disabled={busy} type="password" value={vobizSipPassword} onChange={(event) => setVobizSipPassword(event.target.value)} /></label>
+              <div className="flex gap-2 sm:col-span-2">
+                <button className="rounded-md bg-[#2563eb] px-3 py-2 text-xs font-medium text-white disabled:opacity-50" disabled={busy} type="submit">Save credentials</button>
+                <button className="rounded-md border border-[#eaeaea] px-3 py-2 text-xs" disabled={busy} onClick={() => setShowVobizSip(false)} type="button">Cancel</button>
+              </div>
+            </form>
           ) : null}
 
           <section className="overflow-hidden rounded-xl border border-[#eaeaea] bg-white">
