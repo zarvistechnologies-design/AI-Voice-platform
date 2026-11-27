@@ -157,8 +157,6 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
   const [dataCenter, setDataCenter] = useState<"mumbai" | "singapore">("mumbai");
   const [authId, setAuthId] = useState("");
   const [authToken, setAuthToken] = useState("");
-  const [vobizSipUsername, setVobizSipUsername] = useState("");
-  const [vobizSipPassword, setVobizSipPassword] = useState("");
   const [plivoAuthId, setPlivoAuthId] = useState("");
   const [plivoAuthToken, setPlivoAuthToken] = useState("");
   const [plivoTrunkId, setPlivoTrunkId] = useState("");
@@ -202,7 +200,6 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
     }
     if (!/^(MA|SA)_[A-Za-z0-9]+$/.test(authId.trim())) return "Enter a valid Vobiz Auth ID beginning with MA_ or SA_.";
     if (normalizedAuthToken.length < 20) return "Enter the Vobiz Auth Token (at least 20 characters).";
-    if (!vobizSipUsername.trim() || !vobizSipPassword.trim()) return "Enter the SIP username and password attached to your Vobiz outbound trunk.";
     return "";
   })();
   const valid = !validationReason;
@@ -248,7 +245,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
         transport: sipTransport,
       });
     } else {
-      onImport({ ...common, provider, authId: authId.trim(), authToken: normalizedAuthToken, sipUsername: vobizSipUsername.trim(), sipPassword: vobizSipPassword.trim() });
+      onImport({ ...common, provider, authId: authId.trim(), authToken: normalizedAuthToken });
     }
   }
 
@@ -398,15 +395,7 @@ function ImportNumberModal({ busy, requestError, onClose, onImport }: {
                 Auth Token
                 <input className={controlClass} autoComplete="new-password" disabled={busy} placeholder="Vobiz Auth Token" type="password" value={authToken} onChange={(event) => setAuthToken(event.target.value)} />
               </label>
-              <p className="m-0 text-xs text-slate-600 dark:text-zinc-400">Outbound calls need the separate SIP credential attached to your Vobiz outbound trunk.</p>
-              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
-                SIP username
-                <input className={controlClass} autoComplete="off" disabled={busy} value={vobizSipUsername} onChange={(event) => setVobizSipUsername(event.target.value)} />
-              </label>
-              <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 grid gap-2">
-                SIP password
-                <input className={controlClass} autoComplete="new-password" disabled={busy} type="password" value={vobizSipPassword} onChange={(event) => setVobizSipPassword(event.target.value)} />
-              </label>
+              <p className="m-0 text-xs text-slate-600 dark:text-zinc-400">Your Vobiz Auth ID and Auth Token verify the number and configure its call route.</p>
             </div>
           ) : null}
 

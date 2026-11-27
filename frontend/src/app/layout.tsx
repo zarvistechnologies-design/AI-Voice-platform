@@ -152,7 +152,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <meta name="facebook-domain-verification" content="hs7xv0aby3bor2uybe6y440jg6wnkk" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+              __html: `(function(){try{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");localStorage.removeItem("vozon_dashboard_theme");}catch(e){}})()`,
             }}
           />
         </head>
@@ -188,7 +188,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var p=window.location.pathname;var isDash=p.startsWith('/dashboard')||p.startsWith('/admin');if(isDash){var t=localStorage.getItem("vozon_dashboard_theme");if(t!=="light"){document.documentElement.setAttribute("data-dashboard-theme","dark");document.documentElement.classList.add("dark");}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}else{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");}}catch(e){}})()`,
+            __html: `(function(){try{document.documentElement.setAttribute("data-dashboard-theme","light");document.documentElement.classList.remove("dark");localStorage.removeItem("vozon_dashboard_theme");}catch(e){}})()`,
           }}
         />
         {effectiveIconTarget ? (

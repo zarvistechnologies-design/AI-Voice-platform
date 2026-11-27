@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { CustomerConfigModal } from "@/components/white-label/CustomerConfigModal";
 import { ModelAccessPicker } from "@/components/white-label/ModelAccessPicker";
 import { getServerSession, getSession, logoutSession, subscribeToSession, validateStoredSession } from "@/lib/auth";
 import { openRazorpayCheckout, type RazorpayCheckoutPayload } from "@/lib/razorpayCheckout";
@@ -26,10 +27,13 @@ import {
 type Tab = "launch" | "brand" | "domains" | "plans" | "customers" | "billing" | "contract";
 type Notice = { tone: "success" | "error" | "info" | "critical"; message: string } | null;
 
-const fieldClass = "wl-field min-h-11 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
+const fieldClass = "wl-field min-h-9 w-full rounded-lg border border-[#d8e2df] bg-white px-3 text-sm text-[#20342e] shadow-sm outline-none transition placeholder:text-[#9aa7a3] focus:border-[#168a78] focus:ring-4 focus:ring-[#168a78]/10 disabled:bg-[#f1f4f3] disabled:text-[#8b9894]";
 const labelClass = "wl-label grid gap-2 text-xs font-semibold text-[#52645f]";
-const buttonClass = "wl-primary inline-flex min-h-10 items-center justify-center rounded-lg bg-[#126f62] px-4 text-sm font-bold !text-white shadow-sm transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45";
-const secondaryButtonClass = "wl-secondary inline-flex min-h-10 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-4 text-sm font-semibold text-[#40564f] shadow-sm transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45";
+const buttonClass = "wl-primary inline-flex min-h-8 items-center justify-center rounded-lg bg-[#126f62] px-3.5 text-xs font-bold !text-white shadow-xs transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const secondaryButtonClass = "wl-secondary inline-flex min-h-8 items-center justify-center rounded-lg border border-[#d8e2df] bg-white px-3 text-xs font-semibold text-[#40564f] shadow-xs transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactPrimaryButtonClass = "wl-primary inline-flex min-h-8 items-center justify-center rounded-md bg-[#126f62] px-2.5 text-xs font-semibold !text-white shadow-xs transition hover:bg-[#0d5c52] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactSecondaryButtonClass = "wl-secondary inline-flex min-h-8 items-center justify-center rounded-md border border-[#d8e2df] bg-white px-2.5 text-xs font-semibold text-[#40564f] shadow-xs transition hover:border-[#b8cbc5] hover:bg-[#f7faf9] disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
+const compactDangerButtonClass = "inline-flex min-h-8 items-center justify-center rounded-md border border-rose-200 bg-white px-2.5 text-xs font-semibold text-rose-700 shadow-xs transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-45 whitespace-nowrap";
 
 function initials(name: string) {
   return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
@@ -50,85 +54,207 @@ function Status({ value }: { value: string }) {
 }
 
 function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <article className={`wl-card rounded-xl border border-[#dde6e3] bg-white shadow-[0_8px_24px_rgba(28,55,47,0.06)] ${className}`}>{children}</article>;
+  return <article className={`wl-card min-w-0 overflow-hidden rounded-xl border border-[#dde6e3] bg-white shadow-[0_8px_24px_rgba(28,55,47,0.06)] ${className}`}>{children}</article>;
 }
 
 function SectionTitle({ title, description, action }: { title: string; description: string; action?: ReactNode }) {
   return <div className="wl-section-heading flex flex-col gap-3 border-b border-[#e7edeb] p-5 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-lg font-bold text-[#1d342e]">{title}</h2><p className="mt-1 text-sm leading-6 text-[#71817d]">{description}</p></div>{action}</div>;
 }
 
-function CustomerBillingDetails({ billing, onClose }: { billing: PartnerCustomerBilling; onClose: () => void }) {
-  const currency = billing.wallet.currency;
+function CustomerBillingModal({
+  open,
+  loading,
+  customerName,
+  billing,
+  onClose,
+  onEdit,
+}: {
+  open: boolean;
+  loading: boolean;
+  customerName: string;
+  billing: PartnerCustomerBilling | null;
+  onClose: () => void;
+  onEdit?: () => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open) {
+      if (!dialog.open) dialog.showModal();
+    } else if (dialog.open) {
+      dialog.close();
+    }
+  }, [open]);
+
+  const currency = billing?.wallet.currency || "USD";
   const credits = (value: number) => money(value * 100, currency);
-  const includedMinutes = billing.subscription.allowances?.includedMinutes ?? 0;
-  const includedCredits = billing.subscription.allowances?.includedCredits ?? 0;
-  return <Card>
-    <SectionTitle title={`${billing.customer.name} billing`} description={`${billing.subscription.planName} v${billing.subscription.planVersion} · ${billing.subscription.status.replaceAll("_", " ")}`} action={<button className={secondaryButtonClass} onClick={onClose} type="button">Close details</button>} />
-    {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="mx-5 mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
-    <div className="grid gap-3 p-5 sm:grid-cols-2 xl:grid-cols-4">
-      {[
-        ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`],
-        ["Available wallet", credits(billing.wallet.balanceCredits)],
-        ["Plan wallet allowance", credits(includedCredits)],
-        ["Call deductions this month", credits(billing.usage.chargedCredits)],
-        ["Calls / minutes this month", `${billing.usage.calls} / ${billing.usage.minutes.toFixed(2)}`],
-      ].map(([label, value]) => <div className="rounded-lg border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}><p className="text-xs text-[#627870]">{label}</p><strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong></div>)}
-    </div>
-    <div className="grid gap-5 px-5 pb-5 xl:grid-cols-2">
-      <div className="rounded-lg border border-[#dce5e2] p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Subscription and pricing</h3>
-        <p className="mt-2 text-xs text-[#52645f]">{money(billing.subscription.price?.billingType === "permanent" ? billing.subscription.price?.setupFeeMinor ?? 0 : billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.billingType === "permanent" ? "one-time" : billing.subscription.price?.interval ?? "period"}{billing.subscription.price?.setupFeeMinor ? ` · Setup fee ${money(billing.subscription.price.setupFeeMinor, billing.subscription.price.currency ?? currency)}` : ""}{billing.subscription.price?.trialDays ? ` · ${billing.subscription.price.trialDays}-day trial` : ""} · {includedMinutes} included minutes · {credits(includedCredits)} wallet credit allowance</p>
-        <p className="mt-1 text-xs text-[#52645f]">Usage pricing: {billing.subscription.usagePricing?.mode?.replaceAll("_", " ") ?? "Not configured"}</p>
-        <p className="mt-1 text-xs text-[#52645f]">Current period: {date(billing.subscription.currentPeriodStart)} to {date(billing.subscription.currentPeriodEnd)}</p>
-        <h4 className="mt-4 text-xs font-bold text-[#1d342e]">Models available to this customer</h4>
-        {([ ["stt", "Speech recognition"], ["llm", "Intelligence"], ["tts", "Voice output"] ] as const).map(([category, title]) => <p className="mt-2 text-xs text-[#52645f]" key={category}><strong>{title}:</strong> {billing.models[category].map((item) => item.label).join(", ") || "None"}</p>)}
+  const includedMinutes = billing?.subscription.allowances?.includedMinutes ?? 0;
+  const includedCredits = billing?.subscription.allowances?.includedCredits ?? 0;
+  const modeLabel = billing?.subscription.effectiveBillingMode === "retail"
+    ? "Retail checkout"
+    : billing?.subscription.effectiveBillingMode === "recharge"
+      ? "Partner Razorpay recharge"
+      : "Manual / offline credits";
+  const titleText = billing
+    ? `${billing.customer.name} billing`
+    : `${customerName || "Client"} billing`;
+
+  return (
+    <dialog
+      aria-labelledby="customer-billing-dialog-title"
+      className="m-auto w-[min(96vw,980px)] max-h-[90vh] overflow-y-auto rounded-2xl border border-[#d8e2df] bg-white p-0 text-left shadow-2xl"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      ref={dialogRef}
+    >
+      <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] bg-white px-6 py-4">
+        <div>
+          <span className="inline-flex rounded-full bg-[#eef7f5] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#118778]">
+            Client billing &amp; usage card
+          </span>
+          <h1 className="mt-1 text-lg font-bold text-[#1d342e]" id="customer-billing-dialog-title">
+            {titleText}
+          </h1>
+          {billing ? (
+            <p className="mt-0.5 text-xs text-[#647771]">
+              {billing.subscription.planName} v{billing.subscription.planVersion} · {billing.subscription.status.replaceAll("_", " ")} · {modeLabel}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex items-center gap-2">
+          {billing && onEdit ? (
+            <button className={compactPrimaryButtonClass} onClick={onEdit} type="button">
+              Edit client
+            </button>
+          ) : null}
+          <button autoFocus className={compactSecondaryButtonClass} onClick={onClose} type="button">
+            Close
+          </button>
+        </div>
       </div>
-      <div className="rounded-lg border border-[#dce5e2] p-4">
-        <h3 className="text-sm font-bold text-[#1d342e]">Customer invoices &amp; recharges</h3>
-        {billing.invoices.length || (billing.rechargeOrders?.length ?? 0) ? (
-          <div className="mt-2 space-y-2">
-            {(billing.rechargeOrders ?? []).map((order) => (
-              <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={`recharge:${order._id}`}>
-                <span>WLR-{order._id.slice(-12).toUpperCase()} · {order.packageName} ({order.credits} credits)</span>
-                <strong className="text-[#1d342e]">{money(order.amountMinor, order.currency)}</strong>
-              </div>
-            ))}
-            {billing.invoices.map((invoice) => (
-              <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={invoice._id}>
-                <span>{invoice.invoiceNumber} · {invoice.status}</span>
-                <strong className="text-[#1d342e]">{money(invoice.totalMinor, invoice.currency)}</strong>
+
+      {loading && !billing ? (
+        <div className="p-8 text-sm text-[#52645f]">Loading client billing details…</div>
+      ) : billing ? (
+        <div className="grid gap-5 p-6">
+          {billing.planRecord?.currency && billing.planRecord.currency !== billing.subscription.price?.currency ? <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950"><strong>Plan record needs reconciliation.</strong> The assigned subscription bills in {billing.subscription.price?.currency}, but its referenced plan record is {billing.planRecord.currency}. The wallet and subscription amounts are authoritative. Reconcile the plan before changing this customer&apos;s package.</div> : null}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Available wallet", credits(billing.wallet.balanceCredits), `Plan allowance ${credits(includedCredits)}`],
+              ["Included minutes remaining", `${billing.periodUsage.minutesRemaining.toFixed(2)} min`, `${includedMinutes.toLocaleString()} min / cycle`],
+              ["Calls & usage this month", `${billing.usage.calls} calls`, `${billing.usage.minutes.toFixed(2)} min used`],
+              ["Call deductions (month)", credits(billing.usage.chargedCredits), `Billed in ${currency}`],
+            ].map(([label, value, hint]) => (
+              <div className="rounded-xl border border-[#dce5e2] bg-[#f7faf9] p-4" key={label}>
+                <p className="text-xs font-medium text-[#627870]">{label}</p>
+                <strong className="mt-1 block text-lg text-[#1d342e]">{value}</strong>
+                <span className="mt-0.5 block text-[11px] text-[#71817d]">{hint}</span>
               </div>
             ))}
           </div>
-        ) : <p className="mt-2 text-xs text-[#71817d]">No customer checkout invoices or Razorpay recharges yet.</p>}
-      </div>
-    </div>
-    <div className="px-5 pb-5">
-      <h3 className="text-sm font-bold text-[#1d342e]">Credit grants and call deductions</h3>
-      <p className="mt-1 text-xs text-[#71817d]">Latest {billing.transactions.length} wallet entries. Positive amounts add credits; negative amounts deduct them.</p>
-      <div className="mt-3 max-h-80 overflow-y-auto rounded-lg border border-[#dce5e2]">
-        {billing.transactions.length ? billing.transactions.map((transaction) => <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] px-4 py-3 text-xs last:border-b-0" key={transaction._id}><div><strong className="text-[#1d342e]">{transaction.description || transaction.type}</strong><p className="mt-1 text-[#71817d]">{date(transaction.createdAt)}{transaction.callId ? ` · Call ${transaction.callId.slice(-8)}` : ""}</p></div><div className="text-right"><strong className={transaction.amountCredits >= 0 ? "text-emerald-700" : "text-[#1d342e]"}>{transaction.amountCredits >= 0 ? "+" : ""}{money(transaction.amountCredits * 100, transaction.currency)}</strong><p className="mt-1 text-[#71817d]">Balance {money(transaction.balanceAfterCredits * 100, transaction.currency)}</p></div></div>) : <p className="p-4 text-xs text-[#71817d]">No wallet activity yet.</p>}
-      </div>
-    </div>
-  </Card>;
-}
-
-function matchesAssignedPlan(customer: WhiteLabelCustomer, plan?: WhiteLabelPlan) {
-  const subscription = customer.subscription;
-  if (!subscription || !plan || documentId(plan) !== subscription.planId) return false;
-  const price = subscription.priceSnapshot;
-  const allowances = subscription.allowancesSnapshot;
-  return subscription.planNameSnapshot === plan.name
-    && subscription.planVersion === plan.version
-    && String(price?.currency ?? "").toUpperCase() === plan.price.currency.toUpperCase()
-    && Number(price?.recurringAmountMinor ?? -1) === plan.price.recurringAmountMinor
-    && String(price?.billingType ?? "subscription") === plan.price.billingType
-    && String(price?.interval ?? "month") === plan.price.interval
-    && Number(price?.setupFeeMinor ?? 0) === plan.price.setupFeeMinor
-    && Number(price?.trialDays ?? 0) === plan.price.trialDays
-    && String(price?.taxBehavior ?? "unspecified") === plan.price.taxBehavior
-    && Number(allowances?.includedCredits ?? -1) === plan.allowances.includedCredits
-    && Number(allowances?.includedMinutes ?? -1) === plan.allowances.includedMinutes;
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Subscription &amp; pricing</h2>
+              <dl className="mt-3 grid gap-2 text-xs text-[#52645f]">
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Plan &amp; billing mode</dt>
+                  <dd className="font-semibold text-[#1d342e]">{billing.subscription.planName} v{billing.subscription.planVersion} · {modeLabel}</dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Plan price</dt>
+                  <dd className="font-semibold text-[#1d342e]">
+                    {money(billing.subscription.price?.billingType === "permanent" ? billing.subscription.price?.setupFeeMinor ?? 0 : billing.subscription.price?.recurringAmountMinor ?? 0, billing.subscription.price?.currency ?? currency)} / {billing.subscription.price?.billingType === "permanent" ? "one-time" : billing.subscription.price?.interval ?? "period"}
+                    {billing.subscription.price?.setupFeeMinor ? ` · Setup ${money(billing.subscription.price.setupFeeMinor, billing.subscription.price.currency ?? currency)}` : ""}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-[#f0f4f3] pb-1.5">
+                  <dt className="text-[#71817d]">Usage pricing</dt>
+                  <dd className="font-semibold text-[#1d342e]">{billing.subscription.usagePricing?.mode?.replaceAll("_", " ") ?? "Not configured"}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-[#71817d]">Current cycle</dt>
+                  <dd className="text-right font-medium text-[#1d342e]">{date(billing.subscription.currentPeriodStart)} – {date(billing.subscription.currentPeriodEnd)}</dd>
+                </div>
+              </dl>
+              <details className="mt-4 rounded-lg border border-[#e7edeb] bg-[#f9fbfa] p-3 text-xs text-[#52645f]">
+                <summary className="cursor-pointer font-semibold text-[#1d342e]">
+                  Configured AI models ({billing.models.stt.length} STT · {billing.models.llm.length} LLM · {billing.models.tts.length} TTS)
+                </summary>
+                <div className="mt-2 space-y-1.5">
+                  {([["stt", "Speech recognition"], ["llm", "Intelligence"], ["tts", "Voice output"]] as const).map(([category, title]) => (
+                    <p key={category}><strong>{title}:</strong> {billing.models[category].map((item) => item.label).join(", ") || "None"}</p>
+                  ))}
+                </div>
+              </details>
+            </div>
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Quotas &amp; workspace features (synced to client)</h2>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {[
+                  ["Agents", billing.subscription.limits?.agents ?? "—"],
+                  ["Members", billing.subscription.limits?.members ?? "—"],
+                  ["Phone numbers", billing.subscription.limits?.phoneNumbers ?? "—"],
+                  ["Concurrent calls", billing.subscription.limits?.concurrentCalls ?? "—"],
+                  ["Monthly min", billing.subscription.limits?.monthlyMinutes ?? "—"],
+                  ["Knowledge", billing.subscription.limits?.knowledgeSources ?? "—"],
+                  ["API keys", billing.subscription.limits?.apiKeys ?? "—"],
+                ].map(([label, val]) => (
+                  <div className="rounded-lg border border-[#e7edeb] bg-[#f9fbfa] px-3 py-2" key={String(label)}>
+                    <span className="block text-[10px] font-semibold uppercase text-[#71817d]">{label}</span>
+                    <strong className="mt-0.5 block text-xs text-[#1d342e]">{String(val)}</strong>
+                  </div>
+                ))}
+              </div>
+              {billing.subscription.features ? (
+                <div className="mt-3 flex flex-wrap gap-1.5 border-t border-[#f0f4f3] pt-3">
+                  {Object.entries(billing.subscription.features).map(([feature, enabled]) => (
+                    <span
+                      className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize ${enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-[#e7edeb] bg-[#f7f9f8] text-[#9aa7a3] line-through"}`}
+                      key={feature}
+                    >
+                      {feature.replace(/([A-Z])/g, " $1").trim()}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Customer invoices &amp; recharges</h2>
+              {billing.invoices.length || (billing.rechargeOrders?.length ?? 0) ? (
+                <div className="mt-2 space-y-2">
+                  {(billing.rechargeOrders ?? []).map((order) => (
+                    <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={`recharge:${order._id}`}>
+                      <span>WLR-{order._id.slice(-12).toUpperCase()} · {order.packageName} ({order.credits} credits)</span>
+                      <strong className="text-[#1d342e]">{money(order.amountMinor, order.currency)}</strong>
+                    </div>
+                  ))}
+                  {billing.invoices.map((invoice) => (
+                    <div className="flex flex-wrap justify-between gap-2 text-xs text-[#52645f]" key={invoice._id}>
+                      <span>{invoice.invoiceNumber} · {invoice.status}</span>
+                      <strong className="text-[#1d342e]">{money(invoice.totalMinor, invoice.currency)}</strong>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="mt-2 text-xs text-[#71817d]">No customer checkout invoices or Razorpay recharges yet.</p>}
+            </div>
+            <div className="rounded-xl border border-[#dce5e2] bg-white p-4">
+              <h2 className="text-sm font-bold text-[#1d342e]">Credit grants &amp; call deductions</h2>
+              <p className="mt-1 text-xs text-[#71817d]">Latest {billing.transactions.length} wallet entries.</p>
+              <div className="mt-3 max-h-64 overflow-y-auto rounded-lg border border-[#e7edeb]">
+                {billing.transactions.length ? billing.transactions.map((transaction) => <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e7edeb] px-3 py-2.5 text-xs last:border-b-0" key={transaction._id}><div><strong className="text-[#1d342e]">{transaction.description || transaction.type}</strong><p className="mt-0.5 text-[#71817d]">{date(transaction.createdAt)}{transaction.callId ? ` · Call ${transaction.callId.slice(-8)}` : ""}</p></div><div className="text-right"><strong className={transaction.amountCredits >= 0 ? "text-emerald-700" : "text-[#1d342e]"}>{transaction.amountCredits >= 0 ? "+" : ""}{money(transaction.amountCredits * 100, transaction.currency)}</strong><p className="mt-0.5 text-[#71817d]">Bal {money(transaction.balanceAfterCredits * 100, transaction.currency)}</p></div></div>) : <p className="p-4 text-xs text-[#71817d]">No wallet activity yet.</p>}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </dialog>
+  );
 }
 
 function Input({ label, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
@@ -483,6 +609,8 @@ export function PartnerWhiteLabelConsole() {
   const [overview, setOverview] = useState<PartnerOverview | null>(null);
   const [customers, setCustomers] = useState<WhiteLabelCustomer[]>([]);
   const [customerBilling, setCustomerBilling] = useState<PartnerCustomerBilling | null>(null);
+  const [customerBillingTarget, setCustomerBillingTarget] = useState<WhiteLabelCustomer | null>(null);
+  const [customerBillingOpen, setCustomerBillingOpen] = useState(false);
   const [customerBillingLoading, setCustomerBillingLoading] = useState(false);
   const [economics, setEconomics] = useState<PartnerEconomics | null>(null);
   const [billing, setBilling] = useState<PartnerBilling | null>(null);
@@ -496,12 +624,10 @@ export function PartnerWhiteLabelConsole() {
   const [domainKind, setDomainKind] = useState<"app" | "api" | "link">("app");
   const [plan, setPlan] = useState({ name: "Growth INR", key: "growth-inr", currency: "INR", billingType: "subscription" as "subscription" | "permanent", interval: "month" as "month" | "year", monthlyPrice: "999", setupFee: "0", trialDays: "7", usageMode: "cost_markup", markupPercent: "40", perMinute: "0", minimumCall: "0", includedMinutes: "0", includedCredits: "999", agents: "10", members: "10", phoneNumbers: "5", concurrentCalls: "5", monthlyMinutes: "1000", knowledgeSources: "50", apiKeys: "5", features: { campaigns: true, inboundCalling: true, outboundCalling: true, callRecording: true, knowledgeBase: true, integrations: true, developerApi: false, advancedAnalytics: true, teamAccess: true } as Record<string, boolean>, modelAccess: { stt: [], llm: [], tts: [] } as WhiteLabelModelAccess });
   const [editingPlanId, setEditingPlanId] = useState("");
-  const [customerPlanChoices, setCustomerPlanChoices] = useState<Record<string, string>>({});
-  const [customerCreditAmounts, setCustomerCreditAmounts] = useState<Record<string, string>>({});
-  const [customerCreditCurrencies, setCustomerCreditCurrencies] = useState<Record<string, "INR" | "USD">>({});
-  const [customerCreditModes, setCustomerCreditModes] = useState<Record<string, "set" | "add">>({});
+  const [customerModal, setCustomerModal] = useState<{ open: boolean; mode: "add" | "edit"; row: WhiteLabelCustomer | null }>({ open: false, mode: "add", row: null });
+  const [configCustomerDetails, setConfigCustomerDetails] = useState<PartnerCustomerBilling | null>(null);
+  const [configCustomerLoading, setConfigCustomerLoading] = useState(false);
   const planModelsInitialized = useRef(false);
-  const [customer, setCustomer] = useState({ organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "", brandId: "", planId: "" });
   const [gateway, setGateway] = useState<WhiteLabelPaymentGateway | null>(null);
   const [gatewayForm, setGatewayForm] = useState({ keyId: "", keySecret: "", webhookSecret: "" });
   const [showSecretInput, setShowSecretInput] = useState(false);
@@ -544,7 +670,6 @@ export function PartnerWhiteLabelConsole() {
         }));
       }
       setDomainBrandId((value) => value || (nextOverview.brands[0] ? documentId(nextOverview.brands[0]) : ""));
-      setCustomer((value) => ({ ...value, brandId: value.brandId || (nextOverview.brands[0] ? documentId(nextOverview.brands[0]) : ""), planId: value.planId || (nextOverview.plans.find((item) => item.status === "published") ? documentId(nextOverview.plans.find((item) => item.status === "published")!) : "") }));
     } catch (error) {
       setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load white-label operations." });
     } finally {
@@ -574,7 +699,7 @@ export function PartnerWhiteLabelConsole() {
     try {
       const result = await action();
       await load();
-      if (customerBilling) setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id));
+      if (customerBilling) setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id).catch(() => null));
       const walletMigration = result && typeof result === "object" && "walletMigration" in result
         ? result.walletMigration as { fromCurrency: string; toCurrency: string; fxRate: number; balanceAfter: number } | undefined
         : undefined;
@@ -593,12 +718,43 @@ export function PartnerWhiteLabelConsole() {
     finally { setBusy(false); }
   }
 
-  async function openCustomerBilling(orgId: string) {
+  async function openCustomerBilling(row: WhiteLabelCustomer) {
+    const orgId = documentId(row);
+    setCustomerBillingTarget(row);
+    setCustomerBilling(null);
+    setCustomerBillingOpen(true);
     setCustomerBillingLoading(true);
     setNotice(null);
-    try { setCustomerBilling(await partnerWhiteLabelApi.customerBilling(orgId)); }
-    catch (error) { setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load customer billing." }); }
-    finally { setCustomerBillingLoading(false); }
+    try {
+      setCustomerBilling(await partnerWhiteLabelApi.customerBilling(orgId));
+    } catch (error) {
+      setCustomerBillingOpen(false);
+      setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load customer billing." });
+    } finally {
+      setCustomerBillingLoading(false);
+    }
+  }
+
+  function openAddCustomerModal() {
+    setNotice(null);
+    setConfigCustomerDetails(null);
+    setConfigCustomerLoading(false);
+    setCustomerModal({ open: true, mode: "add", row: null });
+  }
+
+  async function openConfigureCustomerModal(row: WhiteLabelCustomer) {
+    setNotice(null);
+    setConfigCustomerDetails(null);
+    setCustomerModal({ open: true, mode: "edit", row });
+    setConfigCustomerLoading(true);
+    try {
+      const details = await partnerWhiteLabelApi.customerBilling(documentId(row));
+      setConfigCustomerDetails(details);
+    } catch (error) {
+      setNotice({ tone: "error", message: error instanceof Error ? error.message : "Could not load full customer configuration." });
+    } finally {
+      setConfigCustomerLoading(false);
+    }
   }
 
   async function addDomain(event: FormEvent) {
@@ -673,15 +829,6 @@ export function PartnerWhiteLabelConsole() {
       modelAccess: item.modelAccess ?? inheritedModels,
     });
     setEditingPlanId(documentId(item));
-  }
-
-  async function provision(event: FormEvent) {
-    event.preventDefault();
-    await perform(async () => {
-      const result = await partnerWhiteLabelApi.provisionCustomer(customer);
-      if (result.activationUrl) await navigator.clipboard.writeText(result.activationUrl).catch(() => undefined);
-    }, "Customer workspace provisioned and activation delivery started. A preview activation URL was copied when email preview mode was active.");
-    setCustomer((value) => ({ ...value, organizationName: "", ownerName: "", ownerEmail: "", externalCustomerId: "" }));
   }
 
   async function payPartnerInvoice() {
@@ -817,7 +964,7 @@ export function PartnerWhiteLabelConsole() {
     <DashboardSidebar activeLabel="White label" userInitials={initials(session.name)} userName={session.name} userEmail={session.email} onLogout={() => void logoutSession().then(() => router.replace("/login"))} showUserSidebar={showUserSidebar} setShowUserSidebar={setShowUserSidebar} />
     <section className="min-w-0">
       <DashboardPageHeader workspaceBarOnly />
-      <div className="partner-white-label-content mx-auto grid max-w-[1500px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
+      <div className="partner-white-label-content mx-auto grid w-full min-w-0 max-w-[1440px] gap-5 px-4 py-5 sm:px-6 lg:px-8">
       <header className="partner-white-label-hero overflow-hidden rounded-2xl border p-6 sm:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><span className="text-xs font-bold uppercase tracking-[0.18em] text-[#118778]">Partner workspace</span><h1 className="mt-2 text-3xl font-bold tracking-tight text-[#14231f] sm:text-4xl">{overview.account.name}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-[#647771]">Manage your brand, domains, pricing, customers and platform contract from one secure workspace.</p></div><div className="flex flex-wrap gap-2"><span className="wl-hero-state">Account <Status value={overview.account.status} /></span><span className="wl-hero-state">Billing <Status value={overview.account.billingStatus} /></span></div></div>
       </header>
@@ -833,17 +980,189 @@ export function PartnerWhiteLabelConsole() {
       {tab === "brand" && defaultBrand ? <Card><SectionTitle title="Customer-facing brand" description="These settings drive metadata, authentication, navigation, support, legal links, and transactional email content." action={<Status value={defaultBrand.status} />} /><BrandEditor brand={defaultBrand} busy={busy} onSaved={async (message) => { await load(); setNotice({ tone: "success", message }); }} onError={(message) => setNotice({ tone: "critical", message })} onReload={load} /></Card> : null}
 
       {tab === "domains" ? <div className="grid gap-5"><Card><SectionTitle title="Add custom domain" description="The domain stays fail-closed until ownership, routing, edge, and TLS validations all pass." /><form className="grid gap-4 p-5 md:grid-cols-[180px_220px_minmax(0,1fr)_auto] md:items-end" onSubmit={addDomain}><Select label="Domain purpose" value={domainKind} onChange={(event) => setDomainKind(event.target.value as "app" | "api" | "link")}><option value="app">Customer app</option><option value="link">Public links</option>{overview.account.entitlements.customApiDomains ? <option value="api">Developer API</option> : null}</Select><Select label="Brand" required value={domainBrandId} onChange={(event) => setDomainBrandId(event.target.value)}>{overview.brands.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Input label="Hostname only" placeholder={domainKind === "api" ? "api.customerbrand.com" : domainKind === "link" ? "links.customerbrand.com" : "app.customerbrand.com"} required value={domain} onChange={(event) => setDomain(event.target.value)} /><button className={buttonClass} disabled={busy} type="submit">Reserve domain</button></form></Card>
-        {overview.domains.map((item) => <Card key={documentId(item)}><div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><strong className="text-[#29423b]">{item.hostname}</strong><Status value={item.status} /><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">{item.kind}</span><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">TLS {item.tls?.status ?? "not started"}</span></div><p className="mt-2 text-xs text-[#71817d]">Last checked {date(item.lastCheckedAt)}{item.failureReason ? ` · ${item.failureReason}` : ""}</p></div><div className="flex gap-2"><button className={secondaryButtonClass} disabled={busy || item.status === "active" || item.status === "disabled"} onClick={() => void perform(() => partnerWhiteLabelApi.verifyDomain(documentId(item)), "Domain verification refreshed.")}>Verify now</button>{item.status === "disabled" ? <button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.reactivateDomain(documentId(item)), "Domain reactivated. Add the displayed DNS records, then verify it.")}>Reactivate</button> : <button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { const reason = window.prompt("Reason for disabling this domain:"); if (reason) void perform(() => partnerWhiteLabelApi.disableDomain(documentId(item), reason), "Domain disabled and removed from branded request resolution."); }}>Disable</button>}</div></div><div className="overflow-x-auto border-t border-[#e7edeb]"><table className="w-full min-w-[720px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Type</th><th className="px-5 py-3">DNS name</th><th className="px-5 py-3">Value</th><th className="px-5 py-3">Purpose</th></tr></thead><tbody>{item.requiredRecords.map((record, index) => <tr className="border-t border-[#e7edeb]" key={`${record.name}-${index}`}><td className="px-5 py-3 font-bold text-[#118778]">{record.type}</td><td className="px-5 py-3 font-mono text-[#40564f]">{record.name}</td><td className="max-w-md break-all px-5 py-3 font-mono text-[#40564f]">{record.value}</td><td className="px-5 py-3 capitalize text-[#71817d]">{record.purpose}</td></tr>)}</tbody></table></div></Card>)}
+        {overview.domains.map((item) => <Card key={documentId(item)}><div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><strong className="text-[#29423b]">{item.hostname}</strong><Status value={item.status} /><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">{item.kind}</span><span className="rounded-full bg-[#f0f4f3] px-2 py-1 text-[10px] font-semibold uppercase text-[#647771]">TLS {item.tls?.status ?? "not started"}</span></div><p className="mt-2 text-xs text-[#71817d]">Last checked {date(item.lastCheckedAt)}{item.failureReason ? ` · ${item.failureReason}` : ""}</p></div><div className="flex gap-1.5"><button className={compactSecondaryButtonClass} disabled={busy || item.status === "active" || item.status === "disabled"} onClick={() => void perform(() => partnerWhiteLabelApi.verifyDomain(documentId(item)), "Domain verification refreshed.")}>Verify now</button>{item.status === "disabled" ? <button className={compactPrimaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.reactivateDomain(documentId(item)), "Domain reactivated. Add the displayed DNS records, then verify it.")}>Reactivate</button> : <button className={compactDangerButtonClass} disabled={busy} onClick={() => { const reason = window.prompt("Reason for disabling this domain:"); if (reason) void perform(() => partnerWhiteLabelApi.disableDomain(documentId(item), reason), "Domain disabled and removed from branded request resolution."); }}>Disable</button>}</div></div><div className="overflow-x-auto border-t border-[#e7edeb]"><table className="w-full min-w-[720px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Type</th><th className="px-5 py-3">DNS name</th><th className="px-5 py-3">Value</th><th className="px-5 py-3">Purpose</th></tr></thead><tbody>{item.requiredRecords.map((record, index) => <tr className="border-t border-[#e7edeb]" key={`${record.name}-${index}`}><td className="px-5 py-3 font-bold text-[#118778]">{record.type}</td><td className="px-5 py-3 font-mono text-[#40564f]">{record.name}</td><td className="max-w-md break-all px-5 py-3 font-mono text-[#40564f]">{record.value}</td><td className="px-5 py-3 capitalize text-[#71817d]">{record.purpose}</td></tr>)}</tbody></table></div></Card>)}
       </div> : null}
 
       {tab === "plans" ? <div className="grid gap-5"><Card><SectionTitle title={editingPlanId ? "Edit draft price version" : "Create customer price version"} description="Enter selling prices and choose a model subset within the super-admin contract ceiling. Published versions are immutable." /><form className="grid gap-4 p-5" onSubmit={savePlan}><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Input label="Plan name" required value={plan.name} onChange={(event) => setPlan((value) => ({ ...value, name: event.target.value }))} /><Input disabled={Boolean(editingPlanId)} label="Stable key" required value={plan.key} onChange={(event) => setPlan((value) => ({ ...value, key: event.target.value }))} /><Select label="Currency" value={plan.currency} onChange={(event) => setPlan((value) => ({ ...value, currency: event.target.value }))}><option>USD</option><option>INR</option></Select><Select label="Billing cycle" value={plan.billingType === "permanent" ? "permanent" : plan.interval} onChange={(event) => { const v = event.target.value; setPlan((value) => v === "permanent" ? ({ ...value, billingType: "permanent" }) : ({ ...value, billingType: "subscription", interval: v as "month" | "year" })); }}><option value="month">Monthly</option><option value="year">Yearly</option><option value="permanent">One-time / Permanent</option></Select><Input label={plan.billingType === "permanent" ? "Recurring price (0)" : plan.interval === "year" ? "Yearly price" : "Monthly price"} min="0" required step="0.01" type="number" value={plan.monthlyPrice} onChange={(event) => setPlan((value) => ({ ...value, monthlyPrice: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label={plan.billingType === "permanent" ? "One-time package price" : "Setup fee"} min="0" step="0.01" type="number" value={plan.setupFee} onChange={(event) => setPlan((value) => ({ ...value, setupFee: event.target.value }))} /><Input disabled={plan.billingType === "permanent"} label="Trial days" min="0" type="number" value={plan.billingType === "permanent" ? "0" : plan.trialDays} onChange={(event) => setPlan((value) => ({ ...value, trialDays: event.target.value }))} /><Select label="Usage charging" value={plan.usageMode} onChange={(event) => setPlan((value) => ({ ...value, usageMode: event.target.value }))}><option value="cost_markup">Provider cost + markup</option><option value="fixed_per_minute">Fixed per minute</option><option value="included_only">Included minutes only</option></Select><Input label={plan.usageMode === "fixed_per_minute" ? "Price per minute" : "Usage markup %"} min="0" step="0.01" type="number" value={plan.usageMode === "fixed_per_minute" ? plan.perMinute : plan.markupPercent} onChange={(event) => setPlan((value) => plan.usageMode === "fixed_per_minute" ? ({ ...value, perMinute: event.target.value }) : ({ ...value, markupPercent: event.target.value }))} /></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Input label={`Included wallet credits (${plan.currency})`} min="0" step="0.01" type="number" value={plan.includedCredits} onChange={(event) => setPlan((value) => ({ ...value, includedCredits: event.target.value }))} /><Input label="Included minutes" min="0" type="number" value={plan.includedMinutes} onChange={(event) => setPlan((value) => ({ ...value, includedMinutes: event.target.value }))} /><Input label="Minimum charge per call" min="0" step="0.01" type="number" value={plan.minimumCall} onChange={(event) => setPlan((value) => ({ ...value, minimumCall: event.target.value }))} /><Input label="Agent limit" max={overview.account.limits.agentsPerCustomer} min="0" type="number" value={plan.agents} onChange={(event) => setPlan((value) => ({ ...value, agents: event.target.value }))} /><Input label="Member limit" max={overview.account.limits.membersPerCustomer} min="1" type="number" value={plan.members} onChange={(event) => setPlan((value) => ({ ...value, members: event.target.value }))} /><Input label="Phone-number limit" max={overview.account.limits.phoneNumbersPerCustomer} min="0" type="number" value={plan.phoneNumbers} onChange={(event) => setPlan((value) => ({ ...value, phoneNumbers: event.target.value }))} /><Input label="Concurrent-call limit" max={overview.account.limits.concurrentCallsPerCustomer} min="1" type="number" value={plan.concurrentCalls} onChange={(event) => setPlan((value) => ({ ...value, concurrentCalls: event.target.value }))} /><Input label="Monthly-minute ceiling" max={overview.account.limits.monthlyMinutesPerCustomer} min="0" type="number" value={plan.monthlyMinutes} onChange={(event) => setPlan((value) => ({ ...value, monthlyMinutes: event.target.value }))} /><Input label="Knowledge-source limit" min="0" type="number" value={plan.knowledgeSources} onChange={(event) => setPlan((value) => ({ ...value, knowledgeSources: event.target.value }))} /><Input label="API-key limit" min="0" type="number" value={plan.apiKeys} onChange={(event) => setPlan((value) => ({ ...value, apiKeys: event.target.value }))} /></div><fieldset className="rounded-xl border border-[#dce5e2] bg-[#f8faf9] p-4"><legend className="px-1 text-xs font-bold text-[#1d342e]">Customer plan features (visible on end-client billing page)</legend><div className="mt-2 grid gap-2 sm:grid-cols-3 lg:grid-cols-5">{([["campaigns", "Campaigns"], ["inboundCalling", "Inbound calling"], ["outboundCalling", "Outbound calling"], ["callRecording", "Call recording"], ["knowledgeBase", "Knowledge base"], ["integrations", "Integrations"], ["teamAccess", "Team access"], ["advancedAnalytics", "Advanced analytics"], ["developerApi", "Developer API"]] as const).map(([key, label]) => { const blocked = (key === "developerApi" && !overview.account.entitlements.developerApi) || (key === "advancedAnalytics" && !overview.account.entitlements.advancedAnalytics); const checked = Boolean(plan.features[key]) && !blocked; return <label className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold ${blocked ? "cursor-not-allowed border-[#e6ecea] bg-[#f1f4f3] text-[#8b9894]" : checked ? "cursor-pointer border-[#b9ddd4] bg-[#eff8f5] text-[#215e51]" : "cursor-pointer border-[#e0e7e5] bg-white text-[#647771]"}`} key={key}><input checked={checked} className="size-4 accent-[#168a78]" disabled={busy || blocked} onChange={(event) => setPlan((value) => ({ ...value, features: { ...value.features, [key]: event.target.checked } }))} type="checkbox" /><span>{label}</span></label>; })}</div></fieldset><ModelAccessPicker catalog={overview.modelAccessCatalog} disabled={busy} onChange={(modelAccess) => setPlan((value) => ({ ...value, modelAccess }))} value={plan.modelAccess} /><div className="flex justify-end gap-2">{editingPlanId ? <button className={secondaryButtonClass} disabled={busy} onClick={() => setEditingPlanId("")} type="button">Cancel editing</button> : null}<button className={buttonClass} disabled={busy}>{editingPlanId ? "Save draft changes" : "Create draft version"}</button></div></form></Card>
-        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.billingType === "permanent" ? "one-time" : item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{money(item.allowances.includedCredits * 100, item.price.currency)} included wallet credits</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-2">{item.status === "draft" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={buttonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={secondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
+        <div className="grid gap-4 lg:grid-cols-2">{overview.plans.map((item) => <Card className="p-5" key={documentId(item)}><div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><h3 className="font-bold text-[#29423b]">{item.name}</h3><Status value={item.status} /></div><p className="mt-1 text-xs text-[#7b8b86]">{item.key} · version {item.version}</p></div><strong className="text-xl text-[#1d342e]">{money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)}<span className="text-xs font-medium text-[#7b8b86]">/{item.price.billingType === "permanent" ? "one-time" : item.price.interval}</span></strong></div><div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#647771]"><span>{item.allowances.includedMinutes.toLocaleString()} included min</span><span>{money(item.allowances.includedCredits * 100, item.price.currency)} included wallet credits</span><span>{item.limits.agents} agents</span><span>{item.limits.concurrentCalls} concurrent calls</span><span>{item.usagePricing.mode.replaceAll("_", " ")}</span><span>{item.modelAccess?.stt.length ?? "Inherited"} STT models</span><span>{item.modelAccess?.llm.length ?? "Inherited"} LLM/realtime models</span><span>{item.modelAccess?.tts.length ?? "Inherited"} TTS models</span></div><div className="mt-5 flex flex-wrap gap-1.5">{item.status === "draft" ? <><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => editPlan(item)}>Edit draft</button><button className={compactPrimaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.publishPlan(documentId(item)), `${item.name} version ${item.version} published.`)}>Publish immutable version</button></> : null}{item.status === "published" ? <><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.revisePlan(documentId(item)), "Draft revision created from the published snapshot.")}>Create revision</button><button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void perform(() => partnerWhiteLabelApi.archivePlan(documentId(item)), "Plan archived for new sales; existing subscriptions retain their snapshot.")}>Archive</button></> : null}</div></Card>)}</div>
       </div> : null}
 
-      {tab === "customers" ? <div className="grid gap-5"><Card><SectionTitle title="Provision customer organization" description="Creates an isolated tenant, immutable subscription snapshot, wallet, owner activation, and branded email delivery." /><form className="grid gap-4 p-5" onSubmit={provision}><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"><Input label="Organization" required value={customer.organizationName} onChange={(event) => setCustomer((value) => ({ ...value, organizationName: event.target.value }))} /><Input label="Owner name" required value={customer.ownerName} onChange={(event) => setCustomer((value) => ({ ...value, ownerName: event.target.value }))} /><Input label="Owner email" required type="email" value={customer.ownerEmail} onChange={(event) => setCustomer((value) => ({ ...value, ownerEmail: event.target.value }))} /><Input label="External customer ID" value={customer.externalCustomerId} onChange={(event) => setCustomer((value) => ({ ...value, externalCustomerId: event.target.value }))} /></div><div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end"><Select label="Published brand" required value={customer.brandId} onChange={(event) => setCustomer((value) => ({ ...value, brandId: event.target.value }))}>{overview.brands.filter((item) => item.status === "published").map((item) => <option key={documentId(item)} value={documentId(item)}>{item.branding.productName}</option>)}</Select><Select label="Published plan" required value={customer.planId} onChange={(event) => setCustomer((value) => ({ ...value, planId: event.target.value }))}>{publishedPlans.map((item) => <option key={documentId(item)} value={documentId(item)}>{item.name} v{item.version} · {money(item.price.billingType === "permanent" ? item.price.setupFeeMinor : item.price.recurringAmountMinor, item.price.currency)} / {item.price.billingType === "permanent" ? "one-time" : item.price.interval}</option>)}</Select><button className={buttonClass} disabled={busy || !publishedPlans.length}>Provision securely</button></div></form></Card>
-        <Card><SectionTitle title="Customer organizations" description={`${customers.length} isolated customer tenants. Set exact replaces the wallet balance; Add increases it. Amounts in another currency are converted to the wallet currency.`} /><div className="overflow-x-auto"><table className="w-full min-w-[1200px] text-left text-xs"><thead className="bg-[#f7f9f8] text-[#71817d]"><tr><th className="px-5 py-3">Customer</th><th className="px-5 py-3">Owner</th><th className="px-5 py-3">Brand</th><th className="px-5 py-3">Plan snapshot</th><th className="px-5 py-3">Tenant</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Actions</th></tr></thead><tbody>{customers.map((item) => { const orgId = documentId(item); const selectedPlanId = customerPlanChoices[orgId] ?? item.subscription?.planId ?? ""; return <tr className="border-t border-[#e7edeb] transition hover:bg-[#fafcfb]" key={orgId}><td className="px-5 py-4"><strong className="block text-sm text-[#29423b]">{item.name}</strong><span className="mt-1 block text-[#8a9894]">{item.externalCustomerId || item.slug}</span></td><td className="px-5 py-4"><span className="block text-[#40564f]">{item.ownerUserId?.name}</span><span className="mt-1 block text-[#8a9894]">{item.ownerUserId?.email}</span></td><td className="px-5 py-4 text-[#536963]">{item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}</td><td className="px-5 py-4 text-[#536963]">{item.subscription ? <><span className="block">{item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion}</span><span className="mt-1 block text-[#8a9894]">Price: {money(item.subscription.priceSnapshot?.billingType === "permanent" ? item.subscription.priceSnapshot?.setupFeeMinor ?? 0 : item.subscription.priceSnapshot?.recurringAmountMinor ?? 0, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} / {item.subscription.priceSnapshot?.billingType === "permanent" ? "one-time" : item.subscription.priceSnapshot?.interval ?? "month"}</span><span className="mt-1 block text-[#8a9894]">Included: {money(Number(item.subscription.allowancesSnapshot?.includedCredits ?? 0) * 100, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} credits · {Number(item.subscription.allowancesSnapshot?.includedMinutes ?? 0).toLocaleString()} min</span><span className="mt-1 block text-[#8a9894]">Wallet: {money(Number(item.wallet?.balanceCredits ?? 0) * 100, item.wallet?.currency ?? item.subscription.priceSnapshot?.currency ?? "USD")}</span><span className="mt-1 block text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span></> : "Missing"}</td><td className="px-5 py-4"><Status value={item.lifecycleStatus} /></td><td className="px-5 py-4"><Status value={item.subscription?.status ?? "missing"} /></td><td className="px-5 py-4"><div className="flex min-w-[430px] flex-wrap gap-2"><button className={secondaryButtonClass} disabled={busy || item.lifecycleStatus === "archived"} onClick={() => { const next = item.lifecycleStatus === "active" ? "suspended" : "active"; const reason = window.prompt(`Reason for marking this customer ${next}:`); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(orgId, next, reason), `Customer marked ${next}.`); }}>{item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}</button>{item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? <button className={buttonClass} disabled={busy} onClick={() => { const reason = window.prompt("Admin renewal reference and reason:"); if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(orgId, "active", reason), "Subscription renewed for the next plan period."); }}>Renew</button> : null}{item.subscription ? <><select aria-label={`Plan for ${item.name}`} className={`${fieldClass} min-h-10 w-48`} disabled={busy || !publishedPlans.length} value={selectedPlanId} onChange={(event) => setCustomerPlanChoices((choices) => ({ ...choices, [orgId]: event.target.value }))}><option value="" disabled>Select plan</option>{item.subscription.planId && !publishedPlans.some((availablePlan) => documentId(availablePlan) === item.subscription?.planId) ? <option value={item.subscription.planId}>Assigned: {item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion} (not published)</option> : null}{publishedPlans.map((availablePlan) => <option key={documentId(availablePlan)} value={documentId(availablePlan)}>{availablePlan.name} v{availablePlan.version}{" \u00b7 "}{money(availablePlan.price.billingType === "permanent" ? availablePlan.price.setupFeeMinor : availablePlan.price.recurringAmountMinor, availablePlan.price.currency)}{" \u00b7 "}{availablePlan.price.billingType === "permanent" ? "one-time" : availablePlan.price.interval}{" \u00b7 "}{availablePlan.allowances.includedCredits.toLocaleString()} credits{" \u00b7 "}{availablePlan.allowances.includedMinutes.toLocaleString()} min</option>)}</select><button className={secondaryButtonClass} disabled={busy || !selectedPlanId || !publishedPlans.some((availablePlan) => documentId(availablePlan) === selectedPlanId) || matchesAssignedPlan(item, publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId))} onClick={() => { const nextPlan = publishedPlans.find((availablePlan) => documentId(availablePlan) === selectedPlanId); if (!nextPlan) return; const currentCurrency = String(item.subscription?.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD").toUpperCase(); const nextCurrency = nextPlan.price.currency.toUpperCase(); const migrateWalletCurrency = currentCurrency !== nextCurrency; if (migrateWalletCurrency && !window.confirm(`This plan changes the customer's billing currency from ${currentCurrency} to ${nextCurrency}. The wallet balance will be converted at the configured platform rate, and automatic reload will be disabled. Continue?`)) return; void perform(() => partnerWhiteLabelApi.updateCustomerPlan(orgId, selectedPlanId, "Partner updated customer plan", migrateWalletCurrency), "Customer plan updated and visible in their billing page."); }}>Update plan</button></> : null}<button className={secondaryButtonClass} disabled={customerBillingLoading} onClick={() => void openCustomerBilling(orgId)}>{'View billing'}</button><div className="flex flex-wrap items-center gap-1.5"><select aria-label={`Credit mode for ${item.name}`} className={`${fieldClass} min-h-10 w-24`} disabled={busy} value={customerCreditModes[orgId] ?? "set"} onChange={(event) => setCustomerCreditModes((modes) => ({ ...modes, [orgId]: event.target.value as "set" | "add" }))}><option value="set">Set exact</option><option value="add">Add</option></select><select aria-label={`Credit currency for ${item.name}`} className={`${fieldClass} min-h-10 w-20`} disabled={busy} value={customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR")} onChange={(event) => setCustomerCreditCurrencies((currencies) => ({ ...currencies, [orgId]: event.target.value as "INR" | "USD" }))}><option value="INR">INR (₹)</option><option value="USD">USD ($)</option></select><input aria-label={`Credits to give ${item.name}`} className={`${fieldClass} min-h-10 w-24`} disabled={busy} min="0.01" placeholder="Amount" step="0.01" type="number" value={customerCreditAmounts[orgId] ?? ""} onChange={(event) => setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: event.target.value }))} /><button className={secondaryButtonClass} disabled={busy} onClick={() => { const amount = Number(customerCreditAmounts[orgId]); const creditCurrency = customerCreditCurrencies[orgId] ?? ((item.wallet?.currency ?? item.subscription?.priceSnapshot?.currency) === "USD" ? "USD" : "INR"); const mode = customerCreditModes[orgId] ?? "set"; if (!Number.isFinite(amount) || amount <= 0) { setNotice({ tone: "error", message: "Enter a credit amount greater than zero." }); return; } void perform(async () => { const result = await partnerWhiteLabelApi.grantCustomerCredits(orgId, amount, "Partner assigned customer wallet credits", creditCurrency, mode); setCustomerCreditAmounts((amounts) => ({ ...amounts, [orgId]: "" })); return result; }, mode === "set" ? `${item.name} wallet balance set to ${amount} ${creditCurrency}.` : `${amount} ${creditCurrency} credits added to ${item.name}.`); }}>Assign credits</button></div><button className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-45" disabled={busy} onClick={() => { if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) { void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(orgId); }, "Customer organization and user deleted. You can now re-provision them."); } }}>Delete</button></div></td></tr>; })}</tbody></table></div></Card>
-        {customerBillingLoading ? <Card className="p-5 text-sm text-[#52645f]">Loading customer billing…</Card> : null}
-        {customerBilling ? <CustomerBillingDetails billing={customerBilling} onClose={() => setCustomerBilling(null)} /> : null}
+      {tab === "customers" ? <div className="grid min-w-0 gap-5">
+        <Card>
+          <SectionTitle
+            title="Customer organizations"
+            description={`${customers.length} isolated customer tenants. Assign billing mode and configure plans, wallet credits, quotas, features, or models — edits update the end client immediately.`}
+            action={
+              <button
+                className={`${buttonClass} shrink-0 whitespace-nowrap`}
+                disabled={busy}
+                onClick={openAddCustomerModal}
+                type="button"
+              >
+                + Add client
+              </button>
+            }
+          />
+          <div className="overflow-x-auto" role="region" aria-label="Customer organizations" tabIndex={0}>
+            <table className="w-full text-left text-xs">
+              <thead className="bg-[#f7f9f8] text-[#71817d]">
+                <tr>
+                  <th className="px-4 py-3">Customer &amp; Owner</th>
+                  <th className="px-4 py-3">Brand &amp; Billing Mode</th>
+                  <th className="px-4 py-3">Plan &amp; Wallet</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.length === 0 ? (
+                  <tr className="border-t border-[#e7edeb]">
+                    <td className="px-5 py-8 text-center text-sm text-[#71817d]" colSpan={5}>
+                      No client workspaces yet. Click <strong>+ Add client</strong> above to create a customer tenant and assign their billing mode.
+                    </td>
+                  </tr>
+                ) : null}
+                {customers.map((item) => {
+                  const orgId = documentId(item);
+                  const assignedBillingMode = item.subscription?.billingMode ?? "inherit";
+                  const resolvedBillingMode = item.subscription?.effectiveBillingMode ?? (overview.account.retailBilling?.enabled ? "retail" : "manual");
+                  const modeBadgeLabel = resolvedBillingMode === "retail"
+                    ? "Retail checkout"
+                    : resolvedBillingMode === "recharge"
+                      ? "Razorpay recharge"
+                      : "Manual credits";
+                  return (
+                    <tr className="border-t border-[#e7edeb] align-top transition hover:bg-[#fafcfb]" key={orgId}>
+                      <td className="px-4 py-4">
+                        <strong className="block text-sm text-[#29423b]">{item.name}</strong>
+                        <span className="mt-0.5 block text-[11px] text-[#8a9894]">{item.externalCustomerId || item.slug}</span>
+                        <div className="mt-2 border-t border-[#f0f4f3] pt-1.5 text-[11px]">
+                          <span className="block font-medium text-[#40564f]">{item.ownerUserId?.name}</span>
+                          <span className="block text-[#8a9894]">{item.ownerUserId?.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="block text-xs font-semibold text-[#344b45]">
+                          {item.whiteLabelBrandId?.branding?.productName ?? item.whiteLabelBrandId?.key}
+                        </span>
+                        <div className="mt-2 grid max-w-[195px] gap-1.5">
+                          <span className="inline-flex w-fit rounded-full bg-[#eef7f5] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-[#11695c]">
+                            {assignedBillingMode === "inherit" ? `Auto · ${modeBadgeLabel}` : modeBadgeLabel}
+                          </span>
+                          {item.subscription ? (
+                            <select
+                              aria-label={`Billing mode for ${item.name}`}
+                              className={`${fieldClass} min-h-9 text-xs`}
+                              disabled={busy}
+                              value={assignedBillingMode}
+                              onChange={(event) => {
+                                const nextMode = event.target.value as "inherit" | "manual" | "recharge" | "retail";
+                                void perform(
+                                  () => partnerWhiteLabelApi.updateCustomerConfig(orgId, {
+                                    billingMode: nextMode,
+                                    reason: `Partner changed billing mode to ${nextMode}`,
+                                  }),
+                                  `${item.name} billing mode updated to ${nextMode}. End-client billing page synced.`,
+                                );
+                              }}
+                            >
+                              <option value="manual">Manual / Offline credits</option>
+                              <option value="recharge">Razorpay recharge</option>
+                              <option value="retail">Full Razorpay retail</option>
+                              <option value="inherit">Auto (account default)</option>
+                            </select>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-[#536963]">
+                        {item.subscription ? (
+                          <div className="space-y-1">
+                            <span className="block font-semibold text-[#29423b]">
+                              {item.subscription.planNameSnapshot || item.subscription.planKey} v{item.subscription.planVersion}
+                            </span>
+                            <span className="block text-[11px] text-[#71817d]">
+                              {money(item.subscription.priceSnapshot?.billingType === "permanent" ? item.subscription.priceSnapshot?.setupFeeMinor ?? 0 : item.subscription.priceSnapshot?.recurringAmountMinor ?? 0, item.subscription.priceSnapshot?.currency ?? item.wallet?.currency ?? "USD")} / {item.subscription.priceSnapshot?.billingType === "permanent" ? "one-time" : item.subscription.priceSnapshot?.interval ?? "month"}
+                              {" · "}{Number(item.subscription.allowancesSnapshot?.includedCredits ?? 0).toLocaleString()} credits · {Number(item.subscription.allowancesSnapshot?.includedMinutes ?? 0).toLocaleString()} min
+                            </span>
+                            <span className="inline-flex rounded-md bg-[#f4f7f6] px-2 py-0.5 text-[11px] font-bold text-[#1d342e]">
+                              Wallet: {money(Number(item.wallet?.balanceCredits ?? 0) * 100, item.wallet?.currency ?? item.subscription.priceSnapshot?.currency ?? "USD")}
+                            </span>
+                            <span className="block text-[11px] text-[#8a9894]">Ends {date(item.subscription.currentPeriodEnd)}</span>
+                          </div>
+                        ) : "Missing"}
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-col items-start gap-1.5">
+                          <Status value={item.lifecycleStatus} />
+                          <Status value={item.subscription?.status ?? "missing"} />
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        <div className="ml-auto flex max-w-[260px] flex-wrap justify-end gap-1.5">
+                          <button
+                            aria-label={`Edit ${item.name}`}
+                            className={compactPrimaryButtonClass}
+                            disabled={busy}
+                            onClick={() => void openConfigureCustomerModal(item)}
+                            title="Edit plan, wallet credits, quotas, features & AI models"
+                            type="button"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className={compactSecondaryButtonClass}
+                            disabled={customerBillingLoading}
+                            onClick={() => void openCustomerBilling(item)}
+                            type="button"
+                          >
+                            View billing
+                          </button>
+                          <button
+                            className={compactSecondaryButtonClass}
+                            disabled={busy || item.lifecycleStatus === "archived"}
+                            onClick={() => {
+                              const next = item.lifecycleStatus === "active" ? "suspended" : "active";
+                              const reason = window.prompt(`Reason for marking this customer ${next}:`);
+                              if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerStatus(orgId, next, reason), `Customer marked ${next}.`);
+                            }}
+                            type="button"
+                          >
+                            {item.lifecycleStatus === "active" ? "Suspend" : "Reactivate"}
+                          </button>
+                          {item.subscription && item.subscription.status !== "active" && item.subscription.status !== "trialing" ? (
+                            <button
+                              className={compactSecondaryButtonClass}
+                              disabled={busy}
+                              onClick={() => {
+                                const reason = window.prompt("Admin renewal reference and reason:");
+                                if (reason) void perform(() => partnerWhiteLabelApi.updateCustomerSubscription(orgId, "active", reason), "Subscription renewed for the next plan period.");
+                              }}
+                              type="button"
+                            >
+                              Renew
+                            </button>
+                          ) : null}
+                          <button
+                            className={compactDangerButtonClass}
+                            disabled={busy}
+                            onClick={() => {
+                              if (window.confirm(`Are you sure you want to delete customer "${item.name}"? This removes the organization and user so you can re-provision them.`)) {
+                                void perform(async () => { await partnerWhiteLabelApi.deleteCustomer(orgId); }, "Customer organization and user deleted. You can now re-provision them.");
+                              }
+                            }}
+                            type="button"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </div> : null}
 
       {tab === "billing" ? <div className="grid gap-5">
@@ -951,7 +1270,7 @@ export function PartnerWhiteLabelConsole() {
                 </button>
                 {gateway?.gatewayMode === "custom" ? (
                   <button
-                    className="inline-flex min-h-10 items-center justify-center rounded-lg border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-700 shadow-sm transition hover:bg-rose-50 disabled:opacity-45"
+                    className={compactDangerButtonClass}
                     disabled={busy}
                     onClick={() => void removeGateway()}
                     type="button"
@@ -1066,9 +1385,9 @@ export function PartnerWhiteLabelConsole() {
                           <td className="px-4 py-3 text-[#40564f]">{pkg.credits.toLocaleString()} credits ({pkg.currency})</td>
                           <td className="px-4 py-3"><Status value={pkg.active ? "active" : "archived"} /></td>
                           <td className="px-4 py-3 text-right">
-                            <div className="inline-flex flex-wrap justify-end gap-2">
-                              <button className={secondaryButtonClass} disabled={busy} onClick={() => editRechargePackage(pkg)} type="button">Edit</button>
-                              <button className={secondaryButtonClass} disabled={busy} onClick={() => void toggleRechargePackageActive(pkg)} type="button">
+                            <div className="inline-flex flex-wrap justify-end gap-1.5">
+                              <button className={compactSecondaryButtonClass} disabled={busy} onClick={() => editRechargePackage(pkg)} type="button">Edit</button>
+                              <button className={compactSecondaryButtonClass} disabled={busy} onClick={() => void toggleRechargePackageActive(pkg)} type="button">
                                 {pkg.active ? "Archive" : "Activate"}
                               </button>
                             </div>
@@ -1112,6 +1431,43 @@ export function PartnerWhiteLabelConsole() {
 
       {tab === "contract" ? <div className="grid gap-5 lg:grid-cols-2"><Card><SectionTitle title="Platform commercial terms" description="Only a platform super administrator can change these audited wholesale terms." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{[["Platform fee", money(overview.account.contract.platformFeeMinor, overview.account.contract.currency)], ["Minimum commitment", money(overview.account.contract.minimumCommitmentMinor, overview.account.contract.currency)], ["Included credits", overview.account.contract.includedCredits], ["Wholesale markup", `${overview.account.contract.wholesaleMarkupBps / 100}%`], ["Payment terms", `${overview.account.contract.paymentTermsDays} days`], ["Credit limit", overview.account.contract.creditLimitCredits]].map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={String(key)}><dt className="text-xs text-[#7b8b86]">{key}</dt><dd className="mt-1 font-bold text-[#29423b]">{value}</dd></div>)}</dl></Card><Card><SectionTitle title="Hard tenant ceilings" description="Customer plans cannot exceed the platform contract." /><dl className="grid grid-cols-2 gap-4 p-5 text-sm">{Object.entries(overview.account.limits).map(([key, value]) => <div className="rounded-lg border border-[#e1e8e6] bg-[#fafcfb] p-4" key={key}><dt className="text-xs capitalize text-[#7b8b86]">{key.replace(/([A-Z])/g, " $1")}</dt><dd className="mt-1 font-bold text-[#29423b]">{Number(value).toLocaleString()}</dd></div>)}</dl></Card></div> : null}
       </div>
+      <CustomerBillingModal
+        billing={customerBilling}
+        customerName={customerBillingTarget?.name ?? ""}
+        loading={customerBillingLoading}
+        onClose={() => {
+          setCustomerBillingOpen(false);
+          setCustomerBilling(null);
+          setCustomerBillingTarget(null);
+        }}
+        onEdit={customerBillingTarget ? () => {
+          const targetRow = customerBillingTarget;
+          setCustomerBillingOpen(false);
+          void openConfigureCustomerModal(targetRow);
+        } : undefined}
+        open={customerBillingOpen}
+      />
+      <CustomerConfigModal
+        customerDetails={configCustomerDetails}
+        customerRow={customerModal.row}
+        gateway={gateway}
+        loadingDetails={configCustomerLoading}
+        mode={customerModal.mode}
+        onClose={() => {
+          setCustomerModal((prev) => ({ ...prev, open: false }));
+          setConfigCustomerDetails(null);
+        }}
+        onError={(message) => setNotice({ tone: "error", message })}
+        onSuccess={async (message) => {
+          await load();
+          if (customerBilling) {
+            setCustomerBilling(await partnerWhiteLabelApi.customerBilling(customerBilling.customer.id).catch(() => null));
+          }
+          setNotice({ tone: "success", message });
+        }}
+        open={customerModal.open}
+        overview={overview}
+      />
     </section>
   </main>;
 }
