@@ -22,6 +22,9 @@ export function publicVoiceMessage(
       : typeof value === "string"
         ? value
         : "";
+  if (/\bsip request timed out\b/i.test(message)) {
+    return "The phone provider did not respond in time. Check the destination number and outbound route, then review the provider call log before retrying.";
+  }
   return message && !privateVoiceInfrastructurePattern.test(message)
     ? message
     : fallback;
@@ -517,6 +520,8 @@ export type PhoneNumberImportInput =
       direction?: BackendPhoneNumber["direction"];
       authId: string;
       authToken: string;
+      sipUsername: string;
+      sipPassword: string;
     }
   | {
       provider: "SIP";
@@ -1728,6 +1733,12 @@ export const voiceApi = {
         body: JSON.stringify({ authId, authToken }),
       },
       ["/config"],
+    ),
+  updateVobizSipCredentials: (sipUsername: string, sipPassword: string) =>
+    mutation<{ configured: number }>(
+      "/integrations/vobiz/sip",
+      { method: "PUT", body: JSON.stringify({ sipUsername, sipPassword }) },
+      ["/phone-numbers", "/config"],
     ),
   disconnectVobiz: () =>
     mutation<Record<string, never>>(
