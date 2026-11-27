@@ -520,8 +520,6 @@ export type PhoneNumberImportInput =
       direction?: BackendPhoneNumber["direction"];
       authId: string;
       authToken: string;
-      sipUsername: string;
-      sipPassword: string;
     }
   | {
       provider: "SIP";
@@ -1733,12 +1731,6 @@ export const voiceApi = {
         body: JSON.stringify({ authId, authToken }),
       },
       ["/config"],
-    ),
-  updateVobizSipCredentials: (sipUsername: string, sipPassword: string) =>
-    mutation<{ configured: number }>(
-      "/integrations/vobiz/sip",
-      { method: "PUT", body: JSON.stringify({ sipUsername, sipPassword }) },
-      ["/phone-numbers", "/config"],
     ),
   disconnectVobiz: () =>
     mutation<Record<string, never>>(
